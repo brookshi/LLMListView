@@ -67,6 +67,13 @@
                                                 </DiscreteObjectKeyFrame.Value>
                                             </DiscreteObjectKeyFrame>
                                         </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshProgressRing" Storyboard.TargetProperty="IsActive">
+                                            <DiscreteObjectKeyFrame KeyTime="0">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    False
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
@@ -109,7 +116,7 @@
                                 </Grid>
                             </ScrollViewer>
                         </Border>
-                        <ProgressRing x:Name="RefreshProgressBar" Width="40" MinWidth="40" Height="40" MinHeight="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="30" IsActive="False" Foreground="{TemplateBinding RefreshIconColor}"/>
+                        <ProgressRing x:Name="RefreshProgressRing" Width="40" MinWidth="40" Height="40" MinHeight="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="30" IsActive="False" Foreground="{TemplateBinding RefreshIconColor}"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
