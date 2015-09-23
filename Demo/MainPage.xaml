@@ -43,12 +43,6 @@
             </Grid>
         </DataTemplate>
     </Page.Resources>
-    <ctrl:LLMListView x:Name="MasterListView" ItemTemplate="{StaticResource ContactListViewTemplate }">
-        <ctrl:LLMListView.ItemContainerStyle>
-            <Style TargetType="ListViewItem">
-                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                <Setter Property="Background" Value="Red" />
-            </Style>
-        </ctrl:LLMListView.ItemContainerStyle>
+    <ctrl:LLMListView x:Name="MasterListView" Background="Black" ItemTemplate="{StaticResource ContactListViewTemplate }">
     </ctrl:LLMListView>
 </Page>

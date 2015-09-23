@@ -90,6 +90,12 @@ namespace LLM
             _timer.Start();
         }
 
+        protected override DependencyObject GetContainerForItemOverride()
+        {
+            LLMListViewItem item = new LLMListViewItem();
+            return item;
+        }
+
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
