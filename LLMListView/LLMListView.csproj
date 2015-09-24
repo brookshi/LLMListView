@@ -116,6 +116,7 @@
     <Compile Include="LLMListView.cs" />
     <Compile Include="LLMListViewItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Enum.cs" />
     <Content Include="Properties\LLMListView.rd.xml" />
   </ItemGroup>
   <ItemGroup>
