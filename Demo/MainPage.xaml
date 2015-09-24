@@ -43,6 +43,6 @@
             </Grid>
         </DataTemplate>
     </Page.Resources>
-    <ctrl:LLMListView x:Name="MasterListView" Background="Black" ItemTemplate="{StaticResource ContactListViewTemplate }">
+    <ctrl:LLMListView x:Name="MasterListView" ItemTemplate="{StaticResource ContactListViewTemplate }">
     </ctrl:LLMListView>
 </Page>
