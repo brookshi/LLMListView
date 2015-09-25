@@ -141,14 +141,22 @@
                     <Grid>
                         <Grid x:Name="SwipeLayer">
                             <Grid.Clip>
-                                <RectangleGeometry x:Name="SwipeLayerClip" Rect="0,0,0,0"/>
+                                <RectangleGeometry x:Name="SwipeLayerClip" Rect="0,0,0,0">
+                                    <RectangleGeometry.Transform>
+                                        <TranslateTransform x:Name="SwipeLayerClipTransform"/>
+                                    </RectangleGeometry.Transform>
+                                </RectangleGeometry>
                             </Grid.Clip>
                             <ContentControl x:Name="RightSwipeContent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                <TextBlock Text="asdf" Foreground="Red" HorizontalAlignment="Right"/>
+                                <Grid Background="Yellow">
+                                    <TextBlock Text="asdf" Foreground="Red" HorizontalAlignment="Right"/>
+                                </Grid>
                             </ContentControl>
 
                             <ContentControl x:Name="LeftSwipeContent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                <TextBlock Text="fdsa" Foreground="Blue" HorizontalAlignment="Left"/>
+                                <Grid Background="Green">
+                                    <TextBlock Text="fdsa" Foreground="Blue" HorizontalAlignment="Left"/>
+                                </Grid>
                             </ContentControl>
                         </Grid>
                         <Border x:Name="MainLayer" Background="Transparent" ManipulationMode="TranslateX,System">
