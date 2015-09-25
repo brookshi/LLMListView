@@ -107,17 +107,23 @@ namespace LLM
 
         protected override void OnManipulationCompleted(ManipulationCompletedRoutedEventArgs e)
         {
-            DispalyAnimation();
+            DispalyAnimation(()=>
+            {
+                _swipeLayerClipTransform.X = 0;
+                _swipeLayerClip.Rect = new Rect(0, 0, 0, 0);
+            });
             _direction = SwipeDirection.None;
         }
 
         EasingFunctionBase _easingInFunc = new ExponentialEase() { EasingMode = EasingMode.EaseIn };
         EasingFunctionBase _easingOutFunc = new ExponentialEase() { EasingMode = EasingMode.EaseOut };
-        private void DispalyAnimation()
+
+        private void DispalyAnimation(Action callback)
         {
             Storyboard animStory = new Storyboard();
             animStory.Children.Add(Utils.CreateDoubleAnimation(_mainLayerTransform, "X", _easingInFunc, 0, 300));
-            animStory.Children.Add(Utils.CreateDoubleAnimation(_swipeLayerClipTransform, "X", _easingInFunc, 0, 300));
+            animStory.Children.Add(Utils.CreateDoubleAnimation(_swipeLayerClipTransform, "X", _easingInFunc, _direction == SwipeDirection.Left ? -_swipeLayerClip.Rect.Width : _swipeLayerClip.Rect.Width, 300));
+            animStory.Completed += (sender, e) => { callback(); };
             animStory.Begin();
         }
     }
