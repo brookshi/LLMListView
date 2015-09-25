@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace LLM
 {
@@ -16,30 +17,51 @@ namespace LLM
     {
         private SwipeDirection _direction = SwipeDirection.None;
         private TranslateTransform _mainLayerTransform;
+        private TranslateTransform _swipeLayerClipTransform;
         private RectangleGeometry _swipeLayerClip;
         private ContentControl _rightSwipeContent;
         private ContentControl _leftSwipeContent;
+        private Border _mainLayer;
 
-
-        public SwipeMode SwipeMode
+        public SwipeMode LeftSwipeMode
         {
-            get { return (SwipeMode)GetValue(SwipeModeProperty); }
-            set { SetValue(SwipeModeProperty, value); }
+            get { return (SwipeMode)GetValue(LeftSwipeModeProperty); }
+            set { SetValue(LeftSwipeModeProperty, value); }
         }
 
-        public static readonly DependencyProperty SwipeModeProperty =
-            DependencyProperty.Register("SwipeMode", typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.Fix));
+        public static readonly DependencyProperty LeftSwipeModeProperty =
+            DependencyProperty.Register("LeftSwipeMode", typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.Fix));
 
+        public SwipeMode RightSwipeMode
+        {
+            get { return (SwipeMode)GetValue(RightSwipeModeProperty); }
+            set { SetValue(RightSwipeModeProperty, value); }
+        }
+
+        public static readonly DependencyProperty RightSwipeModeProperty =
+            DependencyProperty.Register("RightSwipeMode", typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.Fix));
 
         public LLMListViewItem()
         {
             this.DefaultStyleKey = typeof(LLMListViewItem);
         }
 
+        private bool CanSwipeLeft
+        {
+            get { return _direction == SwipeDirection.Left && LeftSwipeMode != SwipeMode.None; }
+        }
+
+        private bool CanSwipeRight
+        {
+            get { return _direction == SwipeDirection.Right && RightSwipeMode != SwipeMode.None; }
+        }
+
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
+            _mainLayer = (Border)GetTemplateChild("MainLayer");
             _mainLayerTransform = (TranslateTransform)GetTemplateChild("MainLayerTransform");
+            _swipeLayerClipTransform = (TranslateTransform)GetTemplateChild("SwipeLayerClipTransform");
             _swipeLayerClip = (RectangleGeometry)GetTemplateChild("SwipeLayerClip");
             _rightSwipeContent = (ContentControl)GetTemplateChild("RightSwipeContent");
             _leftSwipeContent = (ContentControl)GetTemplateChild("LeftSwipeContent");
@@ -47,24 +69,56 @@ namespace LLM
 
         protected override void OnManipulationDelta(ManipulationDeltaRoutedEventArgs e)
         {
-            if(SwipeMode == SwipeMode.None)
-            {
-                e.Complete();
-                return;
-            }
+            var cumulativeX = e.Cumulative.Translation.X;
 
-            if(_direction == SwipeDirection.None)
+            if (_direction == SwipeDirection.None)
             {
                 _direction = e.Delta.Translation.X > 0 ? SwipeDirection.Left : SwipeDirection.Right;
-                _leftSwipeContent.Visibility = _direction == SwipeDirection.Left ? Visibility.Visible : Visibility.Collapsed;
-                _rightSwipeContent.Visibility = _direction == SwipeDirection.Right ? Visibility.Visible : Visibility.Collapsed;
+                _leftSwipeContent.Visibility = CanSwipeLeft ? Visibility.Visible : Visibility.Collapsed;
+                _rightSwipeContent.Visibility = CanSwipeRight ? Visibility.Visible : Visibility.Collapsed;
             }
-            else if(_direction == SwipeDirection.Left)
+            else if (CanSwipeLeft)
             {
-                var translateX = Math.Max(0, e.Cumulative.Translation.X);
-                _swipeLayerClip.Rect = new Rect(0, 0, translateX, ActualHeight);
-                _mainLayerTransform.X = translateX;
+                if (cumulativeX <= 0)
+                {
+                    _direction = SwipeDirection.None;
+                }
+                else
+                { 
+                    _swipeLayerClip.Rect = new Rect(0, 0, cumulativeX, ActualHeight);
+                    _mainLayerTransform.X = cumulativeX;
+                }
             }
+            else if(CanSwipeRight)
+            {
+                if (cumulativeX >= 0)
+                {
+                    _direction = SwipeDirection.None;
+                }
+                else
+                {
+                    _swipeLayerClip.Rect = new Rect(ActualWidth + cumulativeX, 0, -cumulativeX, ActualHeight);
+                    _mainLayerTransform.X = cumulativeX;
+                }
+            }
+
+
+        }
+
+        protected override void OnManipulationCompleted(ManipulationCompletedRoutedEventArgs e)
+        {
+            DispalyAnimation();
+            _direction = SwipeDirection.None;
+        }
+
+        EasingFunctionBase _easingInFunc = new ExponentialEase() { EasingMode = EasingMode.EaseIn };
+        EasingFunctionBase _easingOutFunc = new ExponentialEase() { EasingMode = EasingMode.EaseOut };
+        private void DispalyAnimation()
+        {
+            Storyboard animStory = new Storyboard();
+            animStory.Children.Add(Utils.CreateDoubleAnimation(_mainLayerTransform, "X", _easingInFunc, 0, 300));
+            animStory.Children.Add(Utils.CreateDoubleAnimation(_swipeLayerClipTransform, "X", _easingInFunc, 0, 300));
+            animStory.Begin();
         }
     }
 }
