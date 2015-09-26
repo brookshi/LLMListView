@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace LLM
 {
@@ -65,6 +66,59 @@ namespace LLM
         public static readonly DependencyProperty RefreshTextProperty =
             DependencyProperty.Register("RefreshText", typeof(string), typeof(LLMListView), new PropertyMetadata("Release to refresh"));
 
+        #region list view item property
+
+        public event SwipeProgressEventHandler ItemSwipeProgress;
+
+        public SwipeMode ItemLeftSwipeMode
+        {
+            get { return (SwipeMode)GetValue(ItemLeftSwipeModeProperty); }
+            set { SetValue(ItemLeftSwipeModeProperty, value); }
+        }
+        public static readonly DependencyProperty ItemLeftSwipeModeProperty =
+            DependencyProperty.Register("ItemLeftSwipeMode", typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.Fix));
+
+        public SwipeMode ItemRightSwipeMode
+        {
+            get { return (SwipeMode)GetValue(ItemRightSwipeModeProperty); }
+            set { SetValue(ItemRightSwipeModeProperty, value); }
+        }
+        public static readonly DependencyProperty ItemRightSwipeModeProperty =
+            DependencyProperty.Register("ItemRightSwipeMode", typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.Fix));
+
+        public int ItemBackAnimDuration
+        {
+            get { return (int)GetValue(ItemBackAnimDurationProperty); }
+            set { SetValue(ItemBackAnimDurationProperty, value); }
+        }
+        public static readonly DependencyProperty ItemBackAnimDurationProperty =
+            DependencyProperty.Register("ItemBackAnimDuration", typeof(int), typeof(LLMListViewItem), new PropertyMetadata(200));
+
+        public EasingFunctionBase ItemLeftBackAnimEasingFunction
+        {
+            get { return (EasingFunctionBase)GetValue(ItemLeftBackAnimEasingFunctionProperty); }
+            set { SetValue(ItemLeftBackAnimEasingFunctionProperty, value); }
+        }
+        public static readonly DependencyProperty ItemLeftBackAnimEasingFunctionProperty =
+            DependencyProperty.Register("ItemBackEasingFunction", typeof(EasingFunctionBase), typeof(LLMListViewItem), new PropertyMetadata(new ExponentialEase() { EasingMode = EasingMode.EaseOut }));
+
+        public EasingFunctionBase ItemRightBackAnimEasingFunction
+        {
+            get { return (EasingFunctionBase)GetValue(ItemRightBackAnimEasingFunctionProperty); }
+            set { SetValue(ItemRightBackAnimEasingFunctionProperty, value); }
+        }
+        public static readonly DependencyProperty ItemRightBackAnimEasingFunctionProperty =
+            DependencyProperty.Register("ItemBackEasingFunction", typeof(EasingFunctionBase), typeof(LLMListViewItem), new PropertyMetadata(new ExponentialEase() { EasingMode = EasingMode.EaseOut }));
+
+        public DataTemplate ItemLeftSwipeContent
+        {
+            get { return (DataTemplate)GetValue(ItemLeftSwipeContentProperty); }
+            set { SetValue(ItemLeftSwipeContentProperty, value); }
+        }
+        public static readonly DependencyProperty ItemLeftSwipeContentProperty =
+            DependencyProperty.Register("ItemLeftSwipeContent", typeof(DataTemplate), typeof(LLMListViewItem), new PropertyMetadata(null));
+        #endregion
+
 
         public LLMListView()
         {
@@ -93,7 +147,29 @@ namespace LLM
         protected override DependencyObject GetContainerForItemOverride()
         {
             LLMListViewItem item = new LLMListViewItem();
+            SetItemBinding(item, LLMListViewItem.LeftSwipeModeProperty, "ItemLeftSwipeMode");
+            SetItemBinding(item, LLMListViewItem.RightSwipeModeProperty, "ItemRightSwipeMode");
+            SetItemBinding(item, LLMListViewItem.BackAnimDurationProperty, "ItemBackAnimDuration");
+            SetItemBinding(item, LLMListViewItem.LeftBackAnimEasingFunctionProperty, "ItemLeftBackAnimEasingFunction");
+            SetItemBinding(item, LLMListViewItem.RightBackAnimEasingFunctionProperty, "ItemRightBackAnimEasingFunction");
+            SetItemBinding(item, LLMListViewItem.LeftSwipeContentProperty, "ItemLeftSwipeContent");
+
+            item.SwipeProgress += Item_SwipeProgress;
             return item;
+        }
+
+        private void Item_SwipeProgress(object sender, SwipeProgressEventArgs args)
+        {
+            if(ItemSwipeProgress != null)
+            {
+                ItemSwipeProgress(sender, args);
+            }
+        }
+
+        void SetItemBinding(LLMListViewItem item, DependencyProperty originProperty, string targetProperty)
+        {
+            var binding = new Binding() { Source = this, Path = new PropertyPath(targetProperty) };
+            BindingOperations.SetBinding(item, originProperty, binding);
         }
 
         protected override void OnApplyTemplate()

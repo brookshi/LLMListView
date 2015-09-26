@@ -1,6 +1,8 @@
 ﻿using ListViewSample.Model;
+using LLM;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -30,6 +32,15 @@ namespace Demo
             if (Contacts.Count > 0)
             {
                 MasterListView.ItemsSource = Contacts;
+            }
+        }
+
+        public void ItemSwipeProgress(object sender, SwipeProgressEventArgs args)
+        {
+            Debug.WriteLine("Direction: " + args.SwipeDirection + " , Length: " + args.CurrentOffset + " , rate: " + args.CurrentRate);
+            if(args.CurrentRate > 0.2)
+            {
+                
             }
         }
     }

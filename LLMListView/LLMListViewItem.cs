@@ -15,6 +15,7 @@ namespace LLM
 {
     public sealed class LLMListViewItem : ListViewItem
     {
+
         private SwipeDirection _direction = SwipeDirection.None;
         private TranslateTransform _mainLayerTransform;
         private TranslateTransform _swipeLayerClipTransform;
@@ -22,13 +23,17 @@ namespace LLM
         private ContentControl _rightSwipeContent;
         private ContentControl _leftSwipeContent;
         private Border _mainLayer;
+        private BackAnimationConstructor _backAnimationConstructor;
+
+        public event SwipeProgressEventHandler SwipeProgress;
+
+        #region property
 
         public SwipeMode LeftSwipeMode
         {
             get { return (SwipeMode)GetValue(LeftSwipeModeProperty); }
             set { SetValue(LeftSwipeModeProperty, value); }
         }
-
         public static readonly DependencyProperty LeftSwipeModeProperty =
             DependencyProperty.Register("LeftSwipeMode", typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.Fix));
 
@@ -37,14 +42,41 @@ namespace LLM
             get { return (SwipeMode)GetValue(RightSwipeModeProperty); }
             set { SetValue(RightSwipeModeProperty, value); }
         }
-
         public static readonly DependencyProperty RightSwipeModeProperty =
             DependencyProperty.Register("RightSwipeMode", typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.Fix));
 
-        public LLMListViewItem()
+        public int BackAnimDuration
         {
-            this.DefaultStyleKey = typeof(LLMListViewItem);
+            get { return (int)GetValue(BackAnimDurationProperty); }
+            set { SetValue(BackAnimDurationProperty, value); }
         }
+        public static readonly DependencyProperty BackAnimDurationProperty =
+            DependencyProperty.Register("BackAnimDuration", typeof(int), typeof(LLMListViewItem), new PropertyMetadata(200));
+
+        public EasingFunctionBase LeftBackAnimEasingFunction
+        {
+            get { return (EasingFunctionBase)GetValue(LeftBackAnimEasingFunctionProperty); }
+            set { SetValue(LeftBackAnimEasingFunctionProperty, value); }
+        }
+        public static readonly DependencyProperty LeftBackAnimEasingFunctionProperty =
+            DependencyProperty.Register("BackEasingFunction", typeof(EasingFunctionBase), typeof(LLMListViewItem), new PropertyMetadata(new ExponentialEase() { EasingMode = EasingMode.EaseOut }));
+
+        public EasingFunctionBase RightBackAnimEasingFunction
+        {
+            get { return (EasingFunctionBase)GetValue(RightBackAnimEasingFunctionProperty); }
+            set { SetValue(RightBackAnimEasingFunctionProperty, value); }
+        }
+        public static readonly DependencyProperty RightBackAnimEasingFunctionProperty =
+            DependencyProperty.Register("BackEasingFunction", typeof(EasingFunctionBase), typeof(LLMListViewItem), new PropertyMetadata(new ExponentialEase() { EasingMode = EasingMode.EaseOut }));
+
+        public DataTemplate LeftSwipeContent
+        {
+            get { return (DataTemplate)GetValue(LeftSwipeContentProperty); }
+            set { SetValue(LeftSwipeContentProperty, value); }
+        }
+        public static readonly DependencyProperty LeftSwipeContentProperty =
+            DependencyProperty.Register("LeftSwipeContent", typeof(DataTemplate), typeof(LLMListViewItem), new PropertyMetadata(null));
+
 
         private bool CanSwipeLeft
         {
@@ -54,6 +86,30 @@ namespace LLM
         private bool CanSwipeRight
         {
             get { return _direction == SwipeDirection.Right && RightSwipeMode != SwipeMode.None; }
+        }
+
+        #endregion
+
+
+        public LLMListViewItem()
+        {
+            this.DefaultStyleKey = typeof(LLMListViewItem);
+            this.Loaded += LLMListViewItem_Loaded;
+        }
+
+        private void LLMListViewItem_Loaded(object sender, RoutedEventArgs e)
+        {
+            _backAnimationConstructor = BackAnimationConstructor.Create(new BackAnimationConfig() {
+                Duration = BackAnimDuration,
+                LeftEasingFunc = LeftBackAnimEasingFunction,
+                RightEasingFunc = RightBackAnimEasingFunction,
+                LeftSwipeMode = LeftSwipeMode,
+                RightSwipeMode = RightSwipeMode,
+                MainTransform = _mainLayerTransform,
+                SwipeClipTransform = _swipeLayerClipTransform,
+                SwipeClipRectangle = _swipeLayerClip,
+                Callback = null
+            });
         }
 
         protected override void OnApplyTemplate()
@@ -102,29 +158,16 @@ namespace LLM
                 }
             }
 
-
+            if(SwipeProgress != null)
+            {
+                SwipeProgress(this, new SwipeProgressEventArgs(_direction, cumulativeX, cumulativeX / ActualWidth));
+            }
         }
 
         protected override void OnManipulationCompleted(ManipulationCompletedRoutedEventArgs e)
         {
-            DispalyAnimation(()=>
-            {
-                _swipeLayerClipTransform.X = 0;
-                _swipeLayerClip.Rect = new Rect(0, 0, 0, 0);
-            });
+            _backAnimationConstructor.DisplayBackAnimation(_direction);
             _direction = SwipeDirection.None;
-        }
-
-        EasingFunctionBase _easingInFunc = new ExponentialEase() { EasingMode = EasingMode.EaseIn };
-        EasingFunctionBase _easingOutFunc = new ExponentialEase() { EasingMode = EasingMode.EaseOut };
-
-        private void DispalyAnimation(Action callback)
-        {
-            Storyboard animStory = new Storyboard();
-            animStory.Children.Add(Utils.CreateDoubleAnimation(_mainLayerTransform, "X", _easingInFunc, 0, 300));
-            animStory.Children.Add(Utils.CreateDoubleAnimation(_swipeLayerClipTransform, "X", _easingInFunc, _direction == SwipeDirection.Left ? -_swipeLayerClip.Rect.Width : _swipeLayerClip.Rect.Width, 300));
-            animStory.Completed += (sender, e) => { callback(); };
-            animStory.Begin();
         }
     }
 }
