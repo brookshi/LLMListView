@@ -153,7 +153,7 @@
                                 </Grid>
                             </ContentControl>
 
-                            <ContentControl x:Name="LeftSwipeContent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                            <ContentControl x:Name="LeftSwipeContent" ContentTemplate="{TemplateBinding LeftSwipeContent}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                                 <Grid Background="Green">
                                     <TextBlock Text="fdsa" Foreground="Blue" HorizontalAlignment="Left"/>
                                 </Grid>

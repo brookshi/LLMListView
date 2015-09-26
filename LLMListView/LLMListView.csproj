@@ -113,10 +113,12 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackAnimationConstructor.cs" />
     <Compile Include="LLMListView.cs" />
     <Compile Include="LLMListViewItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enum.cs" />
+    <Compile Include="SwipeEvent.cs" />
     <Compile Include="Utils.cs" />
     <Content Include="Properties\LLMListView.rd.xml" />
   </ItemGroup>

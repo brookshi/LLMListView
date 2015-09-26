@@ -43,6 +43,13 @@
             </Grid>
         </DataTemplate>
     </Page.Resources>
-    <ctrl:LLMListView x:Name="MasterListView" ItemTemplate="{StaticResource ContactListViewTemplate }">
+    <ctrl:LLMListView x:Name="MasterListView" ItemTemplate="{StaticResource ContactListViewTemplate }" ItemSwipeProgress="ItemSwipeProgress" ItemLeftSwipeMode="Collapse">
+        <ctrl:LLMListView.ItemLeftSwipeContent>
+            <DataTemplate>
+                <Grid Background="Black" >
+                    <TextBlock x:Name="LeftSwipeText" Text="1234" Foreground="White"/>
+                </Grid>
+            </DataTemplate>
+        </ctrl:LLMListView.ItemLeftSwipeContent>
     </ctrl:LLMListView>
 </Page>
