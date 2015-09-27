@@ -27,6 +27,8 @@ namespace LLM
 
         public event SwipeProgressEventHandler SwipeProgress;
 
+        public event SwipeCompleteEventHandler SwipeComplete;
+
         #region property
 
         public SwipeMode LeftSwipeMode
@@ -69,14 +71,37 @@ namespace LLM
         public static readonly DependencyProperty RightBackAnimEasingFunctionProperty =
             DependencyProperty.Register("BackEasingFunction", typeof(EasingFunctionBase), typeof(LLMListViewItem), new PropertyMetadata(new ExponentialEase() { EasingMode = EasingMode.EaseOut }));
 
-        public DataTemplate LeftSwipeContent
+        public DataTemplate LeftSwipeContentTemplate
         {
-            get { return (DataTemplate)GetValue(LeftSwipeContentProperty); }
-            set { SetValue(LeftSwipeContentProperty, value); }
+            get { return (DataTemplate)GetValue(LeftSwipeContentTemplateProperty); }
+            set { SetValue(LeftSwipeContentTemplateProperty, value); }
         }
-        public static readonly DependencyProperty LeftSwipeContentProperty =
-            DependencyProperty.Register("LeftSwipeContent", typeof(DataTemplate), typeof(LLMListViewItem), new PropertyMetadata(null));
+        public static readonly DependencyProperty LeftSwipeContentTemplateProperty =
+            DependencyProperty.Register("LeftSwipeContentTemplate", typeof(DataTemplate), typeof(LLMListViewItem), new PropertyMetadata(null));
 
+        public DataTemplate RightSwipeContentTemplate
+        {
+            get { return (DataTemplate)GetValue(RightSwipeContentTemplateProperty); }
+            set { SetValue(RightSwipeContentTemplateProperty, value); }
+        }
+        public static readonly DependencyProperty RightSwipeContentTemplateProperty =
+            DependencyProperty.Register("RightSwipeContentTemplate", typeof(DataTemplate), typeof(LLMListViewItem), new PropertyMetadata(null));
+
+        public double SwipeLengthRate
+        {
+            get { return (double)GetValue(SwipeLengthProperty); }
+            set { SetValue(SwipeLengthProperty, value); }
+        }
+        public static readonly DependencyProperty SwipeLengthProperty =
+            DependencyProperty.Register("SwipeLength", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1));
+
+        public double ActionRateForSwipeLength
+        {   
+            get { return (double)GetValue(ActionRateForSwipeLengthProperty); }
+            set { SetValue(ActionRateForSwipeLengthProperty, value); }
+        }
+        public static readonly DependencyProperty ActionRateForSwipeLengthProperty =
+            DependencyProperty.Register("ActionRateForSwipeLength", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.5));
 
         private bool CanSwipeLeft
         {
@@ -108,7 +133,6 @@ namespace LLM
                 MainTransform = _mainLayerTransform,
                 SwipeClipTransform = _swipeLayerClipTransform,
                 SwipeClipRectangle = _swipeLayerClip,
-                Callback = null
             });
         }
 
@@ -126,10 +150,11 @@ namespace LLM
         protected override void OnManipulationDelta(ManipulationDeltaRoutedEventArgs e)
         {
             var cumulativeX = e.Cumulative.Translation.X;
+            var deltaX = e.Delta.Translation.X;
 
             if (_direction == SwipeDirection.None)
             {
-                _direction = e.Delta.Translation.X > 0 ? SwipeDirection.Left : SwipeDirection.Right;
+                _direction = deltaX > 0 ? SwipeDirection.Left : SwipeDirection.Right;
                 _leftSwipeContent.Visibility = CanSwipeLeft ? Visibility.Visible : Visibility.Collapsed;
                 _rightSwipeContent.Visibility = CanSwipeRight ? Visibility.Visible : Visibility.Collapsed;
             }
@@ -144,6 +169,11 @@ namespace LLM
                     _swipeLayerClip.Rect = new Rect(0, 0, cumulativeX, ActualHeight);
                     _mainLayerTransform.X = cumulativeX;
                 }
+
+                if (SwipeProgress != null)
+                {
+                    SwipeProgress(this, new SwipeProgressEventArgs(_direction, cumulativeX, deltaX, cumulativeX / ActualWidth));
+                }
             }
             else if(CanSwipeRight)
             {
@@ -156,18 +186,31 @@ namespace LLM
                     _swipeLayerClip.Rect = new Rect(ActualWidth + cumulativeX, 0, -cumulativeX, ActualHeight);
                     _mainLayerTransform.X = cumulativeX;
                 }
-            }
 
-            if(SwipeProgress != null)
-            {
-                SwipeProgress(this, new SwipeProgressEventArgs(_direction, cumulativeX, cumulativeX / ActualWidth));
+                if (SwipeProgress != null)
+                {
+                    SwipeProgress(this, new SwipeProgressEventArgs(_direction, cumulativeX, deltaX, cumulativeX / ActualWidth));
+                }
             }
         }
 
         protected override void OnManipulationCompleted(ManipulationCompletedRoutedEventArgs e)
         {
-            _backAnimationConstructor.DisplayBackAnimation(_direction);
+            var oldDirection = _direction;
+            _backAnimationConstructor.DisplayBackAnimation(_direction, () => {
+                if (SwipeComplete != null)
+                    SwipeComplete(this, new SwipeCompleteEventArgs(oldDirection));
+            });
             _direction = SwipeDirection.None;
+        }
+
+        public T GetSwipeControl<T>(SwipeDirection direction, string name) where T : FrameworkElement
+        {
+            if (direction == SwipeDirection.None)
+                return default(T);
+
+            var contentCtrl = _leftSwipeContent.Content as DependencyObject;
+            return Utils.FindVisualChild<T>(_leftSwipeContent, name);
         }
     }
 }

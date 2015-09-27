@@ -42,13 +42,15 @@ namespace LLM
             return constructor;
         }
 
-        public void DisplayBackAnimation(SwipeDirection direction)
+        public void DisplayBackAnimation(SwipeDirection direction, Action callback)
         {
             var swipeMode = direction == SwipeDirection.Left ? _config.LeftSwipeMode : _config.RightSwipeMode;
             switch(swipeMode)
             {
                 case SwipeMode.Collapse:
-                    CollapseDisplayBackAnimation.Instance.Display(direction, Config);
+                    CollapseDisplayBackAnimation.Instance.Display(direction, Config, callback);
+                    break;
+                case SwipeMode.None:
                     break;
                 default:
                     throw new NotSupportedException("not supported swipe mode");
@@ -58,14 +60,14 @@ namespace LLM
 
     public interface IDisplayBackAnimation
     {
-        void Display(SwipeDirection direction, BackAnimationConfig config);
+        void Display(SwipeDirection direction, BackAnimationConfig config, Action callback);
     }
 
     public class CollapseDisplayBackAnimation : IDisplayBackAnimation
     {
         public readonly static IDisplayBackAnimation Instance = new CollapseDisplayBackAnimation();
 
-        public void Display(SwipeDirection direction, BackAnimationConfig config)
+        public void Display(SwipeDirection direction, BackAnimationConfig config, Action callback)
         {
             var clipTo = direction == SwipeDirection.Left ? -config.SwipeClipRectangle.Rect.Width : config.SwipeClipRectangle.Rect.Width;
             var easingFunc = direction == SwipeDirection.Left ? config.LeftEasingFunc : config.RightEasingFunc;
@@ -78,8 +80,8 @@ namespace LLM
             {
                 config.SwipeClipTransform.X = 0;
                 config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, 0);
-                if (config.Callback != null)
-                    config.Callback();
+                if (callback != null)
+                    callback();
             };
 
             animStory.Begin();
@@ -99,8 +101,6 @@ namespace LLM
         public RectangleGeometry SwipeClipRectangle { get; set; }
 
         public int Duration { get; set; }
-
-        public Action Callback { get; set; }
 
         public SwipeMode LeftSwipeMode { get; set; }
 

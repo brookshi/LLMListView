@@ -70,6 +70,8 @@ namespace LLM
 
         public event SwipeProgressEventHandler ItemSwipeProgress;
 
+        public event SwipeCompleteEventHandler ItemSwipeComplete;
+
         public SwipeMode ItemLeftSwipeMode
         {
             get { return (SwipeMode)GetValue(ItemLeftSwipeModeProperty); }
@@ -110,13 +112,13 @@ namespace LLM
         public static readonly DependencyProperty ItemRightBackAnimEasingFunctionProperty =
             DependencyProperty.Register("ItemBackEasingFunction", typeof(EasingFunctionBase), typeof(LLMListViewItem), new PropertyMetadata(new ExponentialEase() { EasingMode = EasingMode.EaseOut }));
 
-        public DataTemplate ItemLeftSwipeContent
+        public DataTemplate ItemLeftSwipeContentTemplate
         {
-            get { return (DataTemplate)GetValue(ItemLeftSwipeContentProperty); }
-            set { SetValue(ItemLeftSwipeContentProperty, value); }
+            get { return (DataTemplate)GetValue(ItemLeftSwipeContentTemplateProperty); }
+            set { SetValue(ItemLeftSwipeContentTemplateProperty, value); }
         }
-        public static readonly DependencyProperty ItemLeftSwipeContentProperty =
-            DependencyProperty.Register("ItemLeftSwipeContent", typeof(DataTemplate), typeof(LLMListViewItem), new PropertyMetadata(null));
+        public static readonly DependencyProperty ItemLeftSwipeContentTemplateProperty =
+            DependencyProperty.Register("ItemLeftSwipeContentTemplate", typeof(DataTemplate), typeof(LLMListViewItem), new PropertyMetadata(null));
         #endregion
 
 
@@ -152,10 +154,19 @@ namespace LLM
             SetItemBinding(item, LLMListViewItem.BackAnimDurationProperty, "ItemBackAnimDuration");
             SetItemBinding(item, LLMListViewItem.LeftBackAnimEasingFunctionProperty, "ItemLeftBackAnimEasingFunction");
             SetItemBinding(item, LLMListViewItem.RightBackAnimEasingFunctionProperty, "ItemRightBackAnimEasingFunction");
-            SetItemBinding(item, LLMListViewItem.LeftSwipeContentProperty, "ItemLeftSwipeContent");
+            SetItemBinding(item, LLMListViewItem.LeftSwipeContentTemplateProperty, "ItemLeftSwipeContentTemplate");
 
             item.SwipeProgress += Item_SwipeProgress;
+            item.SwipeComplete += Item_SwipeComplete;
             return item;
+        }
+
+        private void Item_SwipeComplete(object sender, SwipeCompleteEventArgs args)
+        {
+            if (ItemSwipeComplete != null)
+            {
+                ItemSwipeComplete(sender, args);
+            }
         }
 
         private void Item_SwipeProgress(object sender, SwipeProgressEventArgs args)
@@ -166,7 +177,7 @@ namespace LLM
             }
         }
 
-        void SetItemBinding(LLMListViewItem item, DependencyProperty originProperty, string targetProperty)
+        private void SetItemBinding(LLMListViewItem item, DependencyProperty originProperty, string targetProperty)
         {
             var binding = new Binding() { Source = this, Path = new PropertyPath(targetProperty) };
             BindingOperations.SetBinding(item, originProperty, binding);
