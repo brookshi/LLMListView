@@ -169,11 +169,6 @@ namespace LLM
                     _swipeLayerClip.Rect = new Rect(0, 0, cumulativeX, ActualHeight);
                     _mainLayerTransform.X = cumulativeX;
                 }
-
-                if (SwipeProgress != null)
-                {
-                    SwipeProgress(this, new SwipeProgressEventArgs(_direction, cumulativeX, deltaX, cumulativeX / ActualWidth));
-                }
             }
             else if(CanSwipeRight)
             {
@@ -186,7 +181,10 @@ namespace LLM
                     _swipeLayerClip.Rect = new Rect(ActualWidth + cumulativeX, 0, -cumulativeX, ActualHeight);
                     _mainLayerTransform.X = cumulativeX;
                 }
+            }
 
+            if(CanSwipeLeft || CanSwipeRight)
+            {
                 if (SwipeProgress != null)
                 {
                     SwipeProgress(this, new SwipeProgressEventArgs(_direction, cumulativeX, deltaX, cumulativeX / ActualWidth));
