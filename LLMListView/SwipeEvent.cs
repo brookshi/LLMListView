@@ -24,20 +24,34 @@ using Windows.Foundation;
 namespace LLM
 {
     public delegate void SwipeProgressEventHandler(object sender, SwipeProgressEventArgs args);
+    public delegate void SwipeCompleteEventHandler(object sender, SwipeCompleteEventArgs args);
 
     public class SwipeProgressEventArgs
     {
-        public SwipeProgressEventArgs(SwipeDirection direction, double currOffset, double currRate)
+        public SwipeProgressEventArgs(SwipeDirection direction, double cumulative, double delta, double currRate)
         {
             SwipeDirection = direction;
-            CurrentOffset = currOffset;
+            Cumulative = cumulative;
             CurrentRate = currRate;
+            Delta = delta;
         }
 
         public SwipeDirection SwipeDirection { get; set; }
 
-        public double CurrentOffset { get; set; }
+        public double Cumulative { get; set; }
+
+        public double Delta { get; set; }
 
         public double CurrentRate { get; set; }
+    }
+
+    public class SwipeCompleteEventArgs
+    {
+        public SwipeCompleteEventArgs(SwipeDirection direction)
+        {
+            SwipeDirection = direction;
+        }
+
+        public SwipeDirection SwipeDirection { get; set; }
     }
 }

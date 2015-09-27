@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 
 namespace LLM
@@ -17,6 +18,23 @@ namespace LLM
             Storyboard.SetTarget(anim, target);
             Storyboard.SetTargetProperty(anim, propertyPath);
             return anim;
+        }
+
+        public static T FindVisualChild<T>(DependencyObject obj, string childName) where T : FrameworkElement
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                if (child != null && child is T && ((T)child).Name == childName)
+                    return (T)child;
+                else
+                {
+                    T childOfChild = FindVisualChild<T>(child, childName);
+                    if (childOfChild != null)
+                        return childOfChild;
+                }
+            }
+            return null;
         }
     }
 }

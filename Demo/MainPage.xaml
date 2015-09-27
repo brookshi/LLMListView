@@ -43,13 +43,19 @@
             </Grid>
         </DataTemplate>
     </Page.Resources>
-    <ctrl:LLMListView x:Name="MasterListView" ItemTemplate="{StaticResource ContactListViewTemplate }" ItemSwipeProgress="ItemSwipeProgress" ItemLeftSwipeMode="Collapse">
-        <ctrl:LLMListView.ItemLeftSwipeContent>
-            <DataTemplate>
-                <Grid Background="Black" >
-                    <TextBlock x:Name="LeftSwipeText" Text="1234" Foreground="White"/>
-                </Grid>
-            </DataTemplate>
-        </ctrl:LLMListView.ItemLeftSwipeContent>
-    </ctrl:LLMListView>
+    <Grid>
+        <ctrl:LLMListView x:Name="MasterListView" ItemTemplate="{StaticResource ContactListViewTemplate }" ItemSwipeComplete="ItemSwipeComplete"  ItemSwipeProgress="ItemSwipeProgress" ItemLeftSwipeMode="Collapse" ItemRightSwipeMode="Collapse">
+            <ctrl:LLMListView.ItemLeftSwipeContentTemplate>
+                <DataTemplate>
+                    <Grid Background="Black" >
+                        <TextBlock x:Name="LeftSwipeText" Text="1234" Foreground="White">
+                            <TextBlock.RenderTransform>
+                                <TranslateTransform x:Name="LeftSwipeTextTransform" X ="20"/>
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ctrl:LLMListView.ItemLeftSwipeContentTemplate>
+        </ctrl:LLMListView>
+    </Grid>
 </Page>
