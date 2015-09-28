@@ -105,5 +105,13 @@ namespace LLM
         public SwipeMode LeftSwipeMode { get; set; }
 
         public SwipeMode RightSwipeMode { get; set; }
+
+        public double LeftSwipeLengthRate { get; set; }
+
+        public double RightSwipeLengthRate { get; set; }
+
+        public double LeftActionRateForSwipeLength { get; set; }
+
+        public double RightActionRateForSwipeLength { get; set; }
     }
 }
