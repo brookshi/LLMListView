@@ -87,21 +87,37 @@ namespace LLM
         public static readonly DependencyProperty RightSwipeContentTemplateProperty =
             DependencyProperty.Register("RightSwipeContentTemplate", typeof(DataTemplate), typeof(LLMListViewItem), new PropertyMetadata(null));
 
-        public double SwipeLengthRate
+        public double LeftSwipeLengthRate
         {
-            get { return (double)GetValue(SwipeLengthProperty); }
-            set { SetValue(SwipeLengthProperty, value); }
+            get { return (double)GetValue(LeftSwipeLengthProperty); }
+            set { SetValue(LeftSwipeLengthProperty, value); }
         }
-        public static readonly DependencyProperty SwipeLengthProperty =
-            DependencyProperty.Register("SwipeLength", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1));
+        public static readonly DependencyProperty LeftSwipeLengthProperty =
+            DependencyProperty.Register("LeftSwipeLengthRate", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1));
 
-        public double ActionRateForSwipeLength
-        {   
-            get { return (double)GetValue(ActionRateForSwipeLengthProperty); }
-            set { SetValue(ActionRateForSwipeLengthProperty, value); }
+        public double RightSwipeLengthRate
+        {
+            get { return (double)GetValue(RightSwipeLengthProperty); }
+            set { SetValue(RightSwipeLengthProperty, value); }
         }
-        public static readonly DependencyProperty ActionRateForSwipeLengthProperty =
-            DependencyProperty.Register("ActionRateForSwipeLength", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.5));
+        public static readonly DependencyProperty RightSwipeLengthProperty =
+            DependencyProperty.Register("RightSwipeLengthRate", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1));
+
+        public double LeftActionRateForSwipeLength
+        {   
+            get { return (double)GetValue(LeftActionRateForSwipeLengthProperty); }
+            set { SetValue(LeftActionRateForSwipeLengthProperty, value); }
+        }
+        public static readonly DependencyProperty LeftActionRateForSwipeLengthProperty =
+            DependencyProperty.Register("LeftActionRateForSwipeLength", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.5));
+
+        public double RightActionRateForSwipeLength
+        {
+            get { return (double)GetValue(RightActionRateForSwipeLengthProperty); }
+            set { SetValue(RightActionRateForSwipeLengthProperty, value); }
+        }
+        public static readonly DependencyProperty RightActionRateForSwipeLengthProperty =
+            DependencyProperty.Register("RightActionRateForSwipeLength", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.5));
 
         private bool CanSwipeLeft
         {
@@ -133,6 +149,10 @@ namespace LLM
                 MainTransform = _mainLayerTransform,
                 SwipeClipTransform = _swipeLayerClipTransform,
                 SwipeClipRectangle = _swipeLayerClip,
+                LeftSwipeLengthRate = LeftSwipeLengthRate,
+                LeftActionRateForSwipeLength = LeftActionRateForSwipeLength,
+                RightSwipeLengthRate = RightSwipeLengthRate,
+                RightActionRateForSwipeLength = RightActionRateForSwipeLength
             });
         }
 
@@ -151,6 +171,7 @@ namespace LLM
         {
             var cumulativeX = e.Cumulative.Translation.X;
             var deltaX = e.Delta.Translation.X;
+            var swipeLengthRate = Math.Abs(cumulativeX) / ActualWidth;
 
             if (_direction == SwipeDirection.None)
             {
@@ -164,7 +185,7 @@ namespace LLM
                 {
                     _direction = SwipeDirection.None;
                 }
-                else
+                else if(swipeLengthRate <= LeftSwipeLengthRate)
                 { 
                     _swipeLayerClip.Rect = new Rect(0, 0, cumulativeX, ActualHeight);
                     _mainLayerTransform.X = cumulativeX;
@@ -176,7 +197,7 @@ namespace LLM
                 {
                     _direction = SwipeDirection.None;
                 }
-                else
+                else if (swipeLengthRate <= RightSwipeLengthRate)
                 {
                     _swipeLayerClip.Rect = new Rect(ActualWidth + cumulativeX, 0, -cumulativeX, ActualHeight);
                     _mainLayerTransform.X = cumulativeX;
