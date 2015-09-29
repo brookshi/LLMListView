@@ -119,6 +119,39 @@ namespace LLM
         }
         public static readonly DependencyProperty ItemLeftSwipeContentTemplateProperty =
             DependencyProperty.Register("ItemLeftSwipeContentTemplate", typeof(DataTemplate), typeof(LLMListViewItem), new PropertyMetadata(null));
+
+        public double ItemLeftSwipeLengthRate
+        {
+            get { return (double)GetValue(ItemLeftSwipeLengthProperty); }
+            set { SetValue(ItemLeftSwipeLengthProperty, value); }
+        }
+        public static readonly DependencyProperty ItemLeftSwipeLengthProperty =
+            DependencyProperty.Register("ItemLeftSwipeLengthRate", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1));
+
+        public double ItemRightSwipeLengthRate
+        {
+            get { return (double)GetValue(ItemRightSwipeLengthProperty); }
+            set { SetValue(ItemRightSwipeLengthProperty, value); }
+        }
+        public static readonly DependencyProperty ItemRightSwipeLengthProperty =
+            DependencyProperty.Register("ItemRightSwipeLengthRate", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1));
+
+        public double ItemLeftActionRateForSwipeLength
+        {
+            get { return (double)GetValue(ItemLeftActionRateForSwipeLengthProperty); }
+            set { SetValue(ItemLeftActionRateForSwipeLengthProperty, value); }
+        }
+        public static readonly DependencyProperty ItemLeftActionRateForSwipeLengthProperty =
+            DependencyProperty.Register("ItemLeftActionRateForSwipeLength", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.5));
+
+        public double ItemRightActionRateForSwipeLength
+        {
+            get { return (double)GetValue(ItemRightActionRateForSwipeLengthProperty); }
+            set { SetValue(ItemRightActionRateForSwipeLengthProperty, value); }
+        }
+        public static readonly DependencyProperty ItemRightActionRateForSwipeLengthProperty =
+            DependencyProperty.Register("ItemRightActionRateForSwipeLength", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.5));
+
         #endregion
 
 

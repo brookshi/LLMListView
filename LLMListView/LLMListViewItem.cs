@@ -23,7 +23,7 @@ namespace LLM
         private ContentControl _rightSwipeContent;
         private ContentControl _leftSwipeContent;
         private Border _mainLayer;
-        private BackAnimationConstructor _backAnimationConstructor;
+        private SwipeAnimationConstructor _swipeAnimationConstructor;
 
         public event SwipeProgressEventHandler SwipeProgress;
 
@@ -93,7 +93,7 @@ namespace LLM
             set { SetValue(LeftSwipeLengthProperty, value); }
         }
         public static readonly DependencyProperty LeftSwipeLengthProperty =
-            DependencyProperty.Register("LeftSwipeLengthRate", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1));
+            DependencyProperty.Register("LeftSwipeLengthRate", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1.0));
 
         public double RightSwipeLengthRate
         {
@@ -101,7 +101,7 @@ namespace LLM
             set { SetValue(RightSwipeLengthProperty, value); }
         }
         public static readonly DependencyProperty RightSwipeLengthProperty =
-            DependencyProperty.Register("RightSwipeLengthRate", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1));
+            DependencyProperty.Register("RightSwipeLengthRate", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1.0));
 
         public double LeftActionRateForSwipeLength
         {   
@@ -140,7 +140,7 @@ namespace LLM
 
         private void LLMListViewItem_Loaded(object sender, RoutedEventArgs e)
         {
-            _backAnimationConstructor = BackAnimationConstructor.Create(new BackAnimationConfig() {
+            _swipeAnimationConstructor = SwipeAnimationConstructor.Create(new SwipeAnimatorConfig() {
                 Duration = BackAnimDuration,
                 LeftEasingFunc = LeftBackAnimEasingFunction,
                 RightEasingFunc = RightBackAnimEasingFunction,
@@ -149,9 +149,9 @@ namespace LLM
                 MainTransform = _mainLayerTransform,
                 SwipeClipTransform = _swipeLayerClipTransform,
                 SwipeClipRectangle = _swipeLayerClip,
-                LeftSwipeLengthRate = LeftSwipeLengthRate,
+                //LeftSwipeLengthRate = LeftSwipeLengthRate,
                 LeftActionRateForSwipeLength = LeftActionRateForSwipeLength,
-                RightSwipeLengthRate = RightSwipeLengthRate,
+                //RightSwipeLengthRate = RightSwipeLengthRate,
                 RightActionRateForSwipeLength = RightActionRateForSwipeLength
             });
         }
@@ -216,7 +216,8 @@ namespace LLM
         protected override void OnManipulationCompleted(ManipulationCompletedRoutedEventArgs e)
         {
             var oldDirection = _direction;
-            _backAnimationConstructor.DisplayBackAnimation(_direction, () => {
+            var swipeRate = e.Cumulative.Translation.X / ActualWidth * (_direction == SwipeDirection.Left ? LeftSwipeLengthRate : RightSwipeLengthRate);
+            _swipeAnimationConstructor.DisplaySwipeAnimation(_direction, swipeRate, null, () => {
                 if (SwipeComplete != null)
                     SwipeComplete(this, new SwipeCompleteEventArgs(oldDirection));
             });
