@@ -113,7 +113,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BackAnimationConstructor.cs" />
+    <Compile Include="SwipeAnimationConstructor.cs" />
     <Compile Include="LLMListView.cs" />
     <Compile Include="LLMListViewItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

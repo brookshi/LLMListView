@@ -25,49 +25,73 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace LLM
 {
-    public class BackAnimationConstructor
+    public class SwipeAnimationConstructor
     {
-        private BackAnimationConfig _config = new BackAnimationConfig();
+        private SwipeAnimatorConfig _config = new SwipeAnimatorConfig();
 
-        public BackAnimationConfig Config
+        public SwipeAnimatorConfig Config
         {
             get { return _config; }
             set { _config = value; }
         }
 
-        public static BackAnimationConstructor Create(BackAnimationConfig config)
+        public static SwipeAnimationConstructor Create(SwipeAnimatorConfig config)
         {
-            BackAnimationConstructor constructor = new BackAnimationConstructor();
+            SwipeAnimationConstructor constructor = new SwipeAnimationConstructor();
             constructor.Config = config;
             return constructor;
         }
 
-        public void DisplayBackAnimation(SwipeDirection direction, Action callback)
+        public void DisplaySwipeAnimation(SwipeDirection direction, double currentSwipeRate, Action triggerCallback, Action restoreCallback)
         {
             var swipeMode = direction == SwipeDirection.Left ? _config.LeftSwipeMode : _config.RightSwipeMode;
-            switch(swipeMode)
+            var swipeAnimator = GetSwipeAnimator(swipeMode);
+            if (swipeAnimator == null)
+                return;
+
+            if(swipeAnimator.ShouldTriggerAction(direction, Config, currentSwipeRate))
+            {
+                swipeAnimator.ActionTrigger(direction, Config, triggerCallback);
+            }
+            else
+            {
+                swipeAnimator.Restore(direction, Config, restoreCallback);
+            }
+        }
+
+        public ISwipeAnimator GetSwipeAnimator(SwipeMode mode)
+        {
+            switch (mode)
             {
                 case SwipeMode.Collapse:
-                    CollapseDisplayBackAnimation.Instance.Display(direction, Config, callback);
-                    break;
+                    return CollapseSwipeAnimator.Instance;
                 case SwipeMode.None:
-                    break;
+                    return null;
                 default:
                     throw new NotSupportedException("not supported swipe mode");
             }
         }
     }
 
-    public interface IDisplayBackAnimation
+    public interface ISwipeAnimator
     {
-        void Display(SwipeDirection direction, BackAnimationConfig config, Action callback);
+        void Restore(SwipeDirection direction, SwipeAnimatorConfig config, Action restoreCallback);
+        void ActionTrigger(SwipeDirection direction, SwipeAnimatorConfig config, Action triggerCallback);
+        bool ShouldTriggerAction(SwipeDirection direction, SwipeAnimatorConfig config, double currentSwipeRate);
     }
 
-    public class CollapseDisplayBackAnimation : IDisplayBackAnimation
+    public abstract class BaseSwipeAnimator : ISwipeAnimator
     {
-        public readonly static IDisplayBackAnimation Instance = new CollapseDisplayBackAnimation();
+        public abstract void ActionTrigger(SwipeDirection direction, SwipeAnimatorConfig config, Action triggerCallback);
 
-        public void Display(SwipeDirection direction, BackAnimationConfig config, Action callback)
+        public virtual bool ShouldTriggerAction(SwipeDirection direction, SwipeAnimatorConfig config, double currentSwipeRate)
+        {
+            var swipeTrigActionRate = direction == SwipeDirection.Left ? config.LeftActionRateForSwipeLength : config.RightActionRateForSwipeLength;
+           
+            return swipeTrigActionRate <= currentSwipeRate;
+        }
+
+        public void Restore(SwipeDirection direction, SwipeAnimatorConfig config, Action restoreCallback)
         {
             var clipTo = direction == SwipeDirection.Left ? -config.SwipeClipRectangle.Rect.Width : config.SwipeClipRectangle.Rect.Width;
             var easingFunc = direction == SwipeDirection.Left ? config.LeftEasingFunc : config.RightEasingFunc;
@@ -80,15 +104,25 @@ namespace LLM
             {
                 config.SwipeClipTransform.X = 0;
                 config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, 0);
-                if (callback != null)
-                    callback();
+                if (restoreCallback != null)
+                    restoreCallback();
             };
 
             animStory.Begin();
         }
     }
 
-    public class BackAnimationConfig
+    public class CollapseSwipeAnimator : BaseSwipeAnimator
+    {
+        public readonly static ISwipeAnimator Instance = new CollapseSwipeAnimator();
+
+        public override void ActionTrigger(SwipeDirection direction, SwipeAnimatorConfig config, Action triggerCallback)
+        {
+            Restore(direction, config, triggerCallback);
+        }
+    }
+
+    public class SwipeAnimatorConfig
     {
         public EasingFunctionBase LeftEasingFunc { get; set; }
 
@@ -106,9 +140,9 @@ namespace LLM
 
         public SwipeMode RightSwipeMode { get; set; }
 
-        public double LeftSwipeLengthRate { get; set; }
+        //public double LeftSwipeLengthRate { get; set; }
 
-        public double RightSwipeLengthRate { get; set; }
+        //public double RightSwipeLengthRate { get; set; }
 
         public double LeftActionRateForSwipeLength { get; set; }
 
