@@ -27,15 +27,15 @@ namespace LLM
 {
     public class SwipeAnimationConstructor
     {
-        private SwipeAnimatorConfig _config = new SwipeAnimatorConfig();
+        private SwipeConfig _config = new SwipeConfig();
 
-        public SwipeAnimatorConfig Config
+        public SwipeConfig Config
         {
             get { return _config; }
             set { _config = value; }
         }
 
-        public static SwipeAnimationConstructor Create(SwipeAnimatorConfig config)
+        public static SwipeAnimationConstructor Create(SwipeConfig config)
         {
             SwipeAnimationConstructor constructor = new SwipeAnimationConstructor();
             constructor.Config = config;
@@ -79,21 +79,21 @@ namespace LLM
 
     public interface ISwipeAnimator
     {
-        void Restore(SwipeAnimatorConfig config, Action restoreCallback);
-        void ActionTrigger(SwipeAnimatorConfig config, Action triggerCallback);
-        bool ShouldTriggerAction(SwipeAnimatorConfig config);
+        void Restore(SwipeConfig config, Action restoreCallback);
+        void ActionTrigger(SwipeConfig config, Action triggerCallback);
+        bool ShouldTriggerAction(SwipeConfig config);
     }
 
     public abstract class BaseSwipeAnimator : ISwipeAnimator
     {
-        public abstract void ActionTrigger(SwipeAnimatorConfig config, Action triggerCallback);
+        public abstract void ActionTrigger(SwipeConfig config, Action triggerCallback);
 
-        public virtual bool ShouldTriggerAction(SwipeAnimatorConfig config)
+        public virtual bool ShouldTriggerAction(SwipeConfig config)
         {
             return config.ActionRateForSwipeLength <= config.CurrentSwipeRate;
         }
 
-        public void Restore(SwipeAnimatorConfig config, Action restoreCallback)
+        public void Restore(SwipeConfig config, Action restoreCallback)
         {
             Storyboard animStory = new Storyboard();
             animStory.Children.Add(Utils.CreateDoubleAnimation(config.MainTransform, "X", config.EasingFunc, 0, config.Duration));
@@ -116,7 +116,7 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new CollapseSwipeAnimator();
 
-        public override void ActionTrigger(SwipeAnimatorConfig config, Action triggerCallback)
+        public override void ActionTrigger(SwipeConfig config, Action triggerCallback)
         {
             Restore(config, triggerCallback);
         }
@@ -126,7 +126,7 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new FixedSwipeAnimator();
 
-        public override void ActionTrigger(SwipeAnimatorConfig config, Action triggerCallback)
+        public override void ActionTrigger(SwipeConfig config, Action triggerCallback)
         {
             var targetWidth = config.TriggerActionTargetWidth;
             var clipScaleX = targetWidth / config.CurrentSwipeWidth;
@@ -152,7 +152,7 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new ExpandSwipeAnimator();
 
-        public override void ActionTrigger(SwipeAnimatorConfig config, Action triggerCallback)
+        public override void ActionTrigger(SwipeConfig config, Action triggerCallback)
         {
             var targetX = config.Direction == SwipeDirection.Left ? -config.ItemActualWidth : config.ItemActualWidth;
             var clipScaleX = config.ItemActualWidth / config.CurrentSwipeWidth;
@@ -174,7 +174,7 @@ namespace LLM
         }
     }
 
-    public class SwipeAnimatorConfig
+    public class SwipeConfig
     {
         public EasingFunctionBase LeftEasingFunc { get; set; }
 
