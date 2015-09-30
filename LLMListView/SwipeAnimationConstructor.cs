@@ -42,22 +42,20 @@ namespace LLM
             return constructor;
         }
 
-        public void DisplaySwipeAnimation(SwipeDirection direction, Action triggerCallback, Action restoreCallback)
+        public void DisplaySwipeAnimation(Action triggerCallback, Action restoreCallback)
         {
-            var currentDirection = direction;
-            var swipeMode = direction == SwipeDirection.Left ? _config.LeftSwipeMode : _config.RightSwipeMode;
-            var swipeAnimator = GetSwipeAnimator(swipeMode);
+            var swipeAnimator = GetSwipeAnimator(_config.SwipeMode);
 
             if (swipeAnimator == null)
                 return;
 
-            if(swipeAnimator.ShouldTriggerAction(direction, Config))
+            if(swipeAnimator.ShouldTriggerAction(Config))
             {
-                swipeAnimator.ActionTrigger(direction, Config, triggerCallback);
+                swipeAnimator.ActionTrigger(Config, triggerCallback);
             }
             else
             {
-                swipeAnimator.Restore(direction, Config, restoreCallback);
+                swipeAnimator.Restore(Config, restoreCallback);
             }
         }
 
@@ -81,27 +79,25 @@ namespace LLM
 
     public interface ISwipeAnimator
     {
-        void Restore(SwipeDirection direction, SwipeAnimatorConfig config, Action restoreCallback);
-        void ActionTrigger(SwipeDirection direction, SwipeAnimatorConfig config, Action triggerCallback);
-        bool ShouldTriggerAction(SwipeDirection direction, SwipeAnimatorConfig config);
+        void Restore(SwipeAnimatorConfig config, Action restoreCallback);
+        void ActionTrigger(SwipeAnimatorConfig config, Action triggerCallback);
+        bool ShouldTriggerAction(SwipeAnimatorConfig config);
     }
 
     public abstract class BaseSwipeAnimator : ISwipeAnimator
     {
-        public abstract void ActionTrigger(SwipeDirection direction, SwipeAnimatorConfig config, Action triggerCallback);
+        public abstract void ActionTrigger(SwipeAnimatorConfig config, Action triggerCallback);
 
-        public virtual bool ShouldTriggerAction(SwipeDirection direction, SwipeAnimatorConfig config)
+        public virtual bool ShouldTriggerAction(SwipeAnimatorConfig config)
         {
-            return config.GetActionRateForSwipeLength(direction) <= config.GetCurrentSwipeRate(direction);
+            return config.ActionRateForSwipeLength <= config.CurrentSwipeRate;
         }
 
-        public void Restore(SwipeDirection direction, SwipeAnimatorConfig config, Action restoreCallback)
+        public void Restore(SwipeAnimatorConfig config, Action restoreCallback)
         {
-            var easingFunc = config.GetEasingFunc(direction);
-
             Storyboard animStory = new Storyboard();
-            animStory.Children.Add(Utils.CreateDoubleAnimation(config.MainTransform, "X", easingFunc, 0, config.Duration));
-            animStory.Children.Add(Utils.CreateDoubleAnimation(config.SwipeClipTransform, "ScaleX", easingFunc, 0, config.Duration));
+            animStory.Children.Add(Utils.CreateDoubleAnimation(config.MainTransform, "X", config.EasingFunc, 0, config.Duration));
+            animStory.Children.Add(Utils.CreateDoubleAnimation(config.SwipeClipTransform, "ScaleX", config.EasingFunc, 0, config.Duration));
 
             animStory.Completed += (sender, e) =>
             {
@@ -120,9 +116,9 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new CollapseSwipeAnimator();
 
-        public override void ActionTrigger(SwipeDirection direction, SwipeAnimatorConfig config, Action triggerCallback)
+        public override void ActionTrigger(SwipeAnimatorConfig config, Action triggerCallback)
         {
-            Restore(direction, config, triggerCallback);
+            Restore(config, triggerCallback);
         }
     }
 
@@ -130,15 +126,14 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new FixedSwipeAnimator();
 
-        public override void ActionTrigger(SwipeDirection direction, SwipeAnimatorConfig config, Action triggerCallback)
+        public override void ActionTrigger(SwipeAnimatorConfig config, Action triggerCallback)
         {
-            var targetWidth = config.GetTriggerActionTargetWidth(direction);
+            var targetWidth = config.TriggerActionTargetWidth;
             var clipScaleX = targetWidth / config.CurrentSwipeWidth;
-            var easingFunc = config.GetEasingFunc(direction);
 
             Storyboard animStory = new Storyboard();
-            animStory.Children.Add(Utils.CreateDoubleAnimation(config.MainTransform, "X", easingFunc, targetWidth, config.Duration));
-            animStory.Children.Add(Utils.CreateDoubleAnimation(config.SwipeClipTransform, "ScaleX", easingFunc, clipScaleX, config.Duration));
+            animStory.Children.Add(Utils.CreateDoubleAnimation(config.MainTransform, "X", config.EasingFunc, targetWidth, config.Duration));
+            animStory.Children.Add(Utils.CreateDoubleAnimation(config.SwipeClipTransform, "ScaleX", config.EasingFunc, clipScaleX, config.Duration));
 
             animStory.Completed += (sender, e) =>
             {
@@ -157,15 +152,14 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new ExpandSwipeAnimator();
 
-        public override void ActionTrigger(SwipeDirection direction, SwipeAnimatorConfig config, Action triggerCallback)
+        public override void ActionTrigger(SwipeAnimatorConfig config, Action triggerCallback)
         {
-            var targetX = direction == SwipeDirection.Left ? -config.ItemActualWidth : config.ItemActualWidth;
+            var targetX = config.Direction == SwipeDirection.Left ? -config.ItemActualWidth : config.ItemActualWidth;
             var clipScaleX = config.ItemActualWidth / config.CurrentSwipeWidth;
-            var easingFunc = config.GetEasingFunc(direction);
 
             Storyboard animStory = new Storyboard();
-            animStory.Children.Add(Utils.CreateDoubleAnimation(config.MainTransform, "X", easingFunc, targetX, config.Duration));
-            animStory.Children.Add(Utils.CreateDoubleAnimation(config.SwipeClipTransform, "ScaleX", easingFunc, clipScaleX, config.Duration));
+            animStory.Children.Add(Utils.CreateDoubleAnimation(config.MainTransform, "X", config.EasingFunc, targetX, config.Duration));
+            animStory.Children.Add(Utils.CreateDoubleAnimation(config.SwipeClipTransform, "ScaleX", config.EasingFunc, clipScaleX, config.Duration));
 
             animStory.Completed += (sender, e) =>
             {
@@ -198,6 +192,8 @@ namespace LLM
 
         public SwipeMode RightSwipeMode { get; set; }
 
+        public SwipeDirection Direction { get; set; }
+
         public double LeftActionRateForSwipeLength { get; set; }
 
         public double RightActionRateForSwipeLength { get; set; }
@@ -210,50 +206,25 @@ namespace LLM
 
         public double CurrentSwipeWidth { get; set; }
 
-        public double LeftRateForActualWidth
-        {
-            get
-            {
-                return LeftSwipeLengthRate * LeftActionRateForSwipeLength;
-            }
-        }
 
-        public double RightRateForActualWidth
-        {
-            get
-            {
-                return RightSwipeLengthRate * RightActionRateForSwipeLength;
-            }
-        }
+        public double LeftRateForActualWidth { get { return LeftSwipeLengthRate * LeftActionRateForSwipeLength; } }
 
-        public EasingFunctionBase GetEasingFunc(SwipeDirection direction)
-        {
-            return direction == SwipeDirection.Left ? LeftEasingFunc : RightEasingFunc;
-        }
+        public double RightRateForActualWidth { get { return RightSwipeLengthRate * RightActionRateForSwipeLength; } }
 
-        public double GetSwipeLengthRate(SwipeDirection direction)
-        {
-            return direction == SwipeDirection.Left ? LeftSwipeLengthRate : RightSwipeLengthRate;
-        }
+        public bool CanSwipeLeft { get { return Direction == SwipeDirection.Left && LeftSwipeMode != SwipeMode.None; } }
 
-        public double GetActionRateForSwipeLength(SwipeDirection direction)
-        {
-            return direction == SwipeDirection.Left ? LeftActionRateForSwipeLength : RightActionRateForSwipeLength;
-        }
+        public bool CanSwipeRight { get { return Direction == SwipeDirection.Right && RightSwipeMode != SwipeMode.None; } }
 
-        public SwipeMode GetSwipeMode(SwipeDirection direction)
-        {
-            return direction == SwipeDirection.Left ? LeftSwipeMode : RightSwipeMode;
-        }
+        public EasingFunctionBase EasingFunc { get { return Direction == SwipeDirection.Left ? LeftEasingFunc : RightEasingFunc; } }
 
-        public double GetCurrentSwipeRate(SwipeDirection direction)
-        {
-            return CurrentSwipeWidth / ItemActualWidth / GetSwipeLengthRate(direction);
-        }
+        public double SwipeLengthRate { get { return Direction == SwipeDirection.Left ? LeftSwipeLengthRate : RightSwipeLengthRate; } }
 
-        public double GetTriggerActionTargetWidth(SwipeDirection direction)
-        {
-            return ItemActualWidth * GetSwipeLengthRate(direction);
-        }
+        public double ActionRateForSwipeLength { get { return Direction == SwipeDirection.Left ? LeftActionRateForSwipeLength : RightActionRateForSwipeLength; } }
+
+        public SwipeMode SwipeMode { get { return Direction == SwipeDirection.Left ? LeftSwipeMode : RightSwipeMode; } }
+
+        public double CurrentSwipeRate { get { return CurrentSwipeWidth / ItemActualWidth / SwipeLengthRate; } }
+
+        public double TriggerActionTargetWidth { get { return ItemActualWidth * SwipeLengthRate; } }
     }
 }

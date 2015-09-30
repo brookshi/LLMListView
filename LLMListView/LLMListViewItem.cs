@@ -15,8 +15,6 @@ namespace LLM
 {
     public sealed class LLMListViewItem : ListViewItem
     {
-
-        private SwipeDirection _direction = SwipeDirection.None;
         private TranslateTransform _mainLayerTransform;
         private ScaleTransform _swipeLayerClipTransform;
         private RectangleGeometry _swipeLayerClip;
@@ -28,6 +26,8 @@ namespace LLM
         public event SwipeProgressEventHandler SwipeProgress;
         public event SwipeCompleteEventHandler SwipeComplete;
         public event SwipeTriggerEventHandler SwipeTrigger;
+
+        public SwipeAnimatorConfig Config { get { return _swipeAnimationConstructor.Config; } }
 
         #region property
 
@@ -119,16 +119,6 @@ namespace LLM
         public static readonly DependencyProperty RightActionRateForSwipeLengthProperty =
             DependencyProperty.Register("RightActionRateForSwipeLength", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.5));
 
-        private bool CanSwipeLeft
-        {
-            get { return _direction == SwipeDirection.Left && LeftSwipeMode != SwipeMode.None; }
-        }
-
-        private bool CanSwipeRight
-        {
-            get { return _direction == SwipeDirection.Right && RightSwipeMode != SwipeMode.None; }
-        }
-
         #endregion
 
 
@@ -173,17 +163,17 @@ namespace LLM
             var cumulativeX = e.Cumulative.Translation.X;
             var deltaX = e.Delta.Translation.X;
 
-            if (_direction == SwipeDirection.None)
+            if (Config.Direction == SwipeDirection.None)
             {
-                _direction = deltaX > 0 ? SwipeDirection.Left : SwipeDirection.Right;
-                _leftSwipeContent.Visibility = CanSwipeLeft ? Visibility.Visible : Visibility.Collapsed;
-                _rightSwipeContent.Visibility = CanSwipeRight ? Visibility.Visible : Visibility.Collapsed;
+                Config.Direction = deltaX > 0 ? SwipeDirection.Left : SwipeDirection.Right;
+                _leftSwipeContent.Visibility = Config.CanSwipeLeft ? Visibility.Visible : Visibility.Collapsed;
+                _rightSwipeContent.Visibility = Config.CanSwipeRight ? Visibility.Visible : Visibility.Collapsed;
             }
-            else if (CanSwipeLeft)
+            else if (Config.CanSwipeLeft)
             {
                 SwipeToLeft(cumulativeX, deltaX);
             }
-            else if(CanSwipeRight)
+            else if(Config.CanSwipeRight)
             {
                 SwipeToRight(cumulativeX, deltaX);
             }
@@ -204,7 +194,7 @@ namespace LLM
                 _mainLayerTransform.X = cumulativeX;
                 if (SwipeProgress != null)
                 {
-                    SwipeProgress(this, new SwipeProgressEventArgs(_direction, cumulativeX, deltaX, cumulativeX / ActualWidth));
+                    SwipeProgress(this, new SwipeProgressEventArgs(Config.Direction, cumulativeX, deltaX, cumulativeX / ActualWidth));
                 }
             }
         }
@@ -225,30 +215,31 @@ namespace LLM
 
                 if (SwipeProgress != null)
                 {
-                    SwipeProgress(this, new SwipeProgressEventArgs(_direction, cumulativeX, deltaX, cumulativeX / ActualWidth));
+                    SwipeProgress(this, new SwipeProgressEventArgs(Config.Direction, cumulativeX, deltaX, cumulativeX / ActualWidth));
                 }
             }
         }
 
         private void ResetSwipe()
         {
-            _direction = SwipeDirection.None;
+            Config.Direction = SwipeDirection.None;
             _swipeLayerClip.Rect = new Rect(0, 0, 0, 0);
             _mainLayerTransform.X = 0;
         }
 
         protected override void OnManipulationCompleted(ManipulationCompletedRoutedEventArgs e)
         {
-            var oldDirection = _direction;
-            var swipeRate = e.Cumulative.Translation.X / ActualWidth * (_direction == SwipeDirection.Left ? LeftSwipeLengthRate : RightSwipeLengthRate);
+            var oldDirection = Config.Direction;
+            bool isFixMode = Config.SwipeMode == SwipeMode.Fix;
+            var swipeRate = e.Cumulative.Translation.X / ActualWidth * Config.SwipeLengthRate;
             _swipeAnimationConstructor.Config.CurrentSwipeWidth = Math.Abs(_mainLayerTransform.X);
 
-            _swipeAnimationConstructor.DisplaySwipeAnimation(_direction, 
+            _swipeAnimationConstructor.DisplaySwipeAnimation( 
                 ()=> 
                 {
-                    if (_swipeAnimationConstructor.Config.GetSwipeMode(oldDirection) == SwipeMode.Fix)
+                    if (isFixMode)
                     {
-                        _direction = oldDirection;
+                        Config.Direction = oldDirection;
                     }
                     if(SwipeTrigger!= null)
                     {
@@ -264,7 +255,7 @@ namespace LLM
                 }
             );
 
-            _direction = SwipeDirection.None;
+            Config.Direction = SwipeDirection.None;
         }
 
         public T GetSwipeControl<T>(SwipeDirection direction, string name) where T : FrameworkElement
