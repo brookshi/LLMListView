@@ -143,7 +143,7 @@
                             <Grid.Clip>
                                 <RectangleGeometry x:Name="SwipeLayerClip" Rect="0,0,0,0">
                                     <RectangleGeometry.Transform>
-                                        <TranslateTransform x:Name="SwipeLayerClipTransform"/>
+                                        <ScaleTransform x:Name="SwipeLayerClipTransform"/>
                                     </RectangleGeometry.Transform>
                                 </RectangleGeometry>
                             </Grid.Clip>

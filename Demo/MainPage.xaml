@@ -44,7 +44,14 @@
         </DataTemplate>
     </Page.Resources>
     <Grid>
-        <ctrl:LLMListView x:Name="MasterListView" ItemTemplate="{StaticResource ContactListViewTemplate }" ItemSwipeComplete="ItemSwipeComplete"  ItemSwipeProgress="ItemSwipeProgress" ItemLeftSwipeMode="Collapse" ItemRightSwipeMode="Collapse">
+        <ctrl:LLMListView x:Name="MasterListView" 
+                          ItemTemplate="{StaticResource ContactListViewTemplate }" 
+                          ItemSwipeComplete="ItemSwipeComplete"  
+                          ItemSwipeProgress="ItemSwipeProgress" 
+                          ItemLeftSwipeMode="Fix" 
+                          ItemRightSwipeMode="Collapse"
+                          ItemLeftSwipeLengthRate="0.5"
+                          ItemLeftActionRateForSwipeLength="0.5">
             <ctrl:LLMListView.ItemLeftSwipeContentTemplate>
                 <DataTemplate>
                     <Grid Background="Black" >
