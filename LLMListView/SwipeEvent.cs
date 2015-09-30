@@ -25,6 +25,7 @@ namespace LLM
 {
     public delegate void SwipeProgressEventHandler(object sender, SwipeProgressEventArgs args);
     public delegate void SwipeCompleteEventHandler(object sender, SwipeCompleteEventArgs args);
+    public delegate void SwipeTriggerEventHandler(object sender, SwipeTriggerEventArgs args);
 
     public class SwipeProgressEventArgs
     {
@@ -48,6 +49,16 @@ namespace LLM
     public class SwipeCompleteEventArgs
     {
         public SwipeCompleteEventArgs(SwipeDirection direction)
+        {
+            SwipeDirection = direction;
+        }
+
+        public SwipeDirection SwipeDirection { get; set; }
+    }
+
+    public class SwipeTriggerEventArgs
+    {
+        public SwipeTriggerEventArgs(SwipeDirection direction)
         {
             SwipeDirection = direction;
         }
