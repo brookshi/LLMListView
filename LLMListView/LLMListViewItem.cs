@@ -27,7 +27,7 @@ namespace LLM
         public event SwipeCompleteEventHandler SwipeComplete;
         public event SwipeTriggerEventHandler SwipeTrigger;
 
-        public SwipeAnimatorConfig Config { get { return _swipeAnimationConstructor.Config; } }
+        public SwipeConfig Config { get { return _swipeAnimationConstructor.Config; } }
 
         #region property
 
@@ -130,7 +130,7 @@ namespace LLM
 
         private void LLMListViewItem_Loaded(object sender, RoutedEventArgs e)
         {
-            _swipeAnimationConstructor = SwipeAnimationConstructor.Create(new SwipeAnimatorConfig() {
+            _swipeAnimationConstructor = SwipeAnimationConstructor.Create(new SwipeConfig() {
                 Duration = BackAnimDuration,
                 LeftEasingFunc = LeftBackAnimEasingFunction,
                 RightEasingFunc = RightBackAnimEasingFunction,
