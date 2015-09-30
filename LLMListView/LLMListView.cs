@@ -72,6 +72,8 @@ namespace LLM
 
         public event SwipeCompleteEventHandler ItemSwipeComplete;
 
+        public event SwipeTriggerEventHandler ItemSwipeTrigger;
+
         public SwipeMode ItemLeftSwipeMode
         {
             get { return (SwipeMode)GetValue(ItemLeftSwipeModeProperty); }
@@ -195,7 +197,16 @@ namespace LLM
 
             item.SwipeProgress += Item_SwipeProgress;
             item.SwipeComplete += Item_SwipeComplete;
+            item.SwipeTrigger += Item_SwipeTrigger;
             return item;
+        }
+
+        private void Item_SwipeTrigger(object sender, SwipeTriggerEventArgs args)
+        {
+            if(ItemSwipeTrigger!=null)
+            {
+                ItemSwipeTrigger(sender, args);
+            }
         }
 
         private void Item_SwipeComplete(object sender, SwipeCompleteEventArgs args)

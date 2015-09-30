@@ -26,8 +26,8 @@ namespace LLM
         private SwipeAnimationConstructor _swipeAnimationConstructor;
 
         public event SwipeProgressEventHandler SwipeProgress;
-
         public event SwipeCompleteEventHandler SwipeComplete;
+        public event SwipeTriggerEventHandler SwipeTrigger;
 
         #region property
 
@@ -249,6 +249,10 @@ namespace LLM
                     if (_swipeAnimationConstructor.Config.GetSwipeMode(oldDirection) == SwipeMode.Fix)
                     {
                         _direction = oldDirection;
+                    }
+                    if(SwipeTrigger!= null)
+                    {
+                        SwipeTrigger(this, new SwipeTriggerEventArgs(oldDirection));
                     }
                 }, 
                 () => 
