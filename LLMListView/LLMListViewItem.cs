@@ -253,8 +253,10 @@ namespace LLM
                 }, 
                 () => 
                 {
-                if (SwipeComplete != null)
-                    SwipeComplete(this, new SwipeCompleteEventArgs(oldDirection));
+                    if (SwipeComplete != null)
+                    {
+                        SwipeComplete(this, new SwipeCompleteEventArgs(oldDirection));
+                    }
                 }
             );
 

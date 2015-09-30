@@ -69,6 +69,8 @@ namespace LLM
                     return CollapseSwipeAnimator.Instance;
                 case SwipeMode.Fix:
                     return FixedSwipeAnimator.Instance;
+                case SwipeMode.Expand:
+                    return ExpandSwipeAnimator.Instance;
                 case SwipeMode.None:
                     return null;
                 default:
@@ -142,6 +144,33 @@ namespace LLM
             {
                 config.SwipeClipTransform.ScaleX = 1;
                 config.SwipeClipRectangle.Rect = new Rect(0, 0, targetWidth, config.SwipeClipRectangle.Rect.Height);
+
+                if (triggerCallback != null)
+                    triggerCallback();
+            };
+
+            animStory.Begin();
+        }
+    }
+
+    public class ExpandSwipeAnimator : BaseSwipeAnimator
+    {
+        public readonly static ISwipeAnimator Instance = new ExpandSwipeAnimator();
+
+        public override void ActionTrigger(SwipeDirection direction, SwipeAnimatorConfig config, Action triggerCallback)
+        {
+            var targetX = direction == SwipeDirection.Left ? -config.ItemActualWidth : config.ItemActualWidth;
+            var clipScaleX = config.ItemActualWidth / config.CurrentSwipeWidth;
+            var easingFunc = config.GetEasingFunc(direction);
+
+            Storyboard animStory = new Storyboard();
+            animStory.Children.Add(Utils.CreateDoubleAnimation(config.MainTransform, "X", easingFunc, targetX, config.Duration));
+            animStory.Children.Add(Utils.CreateDoubleAnimation(config.SwipeClipTransform, "ScaleX", easingFunc, clipScaleX, config.Duration));
+
+            animStory.Completed += (sender, e) =>
+            {
+                config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, 0);
+                config.SwipeClipTransform.ScaleX = 1;
 
                 if (triggerCallback != null)
                     triggerCallback();
