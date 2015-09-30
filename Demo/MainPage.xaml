@@ -48,7 +48,7 @@
                           ItemTemplate="{StaticResource ContactListViewTemplate }" 
                           ItemSwipeComplete="ItemSwipeComplete"  
                           ItemSwipeProgress="ItemSwipeProgress" 
-                          ItemLeftSwipeMode="Fix" 
+                          ItemLeftSwipeMode="Expand" 
                           ItemRightSwipeMode="Collapse"
                           ItemLeftSwipeLengthRate="0.5"
                           ItemLeftActionRateForSwipeLength="0.5">
