@@ -25,7 +25,7 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace LLM
 {
-    public class SwipeAnimationConstructor
+    public class SwipeReleaseAnimationConstructor
     {
         private SwipeConfig _config = new SwipeConfig();
 
@@ -35,14 +35,14 @@ namespace LLM
             set { _config = value; }
         }
 
-        public static SwipeAnimationConstructor Create(SwipeConfig config)
+        public static SwipeReleaseAnimationConstructor Create(SwipeConfig config)
         {
-            SwipeAnimationConstructor constructor = new SwipeAnimationConstructor();
+            SwipeReleaseAnimationConstructor constructor = new SwipeReleaseAnimationConstructor();
             constructor.Config = config;
             return constructor;
         }
 
-        public void DisplaySwipeAnimation(Action triggerCallback, Action restoreCallback)
+        public void DisplaySwipeAnimation(Action<EasingFunctionBase, double, double, double> triggerCallback, Action restoreCallback)
         {
             var swipeAnimator = GetSwipeAnimator(_config.SwipeMode);
 
@@ -80,13 +80,13 @@ namespace LLM
     public interface ISwipeAnimator
     {
         void Restore(SwipeConfig config, Action restoreCallback);
-        void ActionTrigger(SwipeConfig config, Action triggerCallback);
+        void ActionTrigger(SwipeConfig config, Action<EasingFunctionBase, double, double, double> triggerCallback);
         bool ShouldTriggerAction(SwipeConfig config);
     }
 
     public abstract class BaseSwipeAnimator : ISwipeAnimator
     {
-        public abstract void ActionTrigger(SwipeConfig config, Action triggerCallback);
+        public abstract void ActionTrigger(SwipeConfig config, Action<EasingFunctionBase, double, double, double> triggerCallback);
 
         public virtual bool ShouldTriggerAction(SwipeConfig config)
         {
@@ -95,17 +95,26 @@ namespace LLM
 
         public void Restore(SwipeConfig config, Action restoreCallback)
         {
-            Storyboard animStory = new Storyboard();
-            animStory.Children.Add(Utils.CreateDoubleAnimation(config.MainTransform, "X", config.EasingFunc, 0, config.Duration));
-            animStory.Children.Add(Utils.CreateDoubleAnimation(config.SwipeClipTransform, "ScaleX", config.EasingFunc, 0, config.Duration));
-
-            animStory.Completed += (sender, e) =>
+            DisplayAnimation(config, 0, 0, ()=>
             {
                 config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, 0);
                 config.SwipeClipTransform.ScaleX = 1;
 
                 if (restoreCallback != null)
                     restoreCallback();
+            });
+        }
+
+        protected void DisplayAnimation(SwipeConfig config, double itemTo, double clipTo, Action complete)
+        {
+            Storyboard animStory = new Storyboard();
+            animStory.Children.Add(Utils.CreateDoubleAnimation(config.MainTransform, "X", config.EasingFunc, itemTo, config.Duration));
+            animStory.Children.Add(Utils.CreateDoubleAnimation(config.SwipeClipTransform, "ScaleX", config.EasingFunc, clipTo, config.Duration));
+
+            animStory.Completed += (sender, e) =>
+            {
+                if (complete != null)
+                    complete();
             };
 
             animStory.Begin();
@@ -116,9 +125,16 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new CollapseSwipeAnimator();
 
-        public override void ActionTrigger(SwipeConfig config, Action triggerCallback)
+        public override void ActionTrigger(SwipeConfig config, Action<EasingFunctionBase, double, double, double> triggerCallback)
         {
-            Restore(config, triggerCallback);
+            if (triggerCallback != null)
+                triggerCallback(config.EasingFunc, 0, 0, config.Duration);
+
+            DisplayAnimation(config, 0, 0, () =>
+            {
+                config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, 0);
+                config.SwipeClipTransform.ScaleX = 1;
+            });
         }
     }
 
@@ -126,25 +142,19 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new FixedSwipeAnimator();
 
-        public override void ActionTrigger(SwipeConfig config, Action triggerCallback)
+        public override void ActionTrigger(SwipeConfig config, Action<EasingFunctionBase, double, double, double> triggerCallback)
         {
             var targetWidth = config.TriggerActionTargetWidth;
             var clipScaleX = targetWidth / config.CurrentSwipeWidth;
 
-            Storyboard animStory = new Storyboard();
-            animStory.Children.Add(Utils.CreateDoubleAnimation(config.MainTransform, "X", config.EasingFunc, targetWidth, config.Duration));
-            animStory.Children.Add(Utils.CreateDoubleAnimation(config.SwipeClipTransform, "ScaleX", config.EasingFunc, clipScaleX, config.Duration));
+            if (triggerCallback != null)
+                triggerCallback(config.EasingFunc, targetWidth, clipScaleX, config.Duration);
 
-            animStory.Completed += (sender, e) =>
+            DisplayAnimation(config, targetWidth, clipScaleX, ()=>
             {
                 config.SwipeClipTransform.ScaleX = 1;
                 config.SwipeClipRectangle.Rect = new Rect(0, 0, targetWidth, config.SwipeClipRectangle.Rect.Height);
-
-                if (triggerCallback != null)
-                    triggerCallback();
-            };
-
-            animStory.Begin();
+            });
         }
     }
 
@@ -152,25 +162,19 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new ExpandSwipeAnimator();
 
-        public override void ActionTrigger(SwipeConfig config, Action triggerCallback)
+        public override void ActionTrigger(SwipeConfig config, Action<EasingFunctionBase, double, double, double> triggerCallback)
         {
             var targetX = config.Direction == SwipeDirection.Left ? -config.ItemActualWidth : config.ItemActualWidth;
             var clipScaleX = config.ItemActualWidth / config.CurrentSwipeWidth;
 
-            Storyboard animStory = new Storyboard();
-            animStory.Children.Add(Utils.CreateDoubleAnimation(config.MainTransform, "X", config.EasingFunc, targetX, config.Duration));
-            animStory.Children.Add(Utils.CreateDoubleAnimation(config.SwipeClipTransform, "ScaleX", config.EasingFunc, clipScaleX, config.Duration));
+            if (triggerCallback != null)
+                triggerCallback(config.EasingFunc, targetX, clipScaleX, config.Duration);
 
-            animStory.Completed += (sender, e) =>
+            DisplayAnimation(config, targetX, clipScaleX, ()=>
             {
                 config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, 0);
                 config.SwipeClipTransform.ScaleX = 1;
-
-                if (triggerCallback != null)
-                    triggerCallback();
-            };
-
-            animStory.Begin();
+            });
         }
     }
 }

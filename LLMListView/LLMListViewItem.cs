@@ -21,7 +21,7 @@ namespace LLM
         private ContentControl _rightSwipeContent;
         private ContentControl _leftSwipeContent;
         private Border _mainLayer;
-        private SwipeAnimationConstructor _swipeAnimationConstructor;
+        private SwipeReleaseAnimationConstructor _swipeAnimationConstructor;
 
         public event SwipeProgressEventHandler SwipeProgress;
         public event SwipeCompleteEventHandler SwipeComplete;
@@ -130,7 +130,7 @@ namespace LLM
 
         private void LLMListViewItem_Loaded(object sender, RoutedEventArgs e)
         {
-            _swipeAnimationConstructor = SwipeAnimationConstructor.Create(new SwipeConfig() {
+            _swipeAnimationConstructor = SwipeReleaseAnimationConstructor.Create(new SwipeConfig() {
                 Duration = BackAnimDuration,
                 LeftEasingFunc = LeftBackAnimEasingFunction,
                 RightEasingFunc = RightBackAnimEasingFunction,
@@ -240,7 +240,7 @@ namespace LLM
             _swipeAnimationConstructor.Config.CurrentSwipeWidth = Math.Abs(_mainLayerTransform.X);
 
             _swipeAnimationConstructor.DisplaySwipeAnimation( 
-                ()=> 
+                (easingFunc, itemToX, clipScaleX, duration)=> 
                 {
                     if (isFixMode)
                     {
@@ -248,7 +248,7 @@ namespace LLM
                     }
                     if(SwipeTrigger!= null)
                     {
-                        SwipeTrigger(this, new SwipeTriggerEventArgs(oldDirection));
+                        SwipeTrigger(this, new SwipeTriggerEventArgs(oldDirection, easingFunc, itemToX, clipScaleX, duration));
                     }
                 }, 
                 () => 

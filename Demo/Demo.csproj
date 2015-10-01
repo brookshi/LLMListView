@@ -99,6 +99,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomExpandAndCollapsePage.xaml.cs">
+      <DependentUpon>CustomExpandAndCollapsePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Model\Contact.cs" />
     <Compile Include="Model\GroupInfoList.cs" />
     <Compile Include="Model\Item.cs" />
@@ -128,6 +131,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="CustomExpandAndCollapsePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

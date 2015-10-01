@@ -51,6 +51,14 @@ namespace LLM
 
         public double CurrentSwipeWidth { get; set; }
 
+        public Timeline LeftCustomStoreAnimation { get; set; }
+
+        public Timeline LeftCustomTriggerAnimation { get; set; }
+
+        public Timeline RightCustomStoreAnimation { get; set; }
+
+        public Timeline RightCustomTriggerAnimation { get; set; }
+
 
         public double LeftRateForActualWidth { get { return LeftSwipeLengthRate * LeftActionRateForSwipeLength; } }
 
@@ -71,5 +79,9 @@ namespace LLM
         public double CurrentSwipeRate { get { return CurrentSwipeWidth / ItemActualWidth / SwipeLengthRate; } }
 
         public double TriggerActionTargetWidth { get { return ItemActualWidth * SwipeLengthRate; } }
+
+        public Timeline CustomStoreAnimation { get { return Direction == SwipeDirection.Left ? LeftCustomStoreAnimation : RightCustomStoreAnimation; } }
+
+        public Timeline CustomTriggerAnimation { get { return Direction == SwipeDirection.Left ? LeftCustomTriggerAnimation : RightCustomTriggerAnimation; } }
     }
 }
