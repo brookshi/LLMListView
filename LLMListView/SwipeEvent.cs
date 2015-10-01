@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace LLM
 {
@@ -58,11 +59,23 @@ namespace LLM
 
     public class SwipeTriggerEventArgs
     {
-        public SwipeTriggerEventArgs(SwipeDirection direction)
+        public SwipeTriggerEventArgs(SwipeDirection direction, EasingFunctionBase easingFunc, double itemToX, double clipScaleX, double duration)
         {
             SwipeDirection = direction;
+            EasingFunc = easingFunc;
+            ItemToX = itemToX;
+            ClipScaleX = clipScaleX;
+            Duration = duration;
         }
 
         public SwipeDirection SwipeDirection { get; set; }
+
+        public EasingFunctionBase EasingFunc { get; set; }
+
+        public double ItemToX { get; set; }
+
+        public double ClipScaleX { get; set; }
+
+        public double Duration { get; set; }
     }
 }

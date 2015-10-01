@@ -5,61 +5,8 @@
     xmlns:local="using:Demo"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ctrl="using:LLM"
-    xmlns:data="using:ListViewSample.Model"
     mc:Ignorable="d">
-
-    <Page.Resources>
-        <DataTemplate x:Name="ContactListViewTemplate" x:DataType="data:Contact">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Ellipse x:Name="Ellipse"
-                         Grid.RowSpan="2"
-                         Width ="32"
-                         Height="32"
-                         Margin="6"
-                         VerticalAlignment="Center"
-                         HorizontalAlignment="Center"
-                         Fill="LightGray"/>
-                <TextBlock Grid.Column="1"
-                           Text="{x:Bind Name}" 
-                           x:Phase="1"  
-                           Margin="12,6,0,0"/>
-                <TextBlock  Grid.Column="1"
-                            Grid.Row="1"
-                            Text="{x:Bind Position}" 
-                            x:Phase="2"
-                            Margin="12,0,0,6"/>
-            </Grid>
-        </DataTemplate>
-    </Page.Resources>
     <Grid>
-        <ctrl:LLMListView x:Name="MasterListView" 
-                          ItemTemplate="{StaticResource ContactListViewTemplate }" 
-                          ItemSwipeComplete="ItemSwipeComplete"  
-                          ItemSwipeProgress="ItemSwipeProgress" 
-                          ItemLeftSwipeMode="Fix" 
-                          ItemRightSwipeMode="Collapse"
-                          ItemLeftSwipeLengthRate="0.5"
-                          ItemLeftActionRateForSwipeLength="0.5">
-            <ctrl:LLMListView.ItemLeftSwipeContentTemplate>
-                <DataTemplate>
-                    <Grid Background="Black" >
-                        <TextBlock x:Name="LeftSwipeText" Text="1234" Foreground="White">
-                            <TextBlock.RenderTransform>
-                                <TranslateTransform x:Name="LeftSwipeTextTransform" X ="20"/>
-                            </TextBlock.RenderTransform>
-                        </TextBlock>
-                    </Grid>
-                </DataTemplate>
-            </ctrl:LLMListView.ItemLeftSwipeContentTemplate>
-        </ctrl:LLMListView>
+        
     </Grid>
 </Page>
