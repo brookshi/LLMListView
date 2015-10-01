@@ -10,7 +10,6 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <!-- When using x:Bind, you need to set x:DataType -->
         <DataTemplate x:Name="ContactListViewTemplate" x:DataType="data:Contact">
             <Grid>
                 <Grid.RowDefinitions>
@@ -32,13 +31,11 @@
                 <TextBlock Grid.Column="1"
                            Text="{x:Bind Name}" 
                            x:Phase="1"  
-                           Style="{ThemeResource BaseTextBlockStyle}"
                            Margin="12,6,0,0"/>
                 <TextBlock  Grid.Column="1"
                             Grid.Row="1"
                             Text="{x:Bind Position}" 
                             x:Phase="2"
-                            Style="{ThemeResource BodyTextBlockStyle}"
                             Margin="12,0,0,6"/>
             </Grid>
         </DataTemplate>
@@ -48,7 +45,7 @@
                           ItemTemplate="{StaticResource ContactListViewTemplate }" 
                           ItemSwipeComplete="ItemSwipeComplete"  
                           ItemSwipeProgress="ItemSwipeProgress" 
-                          ItemLeftSwipeMode="Expand" 
+                          ItemLeftSwipeMode="Fix" 
                           ItemRightSwipeMode="Collapse"
                           ItemLeftSwipeLengthRate="0.5"
                           ItemLeftActionRateForSwipeLength="0.5">

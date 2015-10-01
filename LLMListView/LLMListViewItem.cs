@@ -27,7 +27,7 @@ namespace LLM
         public event SwipeCompleteEventHandler SwipeComplete;
         public event SwipeTriggerEventHandler SwipeTrigger;
 
-        public SwipeConfig Config { get { return _swipeAnimationConstructor.Config; } }
+        public SwipeConfig Config { get { return _swipeAnimationConstructor == null ? null : _swipeAnimationConstructor.Config; } }
 
         #region property
 
@@ -156,6 +156,11 @@ namespace LLM
             _swipeLayerClip = (RectangleGeometry)GetTemplateChild("SwipeLayerClip");
             _rightSwipeContent = (ContentControl)GetTemplateChild("RightSwipeContent");
             _leftSwipeContent = (ContentControl)GetTemplateChild("LeftSwipeContent");
+        }
+
+        protected override void OnContentChanged(object oldContent, object newContent)
+        {
+            ResetSwipe();
         }
 
         protected override void OnManipulationDelta(ManipulationDeltaRoutedEventArgs e)

@@ -156,7 +156,6 @@ namespace LLM
 
         #endregion
 
-
         public LLMListView()
         {
             DefaultStyleKey = typeof(LLMListView);
