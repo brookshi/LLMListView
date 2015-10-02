@@ -68,11 +68,11 @@ namespace LLM
 
         #region list view item property
 
-        public event SwipeProgressEventHandler ItemSwipeProgress;
-
-        public event SwipeCompleteEventHandler ItemSwipeComplete;
-
-        public event SwipeTriggerEventHandler ItemSwipeTrigger;
+        public event SwipeProgressEventHandler ItemSwipeProgressInTouch;
+        public event SwipeCompleteEventHandler ItemSwipeStoreComplete;
+        public event SwipeReleaseEventHandler ItemSwipeBeginTrigger;
+        public event SwipeReleaseEventHandler ItemSwipeBeginRestore;
+        public event SwipeTriggerEventHandler ItemSwipeTriggerInTouch;
 
         public SwipeMode ItemLeftSwipeMode
         {
@@ -194,33 +194,51 @@ namespace LLM
             SetItemBinding(item, LLMListViewItem.RightSwipeLengthRateProperty, "ItemRightSwipeLengthRate");
             SetItemBinding(item, LLMListViewItem.RightActionRateForSwipeLengthProperty, "ItemRightActionRateForSwipeLength");
 
-            item.SwipeProgress += Item_SwipeProgress;
-            item.SwipeComplete += Item_SwipeComplete;
-            item.SwipeTrigger += Item_SwipeTrigger;
+            item.SwipeProgressInTouch += Item_SwipeProgressInTouch;
+            item.SwipeStoreComplete += Item_SwipeStoreComplete;
+            item.SwipeBeginTrigger += Item_SwipeBeginTrigger;
+            item.SwipeBeginRestore += Item_SwipeBeginRestore;
+            item.SwipeTriggerInTouch += Item_SwipeTriggerInTouch;
             return item;
         }
 
-        private void Item_SwipeTrigger(object sender, SwipeTriggerEventArgs args)
+        private void Item_SwipeTriggerInTouch(object sender, SwipeTriggerEventArgs args)
         {
-            if(ItemSwipeTrigger!=null)
+            if(ItemSwipeTriggerInTouch != null)
             {
-                ItemSwipeTrigger(sender, args);
+                ItemSwipeTriggerInTouch(sender, args);
             }
         }
 
-        private void Item_SwipeComplete(object sender, SwipeCompleteEventArgs args)
+        private void Item_SwipeBeginRestore(object sender, SwipeReleaseEventArgs args)
         {
-            if (ItemSwipeComplete != null)
+            if(ItemSwipeBeginRestore != null)
             {
-                ItemSwipeComplete(sender, args);
+                ItemSwipeBeginRestore(sender, args);
             }
         }
 
-        private void Item_SwipeProgress(object sender, SwipeProgressEventArgs args)
+        private void Item_SwipeBeginTrigger(object sender, SwipeReleaseEventArgs args)
         {
-            if(ItemSwipeProgress != null)
+            if(ItemSwipeBeginTrigger!=null)
             {
-                ItemSwipeProgress(sender, args);
+                ItemSwipeBeginTrigger(sender, args);
+            }
+        }
+
+        private void Item_SwipeStoreComplete(object sender, SwipeCompleteEventArgs args)
+        {
+            if (ItemSwipeStoreComplete != null)
+            {
+                ItemSwipeStoreComplete(sender, args);
+            }
+        }
+
+        private void Item_SwipeProgressInTouch(object sender, SwipeProgressEventArgs args)
+        {
+            if(ItemSwipeProgressInTouch != null)
+            {
+                ItemSwipeProgressInTouch(sender, args);
             }
         }
 

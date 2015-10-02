@@ -22,10 +22,13 @@ namespace LLM
         private ContentControl _leftSwipeContent;
         private Border _mainLayer;
         private SwipeReleaseAnimationConstructor _swipeAnimationConstructor;
+        private bool _isTriggerInTouch = false;
 
-        public event SwipeProgressEventHandler SwipeProgress;
-        public event SwipeCompleteEventHandler SwipeComplete;
-        public event SwipeTriggerEventHandler SwipeTrigger;
+        public event SwipeProgressEventHandler SwipeProgressInTouch;
+        public event SwipeCompleteEventHandler SwipeStoreComplete;
+        public event SwipeReleaseEventHandler SwipeBeginTrigger;
+        public event SwipeReleaseEventHandler SwipeBeginRestore;
+        public event SwipeTriggerEventHandler SwipeTriggerInTouch;
 
         public SwipeConfig Config { get { return _swipeAnimationConstructor == null ? null : _swipeAnimationConstructor.Config; } }
 
@@ -170,6 +173,7 @@ namespace LLM
 
             if (Config.Direction == SwipeDirection.None)
             {
+                ResetSwipe();
                 Config.Direction = deltaX > 0 ? SwipeDirection.Left : SwipeDirection.Right;
                 _leftSwipeContent.Visibility = Config.CanSwipeLeft ? Visibility.Visible : Visibility.Collapsed;
                 _rightSwipeContent.Visibility = Config.CanSwipeRight ? Visibility.Visible : Visibility.Collapsed;
@@ -197,10 +201,7 @@ namespace LLM
             {
                 _swipeLayerClip.Rect = new Rect(0, 0, Math.Max(0, cumulativeX), ActualHeight);
                 _mainLayerTransform.X = cumulativeX;
-                if (SwipeProgress != null)
-                {
-                    SwipeProgress(this, new SwipeProgressEventArgs(Config.Direction, cumulativeX, deltaX, cumulativeX / ActualWidth));
-                }
+                SwipeActionInTouch(cumulativeX, deltaX);
             }
         }
 
@@ -217,11 +218,23 @@ namespace LLM
             {
                 _swipeLayerClip.Rect = new Rect(ActualWidth + cumulativeX, 0, Math.Max(0, -cumulativeX), ActualHeight);
                 _mainLayerTransform.X = cumulativeX;
+                SwipeActionInTouch(cumulativeX, deltaX);
+            }
+        }
 
-                if (SwipeProgress != null)
+        private void SwipeActionInTouch(double cumulativeX, double deltaX)
+        {
+            if (!_isTriggerInTouch)
+            {
+                _isTriggerInTouch = true;
+                if(SwipeTriggerInTouch != null)
                 {
-                    SwipeProgress(this, new SwipeProgressEventArgs(Config.Direction, cumulativeX, deltaX, cumulativeX / ActualWidth));
+                    SwipeTriggerInTouch(this, new SwipeTriggerEventArgs(Config.Direction));
                 }
+            }
+            if (SwipeProgressInTouch != null)
+            {
+                SwipeProgressInTouch(this, new SwipeProgressEventArgs(Config.Direction, cumulativeX, deltaX, cumulativeX / ActualWidth));
             }
         }
 
@@ -230,6 +243,7 @@ namespace LLM
             Config.Direction = SwipeDirection.None;
             _swipeLayerClip.Rect = new Rect(0, 0, 0, 0);
             _mainLayerTransform.X = 0;
+            _isTriggerInTouch = false;
         }
 
         protected override void OnManipulationCompleted(ManipulationCompletedRoutedEventArgs e)
@@ -239,28 +253,41 @@ namespace LLM
             var swipeRate = e.Cumulative.Translation.X / ActualWidth * Config.SwipeLengthRate;
             _swipeAnimationConstructor.Config.CurrentSwipeWidth = Math.Abs(_mainLayerTransform.X);
 
-            _swipeAnimationConstructor.DisplaySwipeAnimation( 
-                (easingFunc, itemToX, clipScaleX, duration)=> 
-                {
-                    if (isFixMode)
-                    {
-                        Config.Direction = oldDirection;
-                    }
-                    if(SwipeTrigger!= null)
-                    {
-                        SwipeTrigger(this, new SwipeTriggerEventArgs(oldDirection, easingFunc, itemToX, clipScaleX, duration));
-                    }
-                }, 
-                () => 
-                {
-                    if (SwipeComplete != null)
-                    {
-                        SwipeComplete(this, new SwipeCompleteEventArgs(oldDirection));
-                    }
-                }
+            _swipeAnimationConstructor.DisplaySwipeAnimation(
+                (easingFunc, itemToX, duration) => ReleaseAnimationTrigger(oldDirection, easingFunc, itemToX, duration),
+                (easingFunc, itemToX, duration) => ReleaseAnimationRestore(oldDirection, easingFunc, itemToX, duration),
+                () => ReleaseAnimationComplete(oldDirection)
             );
 
             Config.Direction = SwipeDirection.None;
+        }
+
+        private void ReleaseAnimationTrigger(SwipeDirection direction, EasingFunctionBase easingFunc, double itemToX, double duration)
+        {
+            if (Config.SwipeMode == SwipeMode.Fix)
+            {
+                Config.Direction = direction;
+            }
+            if (SwipeBeginTrigger != null)
+            {
+                SwipeBeginTrigger(this, new SwipeReleaseEventArgs(direction, easingFunc, itemToX, duration));
+            }
+        }
+
+        private void ReleaseAnimationRestore(SwipeDirection direction, EasingFunctionBase easingFunc, double itemToX, double duration)
+        {
+            if (SwipeBeginRestore != null)
+            {
+                SwipeBeginRestore(this, new SwipeReleaseEventArgs(direction, easingFunc, itemToX, duration));
+            }
+        }
+
+        private void ReleaseAnimationComplete(SwipeDirection direction)
+        {
+            if (SwipeStoreComplete != null)
+            {
+                SwipeStoreComplete(this, new SwipeCompleteEventArgs(direction));
+            }
         }
 
         public T GetSwipeControl<T>(SwipeDirection direction, string name) where T : FrameworkElement
