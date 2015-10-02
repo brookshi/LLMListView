@@ -25,6 +25,8 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace LLM
 {
+    public delegate void AnimationCallback(EasingFunctionBase easingFunc, double itemToX, double duration);
+
     public class SwipeReleaseAnimationConstructor
     {
         private SwipeConfig _config = new SwipeConfig();
@@ -42,7 +44,7 @@ namespace LLM
             return constructor;
         }
 
-        public void DisplaySwipeAnimation(Action<EasingFunctionBase, double, double, double> triggerCallback, Action restoreCallback)
+        public void DisplaySwipeAnimation(AnimationCallback beginTriggerCallback, AnimationCallback beginRestoreCallback, Action restoreCompleteCallback)
         {
             var swipeAnimator = GetSwipeAnimator(_config.SwipeMode);
 
@@ -51,11 +53,11 @@ namespace LLM
 
             if(swipeAnimator.ShouldTriggerAction(Config))
             {
-                swipeAnimator.ActionTrigger(Config, triggerCallback);
+                swipeAnimator.ActionTrigger(Config, beginTriggerCallback);
             }
             else
             {
-                swipeAnimator.Restore(Config, restoreCallback);
+                swipeAnimator.Restore(Config, beginRestoreCallback, restoreCompleteCallback);
             }
         }
 
@@ -79,29 +81,32 @@ namespace LLM
 
     public interface ISwipeAnimator
     {
-        void Restore(SwipeConfig config, Action restoreCallback);
-        void ActionTrigger(SwipeConfig config, Action<EasingFunctionBase, double, double, double> triggerCallback);
+        void Restore(SwipeConfig config, AnimationCallback beginRestoreCallback, Action restoreCompleteCallback);
+        void ActionTrigger(SwipeConfig config, AnimationCallback beginTriggerCallback);
         bool ShouldTriggerAction(SwipeConfig config);
     }
 
     public abstract class BaseSwipeAnimator : ISwipeAnimator
     {
-        public abstract void ActionTrigger(SwipeConfig config, Action<EasingFunctionBase, double, double, double> triggerCallback);
+        public abstract void ActionTrigger(SwipeConfig config, AnimationCallback beginTriggerCallback);
 
         public virtual bool ShouldTriggerAction(SwipeConfig config)
         {
             return config.ActionRateForSwipeLength <= config.CurrentSwipeRate;
         }
 
-        public void Restore(SwipeConfig config, Action restoreCallback)
+        public void Restore(SwipeConfig config, AnimationCallback beginRestoreCallback, Action restoreCompleteCallback)
         {
+            if (beginRestoreCallback != null)
+                beginRestoreCallback(config.EasingFunc, 0, config.Duration);
+
             DisplayAnimation(config, 0, 0, ()=>
             {
                 config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, 0);
                 config.SwipeClipTransform.ScaleX = 1;
 
-                if (restoreCallback != null)
-                    restoreCallback();
+                if (restoreCompleteCallback != null)
+                    restoreCompleteCallback();
             });
         }
 
@@ -125,10 +130,10 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new CollapseSwipeAnimator();
 
-        public override void ActionTrigger(SwipeConfig config, Action<EasingFunctionBase, double, double, double> triggerCallback)
+        public override void ActionTrigger(SwipeConfig config, AnimationCallback beginTriggerCallback)
         {
-            if (triggerCallback != null)
-                triggerCallback(config.EasingFunc, 0, 0, config.Duration);
+            if (beginTriggerCallback != null)
+                beginTriggerCallback(config.EasingFunc, 0, config.Duration);
 
             DisplayAnimation(config, 0, 0, () =>
             {
@@ -142,13 +147,13 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new FixedSwipeAnimator();
 
-        public override void ActionTrigger(SwipeConfig config, Action<EasingFunctionBase, double, double, double> triggerCallback)
+        public override void ActionTrigger(SwipeConfig config, AnimationCallback beginTriggerCallback)
         {
             var targetWidth = config.TriggerActionTargetWidth;
             var clipScaleX = targetWidth / config.CurrentSwipeWidth;
 
-            if (triggerCallback != null)
-                triggerCallback(config.EasingFunc, targetWidth, clipScaleX, config.Duration);
+            if (beginTriggerCallback != null)
+                beginTriggerCallback(config.EasingFunc, targetWidth, config.Duration);
 
             DisplayAnimation(config, targetWidth, clipScaleX, ()=>
             {
@@ -162,13 +167,13 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new ExpandSwipeAnimator();
 
-        public override void ActionTrigger(SwipeConfig config, Action<EasingFunctionBase, double, double, double> triggerCallback)
+        public override void ActionTrigger(SwipeConfig config, AnimationCallback beginTriggerCallback)
         {
             var targetX = config.Direction == SwipeDirection.Left ? -config.ItemActualWidth : config.ItemActualWidth;
             var clipScaleX = config.ItemActualWidth / config.CurrentSwipeWidth;
 
-            if (triggerCallback != null)
-                triggerCallback(config.EasingFunc, targetX, clipScaleX, config.Duration);
+            if (beginTriggerCallback != null)
+                beginTriggerCallback(config.EasingFunc, targetX, config.Duration);
 
             DisplayAnimation(config, targetX, clipScaleX, ()=>
             {

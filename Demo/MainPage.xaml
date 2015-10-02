@@ -7,6 +7,18 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid>
-        
+        <SplitView DisplayMode="Overlay">
+            <SplitView.Pane>
+                <StackPanel Margin="12">
+                    <Button Style="{StaticResource HomeButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Content="Normal Expand And Collapse List" 
+                            Click="NavigateToHome" />
+                    
+                </StackPanel>
+            </SplitView.Pane>
+            
+        </SplitView>
     </Grid>
 </Page>

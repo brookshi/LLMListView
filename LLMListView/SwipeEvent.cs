@@ -26,6 +26,7 @@ namespace LLM
 {
     public delegate void SwipeProgressEventHandler(object sender, SwipeProgressEventArgs args);
     public delegate void SwipeCompleteEventHandler(object sender, SwipeCompleteEventArgs args);
+    public delegate void SwipeReleaseEventHandler(object sender, SwipeReleaseEventArgs args);
     public delegate void SwipeTriggerEventHandler(object sender, SwipeTriggerEventArgs args);
 
     public class SwipeProgressEventArgs
@@ -57,14 +58,13 @@ namespace LLM
         public SwipeDirection SwipeDirection { get; set; }
     }
 
-    public class SwipeTriggerEventArgs
+    public class SwipeReleaseEventArgs
     {
-        public SwipeTriggerEventArgs(SwipeDirection direction, EasingFunctionBase easingFunc, double itemToX, double clipScaleX, double duration)
+        public SwipeReleaseEventArgs(SwipeDirection direction, EasingFunctionBase easingFunc, double itemToX, double duration)
         {
             SwipeDirection = direction;
             EasingFunc = easingFunc;
             ItemToX = itemToX;
-            ClipScaleX = clipScaleX;
             Duration = duration;
         }
 
@@ -74,8 +74,16 @@ namespace LLM
 
         public double ItemToX { get; set; }
 
-        public double ClipScaleX { get; set; }
-
         public double Duration { get; set; }
+    }
+
+    public class SwipeTriggerEventArgs
+    {
+        public SwipeTriggerEventArgs(SwipeDirection direction)
+        {
+            SwipeDirection = direction;
+        }
+
+        public SwipeDirection SwipeDirection { get; set; }
     }
 }
