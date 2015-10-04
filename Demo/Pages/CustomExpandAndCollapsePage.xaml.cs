@@ -5,7 +5,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
-namespace Demo
+namespace Demo.Pages
 {
     public sealed partial class CustomExpandAndCollapsePage : Page
     {

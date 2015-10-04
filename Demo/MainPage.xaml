@@ -7,18 +7,30 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid>
-        <SplitView DisplayMode="Overlay">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button Style="{StaticResource SplitViewTogglePaneButtonStyle}"
+                VerticalAlignment="Center"
+                Click="ShowSliptView"/>
+        <SplitView x:Name="SplitView" DisplayMode="Overlay" Grid.Row="1">
             <SplitView.Pane>
                 <StackPanel Margin="12">
                     <Button Style="{StaticResource HomeButtonStyle}" 
                             HorizontalAlignment="Stretch" 
                             HorizontalContentAlignment="Left" 
-                            Content="Normal Expand And Collapse List" 
+                            Content="Home" 
                             Click="NavigateToHome" />
-                    
+                    <Button Style="{StaticResource HomeButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Content="Normal Expand And Collapse List" 
+                            Click="NavigateToNormalExpandAndCollapse" />
+
                 </StackPanel>
             </SplitView.Pane>
-            
+            <Frame x:Name="FrameContent"/>
         </SplitView>
     </Grid>
 </Page>

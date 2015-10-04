@@ -1,4 +1,5 @@
-﻿using ListViewSample.Model;
+﻿using Demo.Pages;
+using ListViewSample.Model;
 using LLM;
 using System;
 using System.Collections.Generic;
@@ -18,19 +19,37 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
-//“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
-
 namespace Demo
 {
-    /// <summary>
-    /// 可用于自身或导航至 Frame 内部的空白页。
-    /// </summary>
     public sealed partial class MainPage : Page
     {
         public MainPage()
         {
             this.InitializeComponent();
+            Loaded += MainPage_Loaded;
         }
 
+        private void ShowSliptView(object sender, RoutedEventArgs e)
+        {
+            SplitView.IsPaneOpen = !SplitView.IsPaneOpen;
+        }
+
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            FrameContent.Navigate(typeof(HomePage));
+        }
+
+        private void NavigateToHome(object sender, RoutedEventArgs e)
+        {
+            FrameContent.Navigate(typeof(HomePage));
+            SplitView.IsPaneOpen = false;
+        }
+
+        private void NavigateToNormalExpandAndCollapse(object sender, RoutedEventArgs e)
+        {
+            FrameContent.Navigate(typeof(NormalExpandAndCollapsePage));
+            SplitView.IsPaneOpen = false;
+        }
+        
     }
 }
