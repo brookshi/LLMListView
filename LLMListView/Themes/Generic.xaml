@@ -147,15 +147,8 @@
                                     </RectangleGeometry.Transform>
                                 </RectangleGeometry>
                             </Grid.Clip>
-                            <ContentControl x:Name="RightSwipeContent" ContentTemplate="{TemplateBinding RightSwipeContentTemplate}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                <Grid Background="Yellow">
-                                    <TextBlock Text="asdf" Foreground="Red" HorizontalAlignment="Right"/>
-                                </Grid>
-                            </ContentControl>
-
-                            <ContentControl x:Name="LeftSwipeContent" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding LeftSwipeContentTemplate}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                               
-                            </ContentControl>
+                            <ContentControl x:Name="RightSwipeContent" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding RightSwipeContentTemplate}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+                            <ContentControl x:Name="LeftSwipeContent" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding LeftSwipeContentTemplate}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
                         </Grid>
                         <Border x:Name="MainLayer" Background="Transparent" ManipulationMode="TranslateX,System">
                             <Border.RenderTransform>

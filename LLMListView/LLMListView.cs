@@ -122,6 +122,14 @@ namespace LLM
         public static readonly DependencyProperty ItemLeftSwipeContentTemplateProperty =
             DependencyProperty.Register("ItemLeftSwipeContentTemplate", typeof(DataTemplate), typeof(LLMListView), new PropertyMetadata(null));
 
+        public DataTemplate ItemRightSwipeContentTemplate
+        {
+            get { return (DataTemplate)GetValue(ItemRightSwipeContentTemplateProperty); }
+            set { SetValue(ItemRightSwipeContentTemplateProperty, value); }
+        }
+        public static readonly DependencyProperty ItemRightSwipeContentTemplateProperty =
+            DependencyProperty.Register("ItemRightSwipeContentTemplate", typeof(DataTemplate), typeof(LLMListView), new PropertyMetadata(null));
+
         public double ItemLeftSwipeLengthRate
         {
             get { return (double)GetValue(ItemLeftSwipeLengthRateProperty); }
@@ -189,6 +197,7 @@ namespace LLM
             SetItemBinding(item, LLMListViewItem.LeftBackAnimEasingFunctionProperty, "ItemLeftBackAnimEasingFunction");
             SetItemBinding(item, LLMListViewItem.RightBackAnimEasingFunctionProperty, "ItemRightBackAnimEasingFunction");
             SetItemBinding(item, LLMListViewItem.LeftSwipeContentTemplateProperty, "ItemLeftSwipeContentTemplate");
+            SetItemBinding(item, LLMListViewItem.RightSwipeContentTemplateProperty, "ItemRightSwipeContentTemplate");
             SetItemBinding(item, LLMListViewItem.LeftSwipeLengthRateProperty, "ItemLeftSwipeLengthRate");
             SetItemBinding(item, LLMListViewItem.LeftActionRateForSwipeLengthProperty, "ItemLeftActionRateForSwipeLength");
             SetItemBinding(item, LLMListViewItem.RightSwipeLengthRateProperty, "ItemRightSwipeLengthRate");

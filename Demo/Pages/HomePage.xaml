@@ -1,0 +1,23 @@
+﻿<Page
+    x:Class="Demo.Pages.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Demo.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <RichTextBlock FontSize="14" Padding="32" >
+            <Paragraph FontSize="18" FontWeight="Bold">
+                LLMListView -- A powerful list view
+            </Paragraph>
+            <Paragraph>
+                <LineBreak/>1. Swipe
+            </Paragraph>
+            <Paragraph>
+                <LineBreak/>2. Pull to refresh
+            </Paragraph>
+        </RichTextBlock>
+    </Grid>
+</Page>

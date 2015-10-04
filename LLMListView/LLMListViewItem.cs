@@ -240,6 +240,9 @@ namespace LLM
 
         private void ResetSwipe()
         {
+            if (Config == null)
+                return;
+
             Config.Direction = SwipeDirection.None;
             _swipeLayerClip.Rect = new Rect(0, 0, 0, 0);
             _mainLayerTransform.X = 0;
