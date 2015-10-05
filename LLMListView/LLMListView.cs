@@ -75,46 +75,6 @@ namespace LLM
         public event SwipeReleaseEventHandler ItemSwipeBeginRestore;
         public event SwipeTriggerEventHandler ItemSwipeTriggerInTouch;
 
-        public SwipeMode ItemLeftSwipeMode
-        {
-            get { return (SwipeMode)GetValue(ItemLeftSwipeModeProperty); }
-            set { SetValue(ItemLeftSwipeModeProperty, value); }
-        }
-        public static readonly DependencyProperty ItemLeftSwipeModeProperty =
-            DependencyProperty.Register("ItemLeftSwipeMode", typeof(SwipeMode), typeof(LLMListView), new PropertyMetadata(SwipeMode.Fix));
-
-        public SwipeMode ItemRightSwipeMode
-        {
-            get { return (SwipeMode)GetValue(ItemRightSwipeModeProperty); }
-            set { SetValue(ItemRightSwipeModeProperty, value); }
-        }
-        public static readonly DependencyProperty ItemRightSwipeModeProperty =
-            DependencyProperty.Register("ItemRightSwipeMode", typeof(SwipeMode), typeof(LLMListView), new PropertyMetadata(SwipeMode.Fix));
-
-        public int ItemBackAnimDuration
-        {
-            get { return (int)GetValue(ItemBackAnimDurationProperty); }
-            set { SetValue(ItemBackAnimDurationProperty, value); }
-        }
-        public static readonly DependencyProperty ItemBackAnimDurationProperty =
-            DependencyProperty.Register("ItemBackAnimDuration", typeof(int), typeof(LLMListView), new PropertyMetadata(200));
-
-        public EasingFunctionBase ItemLeftBackAnimEasingFunction
-        {
-            get { return (EasingFunctionBase)GetValue(ItemLeftBackAnimEasingFunctionProperty); }
-            set { SetValue(ItemLeftBackAnimEasingFunctionProperty, value); }
-        }
-        public static readonly DependencyProperty ItemLeftBackAnimEasingFunctionProperty =
-            DependencyProperty.Register("ItemBackEasingFunction", typeof(EasingFunctionBase), typeof(LLMListView), new PropertyMetadata(new ExponentialEase() { EasingMode = EasingMode.EaseOut }));
-
-        public EasingFunctionBase ItemRightBackAnimEasingFunction
-        {
-            get { return (EasingFunctionBase)GetValue(ItemRightBackAnimEasingFunctionProperty); }
-            set { SetValue(ItemRightBackAnimEasingFunctionProperty, value); }
-        }
-        public static readonly DependencyProperty ItemRightBackAnimEasingFunctionProperty =
-            DependencyProperty.Register("ItemBackEasingFunction", typeof(EasingFunctionBase), typeof(LLMListView), new PropertyMetadata(new ExponentialEase() { EasingMode = EasingMode.EaseOut }));
-
         public DataTemplate ItemLeftSwipeContentTemplate
         {
             get { return (DataTemplate)GetValue(ItemLeftSwipeContentTemplateProperty); }
@@ -131,6 +91,31 @@ namespace LLM
         public static readonly DependencyProperty ItemRightSwipeContentTemplateProperty =
             DependencyProperty.Register("ItemRightSwipeContentTemplate", typeof(DataTemplate), typeof(LLMListView), new PropertyMetadata(null));
 
+        public int ItemBackAnimDuration
+        {
+            get { return (int)GetValue(ItemBackAnimDurationProperty); }
+            set { SetValue(ItemBackAnimDurationProperty, value); }
+        }
+        public static readonly DependencyProperty ItemBackAnimDurationProperty =
+            DependencyProperty.Register("ItemBackAnimDuration", typeof(int), typeof(LLMListView), new PropertyMetadata(200));
+
+
+        public SwipeMode ItemLeftSwipeMode
+        {
+            get { return (SwipeMode)GetValue(ItemLeftSwipeModeProperty); }
+            set { SetValue(ItemLeftSwipeModeProperty, value); }
+        }
+        public static readonly DependencyProperty ItemLeftSwipeModeProperty =
+            DependencyProperty.Register("ItemLeftSwipeMode", typeof(SwipeMode), typeof(LLMListView), new PropertyMetadata(SwipeMode.Fix));
+
+        public EasingFunctionBase ItemLeftBackAnimEasingFunction
+        {
+            get { return (EasingFunctionBase)GetValue(ItemLeftBackAnimEasingFunctionProperty); }
+            set { SetValue(ItemLeftBackAnimEasingFunctionProperty, value); }
+        }
+        public static readonly DependencyProperty ItemLeftBackAnimEasingFunctionProperty =
+            DependencyProperty.Register("ItemLeftBackAnimEasingFunction", typeof(EasingFunctionBase), typeof(LLMListView), new PropertyMetadata(new ExponentialEase() { EasingMode = EasingMode.EaseOut }));
+
         public double ItemLeftSwipeLengthRate
         {
             get { return (double)GetValue(ItemLeftSwipeLengthRateProperty); }
@@ -138,6 +123,39 @@ namespace LLM
         }
         public static readonly DependencyProperty ItemLeftSwipeLengthRateProperty =
             DependencyProperty.Register("ItemLeftSwipeLengthRate", typeof(double), typeof(LLMListView), new PropertyMetadata(1.0));
+
+        public double ItemLeftSwipeMaxLength
+        {
+            get { return (double)GetValue(ItemLeftSwipeMaxLengthProperty); }
+            set { SetValue(ItemLeftSwipeMaxLengthProperty, value); }
+        }
+        public static readonly DependencyProperty ItemLeftSwipeMaxLengthProperty =
+            DependencyProperty.Register("ItemLeftSwipeMaxLength", typeof(double), typeof(LLMListView), new PropertyMetadata(0.0));
+
+        public double ItemLeftActionRateForSwipeLength
+        {
+            get { return (double)GetValue(ItemLeftActionRateForSwipeLengthProperty); }
+            set { SetValue(ItemLeftActionRateForSwipeLengthProperty, value); }
+        }
+        public static readonly DependencyProperty ItemLeftActionRateForSwipeLengthProperty =
+            DependencyProperty.Register("ItemLeftActionRateForSwipeLength", typeof(double), typeof(LLMListView), new PropertyMetadata(0.5));
+
+
+        public SwipeMode ItemRightSwipeMode
+        {
+            get { return (SwipeMode)GetValue(ItemRightSwipeModeProperty); }
+            set { SetValue(ItemRightSwipeModeProperty, value); }
+        }
+        public static readonly DependencyProperty ItemRightSwipeModeProperty =
+            DependencyProperty.Register("ItemRightSwipeMode", typeof(SwipeMode), typeof(LLMListView), new PropertyMetadata(SwipeMode.Fix));
+
+        public EasingFunctionBase ItemRightBackAnimEasingFunction
+        {
+            get { return (EasingFunctionBase)GetValue(ItemRightBackAnimEasingFunctionProperty); }
+            set { SetValue(ItemRightBackAnimEasingFunctionProperty, value); }
+        }
+        public static readonly DependencyProperty ItemRightBackAnimEasingFunctionProperty =
+            DependencyProperty.Register("ItemBackEasingFunction", typeof(EasingFunctionBase), typeof(LLMListView), new PropertyMetadata(new ExponentialEase() { EasingMode = EasingMode.EaseOut }));
 
         public double ItemRightSwipeLengthRate
         {
@@ -147,13 +165,13 @@ namespace LLM
         public static readonly DependencyProperty ItemRightSwipeLengthRateProperty =
             DependencyProperty.Register("ItemRightSwipeLengthRate", typeof(double), typeof(LLMListView), new PropertyMetadata(1.0));
 
-        public double ItemLeftActionRateForSwipeLength
+        public double ItemRightSwipeMaxLength
         {
-            get { return (double)GetValue(ItemLeftActionRateForSwipeLengthProperty); }
-            set { SetValue(ItemLeftActionRateForSwipeLengthProperty, value); }
+            get { return (double)GetValue(ItemRightSwipeMaxLengthProperty); }
+            set { SetValue(ItemRightSwipeMaxLengthProperty, value); }
         }
-        public static readonly DependencyProperty ItemLeftActionRateForSwipeLengthProperty =
-            DependencyProperty.Register("ItemLeftActionRateForSwipeLength", typeof(double), typeof(LLMListView), new PropertyMetadata(0.5));
+        public static readonly DependencyProperty ItemRightSwipeMaxLengthProperty =
+            DependencyProperty.Register("ItemRightSwipeMaxLength", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.0));
 
         public double ItemRightActionRateForSwipeLength
         {
@@ -203,6 +221,8 @@ namespace LLM
             SetItemBinding(item, LLMListViewItem.LeftActionRateForSwipeLengthProperty, "ItemLeftActionRateForSwipeLength");
             SetItemBinding(item, LLMListViewItem.RightSwipeLengthRateProperty, "ItemRightSwipeLengthRate");
             SetItemBinding(item, LLMListViewItem.RightActionRateForSwipeLengthProperty, "ItemRightActionRateForSwipeLength");
+            SetItemBinding(item, LLMListViewItem.LeftSwipeMaxLengthProperty, "ItemLeftSwipeMaxLength");
+            SetItemBinding(item, LLMListViewItem.RightSwipeMaxLengthProperty, "ItemRightSwipeMaxLength");
 
             item.SwipeProgressInTouch += Item_SwipeProgressInTouch;
             item.SwipeRestoreComplete += Item_SwipeStoreComplete;

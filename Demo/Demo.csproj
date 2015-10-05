@@ -100,8 +100,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BoolToBrushConverter.cs" />
-    <Compile Include="Pages\CustomExpandAndCollapsePage1.xaml.cs">
-      <DependentUpon>CustomExpandAndCollapsePage1.xaml</DependentUpon>
+    <Compile Include="Pages\AnimationExpandAndCollapsePage.xaml.cs">
+      <DependentUpon>AnimationExpandAndCollapsePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Contact.cs" />
     <Compile Include="Model\GroupInfoList.cs" />
@@ -114,6 +114,9 @@
     </Compile>
     <Compile Include="Pages\NormalExpandAndCollapsePage.xaml.cs">
       <DependentUpon>NormalExpandAndCollapsePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\NormalFixPage.xaml.cs">
+      <DependentUpon>NormalFixPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -138,7 +141,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Pages\CustomExpandAndCollapsePage1.xaml">
+    <Page Include="Pages\AnimationExpandAndCollapsePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -151,6 +154,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\NormalExpandAndCollapsePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\NormalFixPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

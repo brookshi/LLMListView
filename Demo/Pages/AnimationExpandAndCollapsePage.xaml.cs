@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Demo.Pages
 {
-    public sealed partial class CustomExpandAndCollapsePage1 : Page
+    public sealed partial class AnimationExpandAndCollapsePage : Page
     {
         ObservableCollection<Contact> _contacts = new ObservableCollection<Contact>();
 
@@ -23,7 +23,7 @@ namespace Demo.Pages
 
         Dictionary<Contact, bool> ContackStarDict = new Dictionary<Contact, bool>();
 
-        public CustomExpandAndCollapsePage1()
+        public AnimationExpandAndCollapsePage()
         {
             this.InitializeComponent();
             Contacts = Contact.GetContacts(140);
@@ -62,17 +62,8 @@ namespace Demo.Pages
             if (args.SwipeDirection == SwipeDirection.None)
                 return;
 
-            StackPanel panel;
-            if (args.SwipeDirection == SwipeDirection.Right)
-            {
-                panel = (sender as LLMListViewItem).GetSwipeControl<StackPanel>(args.SwipeDirection, "RightPanel");
-            }
-            else
-            {
-                panel = (sender as LLMListViewItem).GetSwipeControl<StackPanel>(args.SwipeDirection, "LeftPanel");
-            }
-
-            MovePanel(panel, args);
+            var panel = Getpanel(sender, args.SwipeDirection);
+            SwipeMovePanel(panel, args);
         }
 
         private void ItemSwipeBeginTrigger(object sender, SwipeReleaseEventArgs args)
@@ -80,25 +71,37 @@ namespace Demo.Pages
             if (args.SwipeDirection == SwipeDirection.None)
                 return;
 
-            var llmItem = sender as LLMListViewItem;
-            var story = new Storyboard();
-            StackPanel panel;
+            var panel = Getpanel(sender, args.SwipeDirection);
+            SwipeReleasePanel(panel, args);
+        }
 
-            if (args.SwipeDirection == SwipeDirection.Right)
+        private void ItemSwipeBeginRestore(object sender, SwipeReleaseEventArgs args)
+        {
+            if (args.SwipeDirection == SwipeDirection.None)
+                return;
+
+            var panel = Getpanel(sender, args.SwipeDirection);
+            SwipeReleasePanel(panel, args);
+        }
+
+        StackPanel Getpanel(object sender, SwipeDirection direction)
+        {
+            var llmItem = sender as LLMListViewItem;
+            StackPanel panel = null;
+
+            if (direction == SwipeDirection.Right)
             {
-                panel = llmItem.GetSwipeControl<StackPanel>(args.SwipeDirection, "RightPanel");
+                panel = llmItem.GetSwipeControl<StackPanel>(direction, "RightPanel");
             }
             else
             {
-                panel = llmItem.GetSwipeControl<StackPanel>(args.SwipeDirection, "LeftPanel");
+                panel = llmItem.GetSwipeControl<StackPanel>(direction, "LeftPanel");
             }
 
-            var transform = panel.RenderTransform as TranslateTransform;
-            story.Children.Add(Utils.CreateDoubleAnimation(transform, "X", args.EasingFunc, args.ItemToX, args.Duration-10));
-            story.Begin();
+            return panel;
         }
 
-        void MovePanel(StackPanel panel, SwipeProgressEventArgs args)
+        void SwipeMovePanel(StackPanel panel, SwipeProgressEventArgs args)
         {
             var cumlative = Math.Abs(args.Cumulative);
 
@@ -117,6 +120,14 @@ namespace Demo.Pages
             {
                 (panel.RenderTransform as TranslateTransform).X = args.SwipeDirection == SwipeDirection.Left ? cumlative - panel.ActualWidth : panel.ActualHeight - cumlative;
             }
+        }
+
+        void SwipeReleasePanel(StackPanel panel, SwipeReleaseEventArgs args)
+        {
+            var story = new Storyboard();
+            var transform = panel.RenderTransform as TranslateTransform;
+            story.Children.Add(Utils.CreateDoubleAnimation(transform, "X", args.EasingFunc, args.ItemToX, args.Duration - 10));
+            story.Begin();
         }
     }
 }
