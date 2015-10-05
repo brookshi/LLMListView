@@ -62,5 +62,12 @@ namespace Demo
             FrameContent.Navigate(typeof(NormalFixPage));
             SplitView.IsPaneOpen = false;
         }
+
+        private void NavigateToPullToRefresh(object sender, RoutedEventArgs e)
+        {
+            FrameContent.Navigate(typeof(PullToRefreshPage));
+            SplitView.IsPaneOpen = false;
+        }
+        
     }
 }

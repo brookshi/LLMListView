@@ -37,6 +37,11 @@
                             HorizontalContentAlignment="Left" 
                             Content="Normal Fix Swipe" 
                             Click="NavigateToNormalFix" />
+                    <Button Style="{StaticResource HomeButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Content="Pull To Refresh" 
+                            Click="NavigateToPullToRefresh" />
 
                 </StackPanel>
             </SplitView.Pane>

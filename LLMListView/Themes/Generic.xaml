@@ -40,19 +40,23 @@
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup>
                                 <VisualState x:Name="Normal"/>
-                                <VisualState x:Name="ToRefresh">
+                                <VisualState x:Name="Unvalid">
                                     <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PullText" Storyboard.TargetProperty="Visibility">
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PullToRefreshIndicator" Storyboard.TargetProperty="Visibility">
                                             <DiscreteObjectKeyFrame KeyTime="0">
                                                 <DiscreteObjectKeyFrame.Value>
                                                     <Visibility>Collapsed</Visibility>
                                                 </DiscreteObjectKeyFrame.Value>
                                             </DiscreteObjectKeyFrame>
                                         </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshText" Storyboard.TargetProperty="Visibility">
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="ToRefresh">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PullText" Storyboard.TargetProperty="Visibility">
                                             <DiscreteObjectKeyFrame KeyTime="0">
                                                 <DiscreteObjectKeyFrame.Value>
-                                                    <Visibility>Visible</Visibility>
+                                                    <Visibility>Collapsed</Visibility>
                                                 </DiscreteObjectKeyFrame.Value>
                                             </DiscreteObjectKeyFrame>
                                         </ObjectAnimationUsingKeyFrames>
@@ -70,7 +74,7 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshProgressRing" Storyboard.TargetProperty="IsActive">
                                             <DiscreteObjectKeyFrame KeyTime="0">
                                                 <DiscreteObjectKeyFrame.Value>
-                                                    False
+                                                    True
                                                 </DiscreteObjectKeyFrame.Value>
                                             </DiscreteObjectKeyFrame>
                                         </ObjectAnimationUsingKeyFrames>
@@ -107,7 +111,6 @@
                                                     <RowDefinition Height="12"/>
                                                 </Grid.RowDefinitions>
                                                 <TextBlock x:Name="PullText" Text="{TemplateBinding PullText}" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="4"/>
-                                                <TextBlock x:Name="RefreshText" Text="{TemplateBinding RefreshText}" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="4" Visibility="Collapsed"/>
                                                 <ProgressBar Grid.Row="1" x:Name="PullProgressBar" Width="200" Height="6" />
                                             </Grid>
                                         </ContentPresenter>
