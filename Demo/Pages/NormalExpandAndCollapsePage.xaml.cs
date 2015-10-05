@@ -2,6 +2,7 @@
 using LLM;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -19,32 +20,46 @@ namespace Demo.Pages
 {
     public sealed partial class NormalExpandAndCollapsePage : Page
     {
+        ObservableCollection<Contact> _contacts = new ObservableCollection<Contact>();
+
+        public ObservableCollection<Contact> Contacts
+        {
+            get { return _contacts; }
+            set { _contacts = value; }
+        }
+
+        Dictionary<Contact, bool> ContackStarDict = new Dictionary<Contact, bool>();
+
         public NormalExpandAndCollapsePage()
         {
             this.InitializeComponent();
-            var Contacts = Contact.GetContacts(140);
-            if (Contacts.Count > 0)
+            Contacts = Contact.GetContacts(140);
+        }
+
+        private void ItemSwipeTriggerComplete(object sender, SwipeCompleteEventArgs args)
+        {
+            var itemData = (sender as LLMListViewItem).Content as Contact;
+            if (args.SwipeDirection == SwipeDirection.Left)
             {
-                MasterListView.ItemsSource = Contacts;
+                _contacts.Remove(itemData);
+            }
+            else
+            {
+                ContackStarDict[itemData] = itemData.IsStar;
             }
         }
 
-        private void ItemSwipeComplete(object sender, SwipeCompleteEventArgs args)
-        {
-            var txtCtrl = (sender as LLMListViewItem).GetSwipeControl<TextBlock>(args.SwipeDirection, "LeftSwipeText");
-            if (txtCtrl == null)
-                return;
-
-            (txtCtrl.RenderTransform as TranslateTransform).X = 0;
-        }
-        
         private void ItemSwipeTriggerInTouch(object sender, SwipeTriggerEventArgs args)
         {
-            //var txtCtrl = (sender as LLMListViewItem).GetSwipeControl<TextBlock>(args.SwipeDirection, "LeftSwipeText");
-            //if (txtCtrl == null)
-            //    return;
-
-            //(txtCtrl.RenderTransform as TranslateTransform).X = 0;
+            var itemData = (sender as LLMListViewItem).Content as Contact;
+            if (args.SwipeDirection == SwipeDirection.Left)
+            {
+                itemData.IsDelete = args.IsTrigger;
+            }
+            else
+            {
+                itemData.IsStar = ContackStarDict.ContainsKey(itemData) && ContackStarDict[itemData] ? !args.IsTrigger : args.IsTrigger;
+            }
         }
     }
 }

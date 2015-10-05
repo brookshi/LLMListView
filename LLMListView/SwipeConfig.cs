@@ -83,5 +83,10 @@ namespace LLM
         public Timeline CustomStoreAnimation { get { return Direction == SwipeDirection.Left ? LeftCustomStoreAnimation : RightCustomStoreAnimation; } }
 
         public Timeline CustomTriggerAnimation { get { return Direction == SwipeDirection.Left ? LeftCustomTriggerAnimation : RightCustomTriggerAnimation; } }
+
+        public void ResetSwipeClipCenterX()
+        {
+            SwipeClipTransform.CenterX = Direction == SwipeDirection.Left ? 0 : ItemActualWidth;
+        }
     }
 }

@@ -50,6 +50,11 @@ namespace Demo
             FrameContent.Navigate(typeof(NormalExpandAndCollapsePage));
             SplitView.IsPaneOpen = false;
         }
-        
+
+        private void NavigateToCustomExpandAndCollapse1(object sender, RoutedEventArgs e)
+        {
+            FrameContent.Navigate(typeof(CustomExpandAndCollapsePage1));
+            SplitView.IsPaneOpen = false;
+        }
     }
 }

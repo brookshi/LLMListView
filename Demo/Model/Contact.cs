@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 
 namespace ListViewSample.Model
 {
-    public class Contact
+    public class Contact : INotifyPropertyChanged
     {
         private static Random random = new Random();
 
@@ -49,6 +50,9 @@ namespace ListViewSample.Model
             }
         }
         private string firstName;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public string FirstName
         {
             get
@@ -65,6 +69,43 @@ namespace ListViewSample.Model
         public string Position { get; set; }
         public string PhoneNumber { get; set; }
         public string Biography { get; set; }
+
+        private bool isStar = false;
+        public bool IsStar
+        {
+            get { return isStar; }
+            set
+            {
+                if(value != isStar)
+                {
+                    isStar = value;
+                    Notify("IsStar");
+                }
+            }
+        }
+
+        private bool isDelete = false;
+        public bool IsDelete
+        {
+            get { return isDelete; }
+            set
+            {
+                if (value != isDelete)
+                {
+                    isDelete = value;
+                    Notify("IsDelete");
+                }
+            }
+        }
+
+        protected void Notify(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
         #endregion
 
         public Contact()
