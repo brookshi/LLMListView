@@ -118,6 +118,9 @@
     <Compile Include="Pages\NormalFixPage.xaml.cs">
       <DependentUpon>NormalFixPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\PullToRefreshPage.xaml.cs">
+      <DependentUpon>PullToRefreshPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +161,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\NormalFixPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\PullToRefreshPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

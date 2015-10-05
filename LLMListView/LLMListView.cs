@@ -21,6 +21,7 @@ namespace LLM
         private const string Refreshing_State = "Refreshing";
         private const string To_Refresh_State = "ToRefresh";
         private const string Normal_State = "Normal";
+        private const string Unvalid_State = "Unvalid";
 
         private bool _isNotifyToRefreshTimerStarting = false;
         private bool _isRefreshing = false;
@@ -31,6 +32,20 @@ namespace LLM
         private DispatcherTimer _notifyToRefreshTimer;
         private ProgressBar _pullProgressBar;
         private ProgressRing _refreshProgressRing;
+
+
+        public Action RefreshData
+        {
+            get; set;
+        }
+
+        public bool SupportPullToRefresh
+        {
+            get { return (bool)GetValue(SupportPullToRefreshProperty); }
+            set { SetValue(SupportPullToRefreshProperty, value); }
+        }
+        public static readonly DependencyProperty SupportPullToRefreshProperty =
+            DependencyProperty.Register("SupportPullToRefresh", typeof(bool), typeof(LLMListView), new PropertyMetadata(false));
 
         public double RefreshAreaHeight
         {
@@ -56,15 +71,6 @@ namespace LLM
         }
         public static readonly DependencyProperty PullTextProperty =
             DependencyProperty.Register("PullText", typeof(string), typeof(LLMListView), new PropertyMetadata("Pull to refresh"));
-
-
-        public string RefreshText
-        {
-            get { return (string)GetValue(RefreshTextProperty); }
-            set { SetValue(RefreshTextProperty, value); }
-        }
-        public static readonly DependencyProperty RefreshTextProperty =
-            DependencyProperty.Register("RefreshText", typeof(string), typeof(LLMListView), new PropertyMetadata("Release to refresh"));
 
         #region list view item property
 
@@ -192,11 +198,17 @@ namespace LLM
         private void LLMListView_Loaded(object sender, RoutedEventArgs e)
         {
             InitTimer();
-            VisualStateManager.GoToState(this, Normal_State, true);
+            if(SupportPullToRefresh)
+                VisualStateManager.GoToState(this, Normal_State, false);
+            else
+                VisualStateManager.GoToState(this, Unvalid_State, false);
         }
 
         private void InitTimer()
         {
+            if (!SupportPullToRefresh)
+                return;
+
             _notifyToRefreshTimer = new DispatcherTimer();
             _notifyToRefreshTimer.Interval = TimeSpan.FromMilliseconds(Refresh_Notify_Interval);
             _notifyToRefreshTimer.Tick += NotifyToRefreshTimer_Tick;
@@ -297,10 +309,12 @@ namespace LLM
             _pullProgressBar = (ProgressBar)GetTemplateChild("PullProgressBar");
             _refreshProgressRing = (ProgressRing)GetTemplateChild("RefreshProgressRing");
 
-            _scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
-            _scrollViewer.Margin = new Thickness(0, 0, 0, -RefreshAreaHeight);
-            _scrollViewer.RenderTransform = new CompositeTransform() { TranslateY = -RefreshAreaHeight };
-
+            if(SupportPullToRefresh)
+            {
+                _scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
+                _scrollViewer.Margin = new Thickness(0, 0, 0, -RefreshAreaHeight);
+                _scrollViewer.RenderTransform = new CompositeTransform() { TranslateY = -RefreshAreaHeight };
+            }
             SizeChanged += LLMListView_SizeChanged;
         }
 
@@ -331,17 +345,30 @@ namespace LLM
 
         private void NotifyToRefreshTimer_Tick(object sender, object e)
         {
+            if (_isRefreshing)
+                return;
+
             SetRefresh(true);
+            if (RefreshData != null)
+            {
+                RefreshData();
+            }
         }
 
         public void SetRefresh(bool isRefresh)
         {
             _isRefreshing = isRefresh;
-            VisualStateManager.GoToState(this, Refreshing_State, true);
+            if(_isRefreshing)
+                VisualStateManager.GoToState(this, Refreshing_State, true);
+            else
+                VisualStateManager.GoToState(this, Normal_State, true);
         }
 
         private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
+            if (!SupportPullToRefresh)
+                return;
+
             if(e.NextView.VerticalOffset == 0)
             {
                 _timer.Start();
