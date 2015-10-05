@@ -25,13 +25,18 @@
                     <Button Style="{StaticResource HomeButtonStyle}" 
                             HorizontalAlignment="Stretch" 
                             HorizontalContentAlignment="Left" 
-                            Content="Normal Expand And Collapse List" 
+                            Content="Normal Expand And Collapse Swipe" 
                             Click="NavigateToNormalExpandAndCollapse" />
                     <Button Style="{StaticResource HomeButtonStyle}" 
                             HorizontalAlignment="Stretch" 
                             HorizontalContentAlignment="Left" 
-                            Content="Custom Expand And Collapse List 1" 
-                            Click="NavigateToCustomExpandAndCollapse1" />
+                            Content="Animation Expand And Collapse Swipe" 
+                            Click="NavigateToAnimationExpandAndCollapse1" />
+                    <Button Style="{StaticResource HomeButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Content="Normal Fix Swipe" 
+                            Click="NavigateToNormalFix" />
 
                 </StackPanel>
             </SplitView.Pane>

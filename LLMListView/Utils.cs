@@ -36,5 +36,19 @@ namespace LLM
             }
             return null;
         }
+
+        public static T FindVisualParent<T>(DependencyObject obj) where T : DependencyObject
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(obj);
+            if (parent is T)
+                return (T)parent;
+            else
+            {
+                T parentOfParent = FindVisualParent<T>(parent);
+                if (parentOfParent != null)
+                    return parentOfParent;
+            }
+            return null;
+        }
     }
 }

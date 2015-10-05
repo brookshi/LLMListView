@@ -155,18 +155,22 @@ namespace LLM
         public override void ActionTrigger(SwipeConfig config, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback)
         {
             var targetWidth = config.TriggerActionTargetWidth;
+            var targetX = config.Direction == SwipeDirection.Left ? targetWidth : -targetWidth;
             var clipScaleX = targetWidth / config.CurrentSwipeWidth;
 
             if (beginTriggerCallback != null)
-                beginTriggerCallback(config.EasingFunc, targetWidth, config.Duration);
+                beginTriggerCallback(config.EasingFunc, targetX, config.Duration);
 
-            DisplayAnimation(config, targetWidth, clipScaleX, ()=>
+            DisplayAnimation(config, targetX, clipScaleX, ()=>
             {
                 if (triggerCompleteCallback != null)
                     triggerCompleteCallback();
 
                 config.SwipeClipTransform.ScaleX = 1;
-                config.SwipeClipRectangle.Rect = new Rect(0, 0, targetWidth, config.SwipeClipRectangle.Rect.Height);
+                if(config.Direction == SwipeDirection.Left)
+                    config.SwipeClipRectangle.Rect = new Rect(0, 0, targetWidth, config.SwipeClipRectangle.Rect.Height);
+                else
+                    config.SwipeClipRectangle.Rect = new Rect(config.ItemActualWidth - targetWidth, 0, targetWidth, config.SwipeClipRectangle.Rect.Height);
             });
         }
     }
