@@ -25,7 +25,8 @@ namespace LLM
         private bool _isTriggerInTouch = false;
 
         public event SwipeProgressEventHandler SwipeProgressInTouch;
-        public event SwipeCompleteEventHandler SwipeStoreComplete;
+        public event SwipeCompleteEventHandler SwipeRestoreComplete;
+        public event SwipeCompleteEventHandler SwipeTriggerComplete;
         public event SwipeReleaseEventHandler SwipeBeginTrigger;
         public event SwipeReleaseEventHandler SwipeBeginRestore;
         public event SwipeTriggerEventHandler SwipeTriggerInTouch;
@@ -96,7 +97,7 @@ namespace LLM
             set { SetValue(LeftSwipeLengthRateProperty, value); }
         }
         public static readonly DependencyProperty LeftSwipeLengthRateProperty =
-            DependencyProperty.Register("LeftSwipeLengthRate", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.1));
+            DependencyProperty.Register("LeftSwipeLengthRate", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1.0));
 
         public double RightSwipeLengthRate
         {
@@ -224,17 +225,19 @@ namespace LLM
 
         private void SwipeActionInTouch(double cumulativeX, double deltaX)
         {
-            if (!_isTriggerInTouch)
+            double currRate = Math.Abs(cumulativeX) / ActualWidth;
+            var isTriggerRate = currRate >= (Config.Direction == SwipeDirection.Left ? LeftActionRateForSwipeLength/LeftSwipeLengthRate : RightActionRateForSwipeLength/RightSwipeLengthRate);
+            if (_isTriggerInTouch != isTriggerRate)
             {
-                _isTriggerInTouch = true;
+                _isTriggerInTouch = isTriggerRate;
                 if(SwipeTriggerInTouch != null)
                 {
-                    SwipeTriggerInTouch(this, new SwipeTriggerEventArgs(Config.Direction));
+                    SwipeTriggerInTouch(this, new SwipeTriggerEventArgs(Config.Direction, isTriggerRate));
                 }
             }
             if (SwipeProgressInTouch != null)
             {
-                SwipeProgressInTouch(this, new SwipeProgressEventArgs(Config.Direction, cumulativeX, deltaX, cumulativeX / ActualWidth));
+                SwipeProgressInTouch(this, new SwipeProgressEventArgs(Config.Direction, cumulativeX, deltaX, Math.Abs(cumulativeX) / ActualWidth));
             }
         }
 
@@ -257,15 +260,16 @@ namespace LLM
             _swipeAnimationConstructor.Config.CurrentSwipeWidth = Math.Abs(_mainLayerTransform.X);
 
             _swipeAnimationConstructor.DisplaySwipeAnimation(
-                (easingFunc, itemToX, duration) => ReleaseAnimationTrigger(oldDirection, easingFunc, itemToX, duration),
-                (easingFunc, itemToX, duration) => ReleaseAnimationRestore(oldDirection, easingFunc, itemToX, duration),
-                () => ReleaseAnimationComplete(oldDirection)
+                (easingFunc, itemToX, duration) => ReleaseAnimationBeginTrigger(oldDirection, easingFunc, itemToX, duration),
+                () => ReleaseAnimationTriggerComplete(oldDirection),
+                (easingFunc, itemToX, duration) => ReleaseAnimationBeginRestore(oldDirection, easingFunc, itemToX, duration),
+                () => ReleaseAnimationRestoreComplete(oldDirection)
             );
 
             Config.Direction = SwipeDirection.None;
         }
 
-        private void ReleaseAnimationTrigger(SwipeDirection direction, EasingFunctionBase easingFunc, double itemToX, double duration)
+        private void ReleaseAnimationBeginTrigger(SwipeDirection direction, EasingFunctionBase easingFunc, double itemToX, double duration)
         {
             if (Config.SwipeMode == SwipeMode.Fix)
             {
@@ -277,7 +281,15 @@ namespace LLM
             }
         }
 
-        private void ReleaseAnimationRestore(SwipeDirection direction, EasingFunctionBase easingFunc, double itemToX, double duration)
+        private void ReleaseAnimationTriggerComplete(SwipeDirection direction)
+        {
+            if (SwipeTriggerComplete != null)
+            {
+                SwipeTriggerComplete(this, new SwipeCompleteEventArgs(direction));
+            }
+        }
+
+        private void ReleaseAnimationBeginRestore(SwipeDirection direction, EasingFunctionBase easingFunc, double itemToX, double duration)
         {
             if (SwipeBeginRestore != null)
             {
@@ -285,11 +297,11 @@ namespace LLM
             }
         }
 
-        private void ReleaseAnimationComplete(SwipeDirection direction)
+        private void ReleaseAnimationRestoreComplete(SwipeDirection direction)
         {
-            if (SwipeStoreComplete != null)
+            if (SwipeRestoreComplete != null)
             {
-                SwipeStoreComplete(this, new SwipeCompleteEventArgs(direction));
+                SwipeRestoreComplete(this, new SwipeCompleteEventArgs(direction));
             }
         }
 
@@ -298,8 +310,8 @@ namespace LLM
             if (direction == SwipeDirection.None)
                 return default(T);
 
-            var contentCtrl = _leftSwipeContent.Content as DependencyObject;
-            return Utils.FindVisualChild<T>(_leftSwipeContent, name);
+            var contentCtrl = (direction == SwipeDirection.Left ? _leftSwipeContent : _rightSwipeContent) as DependencyObject;
+            return Utils.FindVisualChild<T>(contentCtrl, name);
         }
     }
 }

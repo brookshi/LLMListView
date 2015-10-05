@@ -69,7 +69,8 @@ namespace LLM
         #region list view item property
 
         public event SwipeProgressEventHandler ItemSwipeProgressInTouch;
-        public event SwipeCompleteEventHandler ItemSwipeStoreComplete;
+        public event SwipeCompleteEventHandler ItemSwipeRestoreComplete;
+        public event SwipeCompleteEventHandler ItemSwipeTriggerComplete;
         public event SwipeReleaseEventHandler ItemSwipeBeginTrigger;
         public event SwipeReleaseEventHandler ItemSwipeBeginRestore;
         public event SwipeTriggerEventHandler ItemSwipeTriggerInTouch;
@@ -136,7 +137,7 @@ namespace LLM
             set { SetValue(ItemLeftSwipeLengthRateProperty, value); }
         }
         public static readonly DependencyProperty ItemLeftSwipeLengthRateProperty =
-            DependencyProperty.Register("ItemLeftSwipeLengthRate", typeof(double), typeof(LLMListView), new PropertyMetadata(0.2));
+            DependencyProperty.Register("ItemLeftSwipeLengthRate", typeof(double), typeof(LLMListView), new PropertyMetadata(1.0));
 
         public double ItemRightSwipeLengthRate
         {
@@ -204,11 +205,20 @@ namespace LLM
             SetItemBinding(item, LLMListViewItem.RightActionRateForSwipeLengthProperty, "ItemRightActionRateForSwipeLength");
 
             item.SwipeProgressInTouch += Item_SwipeProgressInTouch;
-            item.SwipeStoreComplete += Item_SwipeStoreComplete;
+            item.SwipeRestoreComplete += Item_SwipeStoreComplete;
+            item.SwipeTriggerComplete += Item_SwipeTriggerComplete;
             item.SwipeBeginTrigger += Item_SwipeBeginTrigger;
             item.SwipeBeginRestore += Item_SwipeBeginRestore;
             item.SwipeTriggerInTouch += Item_SwipeTriggerInTouch;
             return item;
+        }
+
+        private void Item_SwipeTriggerComplete(object sender, SwipeCompleteEventArgs args)
+        {
+            if(ItemSwipeTriggerComplete != null)
+            {
+                ItemSwipeTriggerComplete(sender, args);
+            }
         }
 
         private void Item_SwipeTriggerInTouch(object sender, SwipeTriggerEventArgs args)
@@ -237,9 +247,9 @@ namespace LLM
 
         private void Item_SwipeStoreComplete(object sender, SwipeCompleteEventArgs args)
         {
-            if (ItemSwipeStoreComplete != null)
+            if (ItemSwipeRestoreComplete != null)
             {
-                ItemSwipeStoreComplete(sender, args);
+                ItemSwipeRestoreComplete(sender, args);
             }
         }
 

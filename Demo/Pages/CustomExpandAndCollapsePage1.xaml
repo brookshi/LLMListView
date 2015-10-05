@@ -1,8 +1,8 @@
 ﻿<Page
-    x:Class="Demo.Pages.NormalExpandAndCollapsePage"
+    x:Class="Demo.Pages.CustomExpandAndCollapsePage1"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Demo.Pages"
+    xmlns:local="using:Demo"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ctrl="using:LLM"
@@ -20,6 +20,8 @@
                           ItemTemplate="{StaticResource ContactListViewTemplate}" 
                           ItemSwipeTriggerComplete="ItemSwipeTriggerComplete"  
                           ItemSwipeTriggerInTouch="ItemSwipeTriggerInTouch" 
+                          ItemSwipeProgressInTouch="ItemSwipeProgressInTouch"
+                          ItemSwipeBeginTrigger="ItemSwipeBeginTrigger"
                           ItemLeftSwipeMode="Expand" 
                           ItemLeftActionRateForSwipeLength="0.4"
                           ItemRightSwipeMode="Collapse"
@@ -27,7 +29,10 @@
             <ctrl:LLMListView.ItemLeftSwipeContentTemplate>
                 <DataTemplate>
                     <Grid Background="LightGray">
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel x:Name="LeftPanel" HorizontalAlignment="Left" Orientation="Horizontal">
+                            <StackPanel.RenderTransform>
+                                <TranslateTransform/>
+                            </StackPanel.RenderTransform>
                             <SymbolIcon  Margin="10,0,0,0" Symbol="Delete" Foreground="{Binding IsDelete, Converter={StaticResource StarConverter}, ConverterParameter={StaticResource DeleteColor}}"/>
                             <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" x:Name="LeftSwipeText" Text="Delete" Foreground="{Binding IsDelete, Converter={StaticResource StarConverter}, ConverterParameter={StaticResource DeleteColor}}"/>
                         </StackPanel>
@@ -37,7 +42,12 @@
             <ctrl:LLMListView.ItemRightSwipeContentTemplate>
                 <DataTemplate>
                     <Grid Background="LightBlue">
-                        <SymbolIcon Margin="0,0,20,0" HorizontalAlignment="Right" Symbol="SolidStar" Foreground="{Binding IsStar, Converter={StaticResource StarConverter}, ConverterParameter={StaticResource StarColor}}"/>
+                        <StackPanel x:Name="RightPanel" HorizontalAlignment="Right" Orientation="Horizontal">
+                            <StackPanel.RenderTransform>
+                                <TranslateTransform/>
+                            </StackPanel.RenderTransform>
+                            <SymbolIcon Margin="0,0,20,0" Symbol="SolidStar" Foreground="{Binding IsStar, Converter={StaticResource StarConverter}, ConverterParameter={StaticResource StarColor}}"/>
+                        </StackPanel>
                     </Grid>
                 </DataTemplate>
             </ctrl:LLMListView.ItemRightSwipeContentTemplate>

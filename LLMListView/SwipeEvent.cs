@@ -79,11 +79,14 @@ namespace LLM
 
     public class SwipeTriggerEventArgs
     {
-        public SwipeTriggerEventArgs(SwipeDirection direction)
+        public SwipeTriggerEventArgs(SwipeDirection direction, bool isTrigger)
         {
             SwipeDirection = direction;
+            IsTrigger = isTrigger;
         }
 
         public SwipeDirection SwipeDirection { get; set; }
+
+        public bool IsTrigger { get; set; }
     }
 }

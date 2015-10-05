@@ -27,6 +27,11 @@
                             HorizontalContentAlignment="Left" 
                             Content="Normal Expand And Collapse List" 
                             Click="NavigateToNormalExpandAndCollapse" />
+                    <Button Style="{StaticResource HomeButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Content="Custom Expand And Collapse List 1" 
+                            Click="NavigateToCustomExpandAndCollapse1" />
 
                 </StackPanel>
             </SplitView.Pane>
