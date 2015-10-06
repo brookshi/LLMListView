@@ -38,13 +38,13 @@ namespace Demo.Pages
 
         private void PullToRefreshPage_Loaded(object sender, RoutedEventArgs e)
         {
-            Contacts = Contact.GetContacts(140);
+            Contacts = Contact.GetContacts(50);
             MasterListView.DataContext = this;
             MasterListView.RefreshData = async () =>
             {
                 await Task.Delay(TimeSpan.FromSeconds(3));
                 Contacts.Clear();
-                Contact.GetContacts(140).ToList().ForEach(o => Contacts.Add(o));
+                Contact.GetContacts(50).ToList().ForEach(o => Contacts.Add(o));
                 MasterListView.SetRefresh(false);
             };
         }
