@@ -42,6 +42,16 @@
                             HorizontalContentAlignment="Left" 
                             Content="Pull To Refresh" 
                             Click="NavigateToPullToRefresh" />
+                    <Button Style="{StaticResource HomeButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Content="Load More" 
+                            Click="NavigateToLoadMore" />
+                    <Button Style="{StaticResource HomeButtonStyle}" 
+                            HorizontalAlignment="Stretch" 
+                            HorizontalContentAlignment="Left" 
+                            Content="Load More For Group List" 
+                            Click="NavigateToLoadMoreForGroup" />
 
                 </StackPanel>
             </SplitView.Pane>

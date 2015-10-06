@@ -1,0 +1,28 @@
+﻿<Page
+    x:Name="test"
+    x:Class="Demo.Pages.LoadMoreForGroupListPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Demo.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ctrl="using:LLM"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <DataTemplate x:Key="GroupHeader">
+            <Border BorderThickness="0,0,0,2" BorderBrush="Black">
+                <TextBlock Margin="5" Text="{Binding Key}" FontWeight="SemiBold"/>
+            </Border>
+        </DataTemplate>
+        <CollectionViewSource x:Name="Group" Source="{x:Bind Contacts, Mode=OneWay}" IsSourceGrouped="True" />
+    </Page.Resources>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <ctrl:LLMListView x:Name="MasterListView" 
+                          ItemsSource="{x:Bind Group.View}"
+                          ItemTemplate="{StaticResource ContactListViewTemplate}">
+            <ctrl:LLMListView.GroupStyle>
+                <GroupStyle HeaderTemplate="{StaticResource GroupHeader}"/>
+            </ctrl:LLMListView.GroupStyle>
+        </ctrl:LLMListView>
+    </Grid>
+</Page>

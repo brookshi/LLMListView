@@ -112,6 +112,12 @@
     <Compile Include="Pages\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\LoadMoreForGroupListPage.xaml.cs">
+      <DependentUpon>LoadMoreForGroupListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\LoadMorePage.xaml.cs">
+      <DependentUpon>LoadMorePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\NormalExpandAndCollapsePage.xaml.cs">
       <DependentUpon>NormalExpandAndCollapsePage.xaml</DependentUpon>
     </Compile>
@@ -153,6 +159,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\HomePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\LoadMoreForGroupListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\LoadMorePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

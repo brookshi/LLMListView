@@ -25,6 +25,8 @@ namespace LLM
 
         private bool _isNotifyToRefreshTimerStarting = false;
         private bool _isRefreshing = false;
+        private bool _isLoadingMore = false;
+
         private ScrollViewer _scrollViewer;
         private Grid _container;
         private Border _pullToRefreshIndicator;
@@ -322,10 +324,16 @@ namespace LLM
         private void _scrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
             var bottomOffset = _scrollViewer.ExtentHeight - _scrollViewer.VerticalOffset - _scrollViewer.ViewportHeight;
-            if (LoadMore != null && bottomOffset < 300)
+            if (!_isLoadingMore && LoadMore != null && bottomOffset < 300)
             {
+                _isLoadingMore = true;
                 LoadMore();
             }
+        }
+
+        public void FinishLoadMore()
+        {
+            _isLoadingMore = false;
         }
 
         private void Timer_Tick(object sender, object e)

@@ -68,6 +68,18 @@ namespace Demo
             FrameContent.Navigate(typeof(PullToRefreshPage));
             SplitView.IsPaneOpen = false;
         }
+
+        private void NavigateToLoadMore(object sender, RoutedEventArgs e)
+        {
+            FrameContent.Navigate(typeof(LoadMorePage));
+            SplitView.IsPaneOpen = false;
+        }
+
+        private void NavigateToLoadMoreForGroup(object sender, RoutedEventArgs e)
+        {
+            FrameContent.Navigate(typeof(LoadMoreForGroupListPage));
+            SplitView.IsPaneOpen = false;
+        }
         
     }
 }
