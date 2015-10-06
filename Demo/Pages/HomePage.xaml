@@ -18,6 +18,9 @@
             <Paragraph>
                 <LineBreak/>2. Pull to refresh
             </Paragraph>
+            <Paragraph>
+                <LineBreak/> 3. Load more (support group list)
+            </Paragraph>
         </RichTextBlock>
     </Grid>
 </Page>
