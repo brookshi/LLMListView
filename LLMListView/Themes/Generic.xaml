@@ -108,7 +108,7 @@
                                             <Grid>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="*"/>
-                                                    <RowDefinition Height="12"/>
+                                                    <RowDefinition Height="6"/>
                                                 </Grid.RowDefinitions>
                                                 <TextBlock x:Name="PullText" Text="{TemplateBinding PullText}" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="4"/>
                                                 <ProgressBar Grid.Row="1" x:Name="PullProgressBar" Width="200" Height="6" />

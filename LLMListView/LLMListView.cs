@@ -197,6 +197,7 @@ namespace LLM
 
         private void LLMListView_Loaded(object sender, RoutedEventArgs e)
         {
+            _pullProgressBar.Width = ActualWidth;
             InitTimer();
             if(SupportPullToRefresh)
                 VisualStateManager.GoToState(this, Normal_State, false);
