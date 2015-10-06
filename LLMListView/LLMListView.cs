@@ -34,10 +34,9 @@ namespace LLM
         private ProgressRing _refreshProgressRing;
 
 
-        public Action RefreshData
-        {
-            get; set;
-        }
+        public Action RefreshData { get; set; }
+
+        public Action LoadMore { get; set; }
 
         public bool SupportPullToRefresh
         {
@@ -316,7 +315,17 @@ namespace LLM
                 _scrollViewer.Margin = new Thickness(0, 0, 0, -RefreshAreaHeight);
                 _scrollViewer.RenderTransform = new CompositeTransform() { TranslateY = -RefreshAreaHeight };
             }
+            _scrollViewer.ViewChanged += _scrollViewer_ViewChanged;
             SizeChanged += LLMListView_SizeChanged;
+        }
+
+        private void _scrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            var bottomOffset = _scrollViewer.ExtentHeight - _scrollViewer.VerticalOffset - _scrollViewer.ViewportHeight;
+            if (LoadMore != null && bottomOffset < 300)
+            {
+                LoadMore();
+            }
         }
 
         private void Timer_Tick(object sender, object e)
