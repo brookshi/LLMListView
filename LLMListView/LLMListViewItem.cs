@@ -66,7 +66,7 @@ namespace LLM
             set { SetValue(LeftSwipeModeProperty, value); UpdateConfig(); }
         }
         public static readonly DependencyProperty LeftSwipeModeProperty =
-            DependencyProperty.Register("LeftSwipeMode", typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.Fix));
+            DependencyProperty.Register("LeftSwipeMode", typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.None));
 
         public EasingFunctionBase LeftBackAnimEasingFunction
         {
@@ -109,7 +109,7 @@ namespace LLM
             set { SetValue(RightSwipeModeProperty, value); UpdateConfig(); }
         }
         public static readonly DependencyProperty RightSwipeModeProperty =
-            DependencyProperty.Register("RightSwipeMode", typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.Fix));
+            DependencyProperty.Register("RightSwipeMode", typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.None));
 
         public double RightSwipeMaxLength
         {
