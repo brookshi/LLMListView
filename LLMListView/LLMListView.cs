@@ -19,7 +19,6 @@ namespace LLM
         private const int Refresh_Notify_Interval = 300;
         private const int Refresh_Status_Interval = 100;
         private const string Refreshing_State = "Refreshing";
-        private const string To_Refresh_State = "ToRefresh";
         private const string Normal_State = "Normal";
         private const string Unvalid_State = "Unvalid";
 
@@ -56,7 +55,6 @@ namespace LLM
         public static readonly DependencyProperty RefreshAreaHeightProperty =
             DependencyProperty.Register("RefreshAreaHeight", typeof(double), typeof(LLMListView), new PropertyMetadata(50.0));
 
-
         public Brush RefreshIconColor
         {
             get { return (Brush)GetValue(RefreshIconColorProperty); }
@@ -64,14 +62,6 @@ namespace LLM
         }
         public static readonly DependencyProperty RefreshIconColorProperty =
             DependencyProperty.Register("RefreshIconColor", typeof(Brush), typeof(LLMListView), new PropertyMetadata(Application.Current.Resources["ProgressBarForegroundThemeBrush"]));
-
-        public string PullText
-        {
-            get { return (string)GetValue(PullTextProperty); }
-            set { SetValue(PullTextProperty, value); }
-        }
-        public static readonly DependencyProperty PullTextProperty =
-            DependencyProperty.Register("PullText", typeof(string), typeof(LLMListView), new PropertyMetadata("Pull to refresh"));
 
         #region list view item property
 
@@ -198,12 +188,28 @@ namespace LLM
 
         private void LLMListView_Loaded(object sender, RoutedEventArgs e)
         {
-            _pullProgressBar.Width = ActualWidth;
+            InitLayout();
+
             InitTimer();
-            if(SupportPullToRefresh)
+
+            InitVisualState();
+        }
+
+        private void InitVisualState()
+        {
+            if (SupportPullToRefresh)
+            {
                 VisualStateManager.GoToState(this, Normal_State, false);
+            }
             else
+            {
                 VisualStateManager.GoToState(this, Unvalid_State, false);
+            }
+        }
+
+        private void InitLayout()
+        {
+            _pullProgressBar.Width = ActualWidth;
         }
 
         private void InitTimer()
@@ -347,7 +353,6 @@ namespace LLM
 
             if (pullOffsetBottom > RefreshAreaHeight)
             {
-                VisualStateManager.GoToState(this, To_Refresh_State, true);
                 if (!_isNotifyToRefreshTimerStarting)
                 {
                     _isNotifyToRefreshTimerStarting = true;
@@ -367,6 +372,7 @@ namespace LLM
                 return;
 
             SetRefresh(true);
+
             if (RefreshData != null)
             {
                 RefreshData();
@@ -376,10 +382,14 @@ namespace LLM
         public void SetRefresh(bool isRefresh)
         {
             _isRefreshing = isRefresh;
-            if(_isRefreshing)
+            if (_isRefreshing)
+            {
                 VisualStateManager.GoToState(this, Refreshing_State, true);
+            }
             else
+            {
                 VisualStateManager.GoToState(this, Normal_State, true);
+            }
         }
 
         private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
@@ -395,6 +405,7 @@ namespace LLM
             {
                 _timer.Stop();
                 _notifyToRefreshTimer.Stop();
+                _pullProgressBar.Value = 0;
                 _isNotifyToRefreshTimerStarting = false;
                 VisualStateManager.GoToState(this, Normal_State, true);
             }
