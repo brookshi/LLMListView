@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -42,14 +43,15 @@ namespace Demo.Pages
         {
             _allContacts = Contact.GetContactsGrouped(100);
             UpdateContactsForPage();
-            MasterListView.LoadMore = () =>
+            MasterListView.LoadMore = async () =>
             {
                 if (_currentPageNum < MAX_PAGE)
                 {
+                    await Task.Delay(2000);
                     _currentPageNum++;
                     UpdateContactsForPage();
-                    MasterListView.FinishLoadMore();
                 }
+                MasterListView.FinishLoadingMore();
             };
         }
 

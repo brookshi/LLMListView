@@ -33,6 +33,7 @@ namespace LLM
         private DispatcherTimer _notifyToRefreshTimer;
         private ProgressBar _pullProgressBar;
         private ProgressRing _refreshProgressRing;
+        private ProgressBar _loadMoreProgressBar;
 
 
         public Action RefreshData { get; set; }
@@ -210,6 +211,7 @@ namespace LLM
         private void InitLayout()
         {
             _pullProgressBar.Width = ActualWidth;
+            _loadMoreProgressBar.Width = ActualWidth;
         }
 
         private void InitTimer()
@@ -316,6 +318,7 @@ namespace LLM
             _pullToRefreshIndicator = (Border)GetTemplateChild("PullToRefreshIndicator");
             _pullProgressBar = (ProgressBar)GetTemplateChild("PullProgressBar");
             _refreshProgressRing = (ProgressRing)GetTemplateChild("RefreshProgressRing");
+            _loadMoreProgressBar = (ProgressBar)GetTemplateChild("LoadMoreProgressBar");
 
             if(SupportPullToRefresh)
             {
@@ -332,14 +335,20 @@ namespace LLM
             var bottomOffset = _scrollViewer.ExtentHeight - _scrollViewer.VerticalOffset - _scrollViewer.ViewportHeight;
             if (!_isLoadingMore && LoadMore != null && bottomOffset < 300)
             {
-                _isLoadingMore = true;
+                ToggleLoadingMoreStatus(true);
                 LoadMore();
             }
         }
 
-        public void FinishLoadMore()
+        public void FinishLoadingMore()
         {
-            _isLoadingMore = false;
+            ToggleLoadingMoreStatus(false);
+        }
+
+        private void ToggleLoadingMoreStatus(bool isLoadingMore)
+        {
+            _isLoadingMore = isLoadingMore;
+            _loadMoreProgressBar.Visibility = isLoadingMore ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void Timer_Tick(object sender, object e)

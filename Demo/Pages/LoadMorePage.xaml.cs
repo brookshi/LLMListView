@@ -40,14 +40,15 @@ namespace Demo.Pages
         {
             Contacts = Contact.GetContacts(30);
             MasterListView.DataContext = this;
-            MasterListView.LoadMore = () =>
+            MasterListView.LoadMore = async () =>
             {
-                if(_currentPageNum < MAX_PAGE)
+                if (_currentPageNum < MAX_PAGE)
                 {
+                    await Task.Delay(2000);
                     _currentPageNum++;
                     Contact.GetContacts(30).ToList().ForEach(o => Contacts.Add(o));
-                    MasterListView.FinishLoadMore();
                 }
+                MasterListView.FinishLoadingMore();
             };
         }
     }
