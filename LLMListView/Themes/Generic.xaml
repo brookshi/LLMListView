@@ -89,8 +89,8 @@
                                 </Grid>
                             </ScrollViewer>
                         </Border>
-                        <ProgressRing x:Name="RefreshProgressRing" Width="40" MinWidth="40" Height="40" MinHeight="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="30" IsActive="False" Foreground="{TemplateBinding RefreshIconColor}"/>
-                        <ProgressBar x:Name="LoadMoreProgressBar" IsIndeterminate="True" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="10" Foreground="{TemplateBinding RefreshIconColor}" Visibility="Collapsed"/>
+                        <ProgressRing x:Name="RefreshProgressRing" Width="40" MinWidth="40" Height="40" MinHeight="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="30" IsActive="False" Foreground="{TemplateBinding RefreshProgressRingBrush}"/>
+                        <ProgressBar x:Name="LoadMoreProgressBar" IsIndeterminate="True" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0, 0, 0, 20" Foreground="{TemplateBinding LoadMoreProgressBarBrush}" Visibility="Collapsed"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
