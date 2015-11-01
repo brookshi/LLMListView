@@ -40,7 +40,7 @@ namespace Demo.Pages
         {
             Contacts = Contact.GetContacts(50);
             MasterListView.DataContext = this;
-            MasterListView.RefreshData = async () =>
+            MasterListView.Refresh = async () =>
             {
                 await Task.Delay(TimeSpan.FromSeconds(3));
                 Contacts.Clear();

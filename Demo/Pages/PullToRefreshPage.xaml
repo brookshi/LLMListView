@@ -11,7 +11,7 @@
         <ctrl:LLMListView x:Name="MasterListView" 
                           ItemsSource="{Binding Contacts, Mode=OneWay}"
                           ItemTemplate="{StaticResource ContactListViewTemplate}" 
-                          SupportPullToRefresh="True">
+                          CanPullToRefresh="True">
         </ctrl:LLMListView>
     </Grid>
 </Page>

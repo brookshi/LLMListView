@@ -36,17 +36,17 @@ namespace LLM
         private ProgressBar _loadMoreProgressBar;
 
 
-        public Action RefreshData { get; set; }
+        public Action Refresh { get; set; }
 
         public Action LoadMore { get; set; }
 
-        public bool SupportPullToRefresh
+        public bool CanPullToRefresh
         {
-            get { return (bool)GetValue(SupportPullToRefreshProperty); }
-            set { SetValue(SupportPullToRefreshProperty, value); }
+            get { return (bool)GetValue(CanPullToRefreshProperty); }
+            set { SetValue(CanPullToRefreshProperty, value); }
         }
-        public static readonly DependencyProperty SupportPullToRefreshProperty =
-            DependencyProperty.Register("SupportPullToRefresh", typeof(bool), typeof(LLMListView), new PropertyMetadata(false));
+        public static readonly DependencyProperty CanPullToRefreshProperty =
+            DependencyProperty.Register("CanPullToRefresh", typeof(bool), typeof(LLMListView), new PropertyMetadata(false));
 
         public double RefreshAreaHeight
         {
@@ -56,13 +56,22 @@ namespace LLM
         public static readonly DependencyProperty RefreshAreaHeightProperty =
             DependencyProperty.Register("RefreshAreaHeight", typeof(double), typeof(LLMListView), new PropertyMetadata(50.0));
 
-        public Brush RefreshIconColor
+        public Brush RefreshProgressRingBrush
         {
-            get { return (Brush)GetValue(RefreshIconColorProperty); }
-            set { SetValue(RefreshIconColorProperty, value); }
+            get { return (Brush)GetValue(RefreshProgressRingBrushProperty); }
+            set { SetValue(RefreshProgressRingBrushProperty, value); }
         }
-        public static readonly DependencyProperty RefreshIconColorProperty =
-            DependencyProperty.Register("RefreshIconColor", typeof(Brush), typeof(LLMListView), new PropertyMetadata(Application.Current.Resources["ProgressBarForegroundThemeBrush"]));
+        public static readonly DependencyProperty RefreshProgressRingBrushProperty =
+            DependencyProperty.Register("RefreshProgressRingBrush", typeof(Brush), typeof(LLMListView), new PropertyMetadata(Application.Current.Resources["ProgressBarForegroundThemeBrush"]));
+
+        public Brush LoadMoreProgressBarBrush
+        {
+            get { return (Brush)GetValue(LoadMoreProgressBarBrushProperty); }
+            set { SetValue(LoadMoreProgressBarBrushProperty, value); }
+        }
+        public static readonly DependencyProperty LoadMoreProgressBarBrushProperty =
+            DependencyProperty.Register("LoadMoreProgressBarBrush", typeof(Brush), typeof(LLMListView), new PropertyMetadata(Application.Current.Resources["ProgressBarForegroundThemeBrush"]));
+
 
         #region list view item property
 
@@ -198,7 +207,7 @@ namespace LLM
 
         private void InitVisualState()
         {
-            if (SupportPullToRefresh)
+            if (CanPullToRefresh)
             {
                 VisualStateManager.GoToState(this, Normal_State, false);
             }
@@ -216,7 +225,7 @@ namespace LLM
 
         private void InitTimer()
         {
-            if (!SupportPullToRefresh)
+            if (!CanPullToRefresh)
                 return;
 
             _notifyToRefreshTimer = new DispatcherTimer();
@@ -320,7 +329,7 @@ namespace LLM
             _refreshProgressRing = (ProgressRing)GetTemplateChild("RefreshProgressRing");
             _loadMoreProgressBar = (ProgressBar)GetTemplateChild("LoadMoreProgressBar");
 
-            if(SupportPullToRefresh)
+            if(CanPullToRefresh)
             {
                 _scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
                 _scrollViewer.Margin = new Thickness(0, 0, 0, -RefreshAreaHeight);
@@ -382,9 +391,9 @@ namespace LLM
 
             SetRefresh(true);
 
-            if (RefreshData != null)
+            if (Refresh != null)
             {
-                RefreshData();
+                Refresh();
             }
         }
 
@@ -403,7 +412,7 @@ namespace LLM
 
         private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
-            if (!SupportPullToRefresh)
+            if (!CanPullToRefresh)
                 return;
 
             if(e.NextView.VerticalOffset == 0)
@@ -416,7 +425,6 @@ namespace LLM
                 _notifyToRefreshTimer.Stop();
                 _pullProgressBar.Value = 0;
                 _isNotifyToRefreshTimerStarting = false;
-                VisualStateManager.GoToState(this, Normal_State, true);
             }
         }
 
