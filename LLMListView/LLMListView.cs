@@ -16,11 +16,13 @@
 
 using System;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
+using XP;
 
 namespace LLM
 {
@@ -31,10 +33,15 @@ namespace LLM
         private const string Refreshing_State = "Refreshing";
         private const string Normal_State = "Normal";
         private const string Unvalid_State = "Unvalid";
+        private const string RefreshBtn_Refreshing_State = "RefreshBtnRefreshing";
+        private const string RefreshBtn_Normal_State = "RefreshBtnNormal";
+        private const string RefreshBtn_Visible_State = "RefreshBtnVisible";
+        private const string RefreshBtn_Collapse_State = "RefreshBtnCollapse";
 
         private bool _isNotifyToRefreshTimerStarting = false;
         private bool _isRefreshing = false;
         private bool _isLoadingMore = false;
+        private double _lastVerticalOffset = 0;
 
         private ScrollViewer _scrollViewer;
         private Grid _container;
@@ -44,6 +51,7 @@ namespace LLM
         private ProgressBar _pullProgressBar;
         private ProgressRing _refreshProgressRing;
         private ProgressBar _loadMoreProgressBar;
+        private XPButton _refreshButton;
 
 
         public Action Refresh { get; set; }
@@ -82,7 +90,31 @@ namespace LLM
         public static readonly DependencyProperty LoadMoreProgressBarBrushProperty =
             DependencyProperty.Register("LoadMoreProgressBarBrush", typeof(Brush), typeof(LLMListView), new PropertyMetadata(Application.Current.Resources["ProgressBarForegroundThemeBrush"]));
 
+        public Brush RefreshButtonForeground
+        {
+            get { return (Brush)GetValue(RefreshButtonForegroundProperty); }
+            set { SetValue(RefreshButtonForegroundProperty, value); }
+        }
+        public static readonly DependencyProperty RefreshButtonForegroundProperty =
+            DependencyProperty.Register("RefreshButtonForeground", typeof(Brush), typeof(LLMListView), new PropertyMetadata(new SolidColorBrush(Colors.White)));
 
+        public Brush RefreshButtonBackground
+        {
+            get { return (Brush)GetValue(RefreshButtonBackgroundProperty); }
+            set { SetValue(RefreshButtonBackgroundProperty, value); }
+        }
+        public static readonly DependencyProperty RefreshButtonBackgroundProperty =
+            DependencyProperty.Register("RefreshButtonBackground", typeof(Brush), typeof(LLMListView), new PropertyMetadata(new SolidColorBrush(Color.FromArgb(255, 33, 150, 243))));
+
+        public Visibility RefreshButtonVisibility
+        {
+            get { return (Visibility)GetValue(RefreshButtonVisibilityProperty); }
+            set { SetValue(RefreshButtonVisibilityProperty, value); }
+        }
+        public static readonly DependencyProperty RefreshButtonVisibilityProperty =
+            DependencyProperty.Register("RefreshButtonVisibility", typeof(Visibility), typeof(LLMListView), new PropertyMetadata(Visibility.Collapsed));
+
+       
         #region list view item property
 
         public event SwipeProgressEventHandler ItemSwipeProgressInTouch;
@@ -338,18 +370,60 @@ namespace LLM
             _pullProgressBar = (ProgressBar)GetTemplateChild("PullProgressBar");
             _refreshProgressRing = (ProgressRing)GetTemplateChild("RefreshProgressRing");
             _loadMoreProgressBar = (ProgressBar)GetTemplateChild("LoadMoreProgressBar");
+            _refreshButton = (XPButton)GetTemplateChild("RefreshButton");
 
-            if(CanPullToRefresh)
+            InitPullToRefresh();
+            InitRefreshButtonClickEvent();
+
+            _scrollViewer.ViewChanged += _scrollViewer_ViewChanged;
+            SizeChanged += LLMListView_SizeChanged;
+        }
+
+        private void InitRefreshButtonClickEvent()
+        {
+            if (RefreshButtonVisibility == Visibility.Visible)
+            {
+                _refreshButton.Click += (s, e) =>
+                {
+                    if (_isRefreshing)
+                        return;
+
+                    SetRefresh(true);
+                };
+            }
+        }
+
+        private void InitPullToRefresh()
+        {
+            if (CanPullToRefresh)
             {
                 _scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
                 _scrollViewer.Margin = new Thickness(0, 0, 0, -RefreshAreaHeight);
                 _scrollViewer.RenderTransform = new CompositeTransform() { TranslateY = -RefreshAreaHeight };
             }
-            _scrollViewer.ViewChanged += _scrollViewer_ViewChanged;
-            SizeChanged += LLMListView_SizeChanged;
         }
 
         private void _scrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            UpdateRefreshButtonState();
+
+            UpdateLoadingMore();
+        }
+
+        private void UpdateRefreshButtonState()
+        {
+            if (_lastVerticalOffset < _scrollViewer.VerticalOffset)
+            {
+                VisualStateManager.GoToState(this, RefreshBtn_Collapse_State, true);
+            }
+            else
+            {
+                VisualStateManager.GoToState(this, RefreshBtn_Visible_State, true);
+            }
+            _lastVerticalOffset = _scrollViewer.VerticalOffset;
+        }
+
+        private void UpdateLoadingMore()
         {
             var bottomOffset = _scrollViewer.ExtentHeight - _scrollViewer.VerticalOffset - _scrollViewer.ViewportHeight;
             if (!_isLoadingMore && LoadMore != null && bottomOffset < 300)
@@ -400,11 +474,6 @@ namespace LLM
                 return;
 
             SetRefresh(true);
-
-            if (Refresh != null)
-            {
-                Refresh();
-            }
         }
 
         public void SetRefresh(bool isRefresh)
@@ -412,11 +481,15 @@ namespace LLM
             _isRefreshing = isRefresh;
             if (_isRefreshing)
             {
-                VisualStateManager.GoToState(this, Refreshing_State, true);
+                VisualStateManager.GoToState(this, CanPullToRefresh ? Refreshing_State : RefreshBtn_Refreshing_State, true);
+                if (Refresh != null)
+                {
+                    Refresh();
+                }
             }
             else
             {
-                VisualStateManager.GoToState(this, Normal_State, true);
+                VisualStateManager.GoToState(this, CanPullToRefresh ? Normal_State : RefreshBtn_Normal_State, true);
             }
         }
 

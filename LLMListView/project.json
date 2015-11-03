@@ -2,7 +2,7 @@
   "dependencies": {
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0",
     "XPButton": "0.0.1",
-    "XPShadow": "0.0.7"
+    "XPShadow": "0.0.8"
   },
   "frameworks": {
     "uap10.0": {}

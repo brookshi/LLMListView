@@ -124,6 +124,9 @@
     <Compile Include="Pages\NormalFixPage.xaml.cs">
       <DependentUpon>NormalFixPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\RefreshButtonPage.xaml.cs">
+      <DependentUpon>RefreshButtonPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\PullToRefreshPage.xaml.cs">
       <DependentUpon>PullToRefreshPage.xaml</DependentUpon>
     </Compile>
@@ -177,6 +180,10 @@
     <Page Include="Pages\NormalFixPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\RefreshButtonPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\PullToRefreshPage.xaml">
       <SubType>Designer</SubType>
