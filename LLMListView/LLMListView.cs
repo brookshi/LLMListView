@@ -238,48 +238,6 @@ namespace LLM
             Loaded += LLMListView_Loaded;
         }
 
-        private void LLMListView_Loaded(object sender, RoutedEventArgs e)
-        {
-            InitLayout();
-
-            InitTimer();
-
-            InitVisualState();
-        }
-
-        private void InitVisualState()
-        {
-            if (CanPullToRefresh)
-            {
-                VisualStateManager.GoToState(this, Normal_State, false);
-            }
-            else
-            {
-                VisualStateManager.GoToState(this, Unvalid_State, false);
-            }
-        }
-
-        private void InitLayout()
-        {
-            _pullProgressBar.Width = ActualWidth;
-            _loadMoreProgressBar.Width = ActualWidth;
-        }
-
-        private void InitTimer()
-        {
-            if (!CanPullToRefresh)
-                return;
-
-            _notifyToRefreshTimer = new DispatcherTimer();
-            _notifyToRefreshTimer.Interval = TimeSpan.FromMilliseconds(Refresh_Notify_Interval);
-            _notifyToRefreshTimer.Tick += NotifyToRefreshTimer_Tick;
-
-            _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromMilliseconds(Refresh_Status_Interval);
-            _timer.Tick += Timer_Tick;
-            _timer.Start();
-        }
-
         protected override DependencyObject GetContainerForItemOverride()
         {
             LLMListViewItem item = new LLMListViewItem();
@@ -360,10 +318,63 @@ namespace LLM
             BindingOperations.SetBinding(item, originProperty, binding);
         }
 
+        private void LLMListView_Loaded(object sender, RoutedEventArgs e)
+        {
+            InitLayout();
+
+            InitTimer();
+
+            InitVisualState();
+        }
+
+        private void InitLayout()
+        {
+            _pullProgressBar.Width = ActualWidth;
+            _loadMoreProgressBar.Width = ActualWidth;
+        }
+
+        private void InitTimer()
+        {
+            if (!CanPullToRefresh)
+                return;
+
+            _notifyToRefreshTimer = new DispatcherTimer();
+            _notifyToRefreshTimer.Interval = TimeSpan.FromMilliseconds(Refresh_Notify_Interval);
+            _notifyToRefreshTimer.Tick += NotifyToRefreshTimer_Tick;
+
+            _timer = new DispatcherTimer();
+            _timer.Interval = TimeSpan.FromMilliseconds(Refresh_Status_Interval);
+            _timer.Tick += Timer_Tick;
+            _timer.Start();
+        }
+
+        private void InitVisualState()
+        {
+            if (CanPullToRefresh)
+            {
+                VisualStateManager.GoToState(this, Normal_State, false);
+            }
+            else
+            {
+                VisualStateManager.GoToState(this, Unvalid_State, false);
+            }
+        }
+
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
+            InitControls();
+
+            InitScrollViewEventsForPullToRefresh();
+
+            InitRefreshButtonClickEvent();
+
+            InitOtherEvents();
+        }
+
+        private void InitControls()
+        {
             _scrollViewer = (ScrollViewer)GetTemplateChild("ScrollViewer");
             _container = (Grid)GetTemplateChild("Container");
             _pullToRefreshIndicator = (Border)GetTemplateChild("PullToRefreshIndicator");
@@ -371,12 +382,16 @@ namespace LLM
             _refreshProgressRing = (ProgressRing)GetTemplateChild("RefreshProgressRing");
             _loadMoreProgressBar = (ProgressBar)GetTemplateChild("LoadMoreProgressBar");
             _refreshButton = (XPButton)GetTemplateChild("RefreshButton");
+        }
 
-            InitPullToRefresh();
-            InitRefreshButtonClickEvent();
-
-            _scrollViewer.ViewChanged += _scrollViewer_ViewChanged;
-            SizeChanged += LLMListView_SizeChanged;
+        private void InitScrollViewEventsForPullToRefresh()
+        {
+            if (CanPullToRefresh)
+            {
+                _scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
+                _scrollViewer.Margin = new Thickness(0, 0, 0, -RefreshAreaHeight);
+                _scrollViewer.RenderTransform = new CompositeTransform() { TranslateY = -RefreshAreaHeight };
+            }
         }
 
         private void InitRefreshButtonClickEvent()
@@ -393,14 +408,10 @@ namespace LLM
             }
         }
 
-        private void InitPullToRefresh()
+        private void InitOtherEvents()
         {
-            if (CanPullToRefresh)
-            {
-                _scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
-                _scrollViewer.Margin = new Thickness(0, 0, 0, -RefreshAreaHeight);
-                _scrollViewer.RenderTransform = new CompositeTransform() { TranslateY = -RefreshAreaHeight };
-            }
+            _scrollViewer.ViewChanged += _scrollViewer_ViewChanged;
+            SizeChanged += LLMListView_SizeChanged;
         }
 
         private void _scrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -433,16 +444,35 @@ namespace LLM
             }
         }
 
-        public void FinishLoadingMore()
-        {
-            ToggleLoadingMoreStatus(false);
-        }
-
         private void ToggleLoadingMoreStatus(bool isLoadingMore)
         {
             _isLoadingMore = isLoadingMore;
             _loadMoreProgressBar.Visibility = isLoadingMore ? Visibility.Visible : Visibility.Collapsed;
         }
+
+        public void FinishLoadingMore()
+        {
+            ToggleLoadingMoreStatus(false);
+        }
+
+        public void SetRefresh(bool isRefresh)
+        {
+            _isRefreshing = isRefresh;
+            if (_isRefreshing)
+            {
+                VisualStateManager.GoToState(this, CanPullToRefresh ? Refreshing_State : RefreshBtn_Refreshing_State, true);
+                if (Refresh != null)
+                {
+                    Refresh();
+                }
+            }
+            else
+            {
+                VisualStateManager.GoToState(this, CanPullToRefresh ? Normal_State : RefreshBtn_Normal_State, true);
+            }
+        }
+
+        #region events
 
         private void Timer_Tick(object sender, object e)
         {
@@ -476,29 +506,12 @@ namespace LLM
             SetRefresh(true);
         }
 
-        public void SetRefresh(bool isRefresh)
-        {
-            _isRefreshing = isRefresh;
-            if (_isRefreshing)
-            {
-                VisualStateManager.GoToState(this, CanPullToRefresh ? Refreshing_State : RefreshBtn_Refreshing_State, true);
-                if (Refresh != null)
-                {
-                    Refresh();
-                }
-            }
-            else
-            {
-                VisualStateManager.GoToState(this, CanPullToRefresh ? Normal_State : RefreshBtn_Normal_State, true);
-            }
-        }
-
         private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
             if (!CanPullToRefresh)
                 return;
 
-            if(e.NextView.VerticalOffset == 0)
+            if (e.NextView.VerticalOffset == 0)
             {
                 _timer.Start();
             }
@@ -515,5 +528,7 @@ namespace LLM
         {
             Clip = new RectangleGeometry() { Rect = new Rect(0, 0, e.NewSize.Width, e.NewSize.Height) };
         }
+
+        #endregion
     }
 }

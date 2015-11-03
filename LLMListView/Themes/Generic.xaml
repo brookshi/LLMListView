@@ -61,6 +61,15 @@
                             </VisualStateGroup>
                             <VisualStateGroup>
                                 <VisualState x:Name="RefreshBtnNormal"/>
+                                <VisualState x:Name="RefreshBtnRefreshing">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshProgressRing" Storyboard.TargetProperty="IsActive">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="True" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup>
                                 <VisualState x:Name="RefreshBtnCollapse">
                                     <Storyboard>
                                         <DoubleAnimation From="0" To="120" Duration="00:00:00.2" Storyboard.TargetName="RefreshButtonBorderTransform" Storyboard.TargetProperty="Y">
@@ -77,13 +86,6 @@
                                                 <SineEase EasingMode="EaseIn"/>
                                             </DoubleAnimation.EasingFunction>
                                         </DoubleAnimation>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="RefreshBtnRefreshing">
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshProgressRing" Storyboard.TargetProperty="IsActive">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="True" />
-                                        </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
