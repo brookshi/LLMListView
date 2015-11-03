@@ -59,6 +59,34 @@
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
+                            <VisualStateGroup>
+                                <VisualState x:Name="RefreshBtnNormal"/>
+                                <VisualState x:Name="RefreshBtnCollapse">
+                                    <Storyboard>
+                                        <DoubleAnimation From="0" To="120" Duration="00:00:00.2" Storyboard.TargetName="RefreshButtonBorderTransform" Storyboard.TargetProperty="Y">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="RefreshBtnVisible">
+                                    <Storyboard>
+                                        <DoubleAnimation From="120" To="0" Duration="00:00:00.2" Storyboard.TargetName="RefreshButtonBorderTransform" Storyboard.TargetProperty="Y">
+                                            <DoubleAnimation.EasingFunction>
+                                                <SineEase EasingMode="EaseIn"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="RefreshBtnRefreshing">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshProgressRing" Storyboard.TargetProperty="IsActive">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="True" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
                             <ScrollViewer x:Name="ScrollViewer" 
@@ -92,14 +120,17 @@
                         </Border>
                         <ProgressRing x:Name="RefreshProgressRing" Width="40" MinWidth="40" Height="40" MinHeight="40" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="30" IsActive="False" Foreground="{TemplateBinding RefreshProgressRingBrush}"/>
                         <ProgressBar x:Name="LoadMoreProgressBar" IsIndeterminate="True" Width="100" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0, 0, 0, 20" Foreground="{TemplateBinding LoadMoreProgressBarBrush}" Visibility="Collapsed"/>
-                        <Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="30">
-                            <xp:Shadow x:Name="RefreshButton" Z_Depth="1" CornerRadius="0.5">
-                                <xp:XPButton IconPosition="OnlyIcon" 
+                        <Border x:Name="RefreshButtonBorder" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0, 0, 30, 50" Visibility="{TemplateBinding RefreshButtonVisibility}">
+                            <Border.RenderTransform>
+                                <TranslateTransform x:Name="RefreshButtonBorderTransform"/>
+                            </Border.RenderTransform>
+                            <xp:Shadow Z_Depth="1" CornerRadius="0.5">
+                                <xp:XPButton x:Name="RefreshButton" IconPosition="OnlyIcon" 
                                              Icon="Refresh"
                                              IconSize="24"
                                              FontWeight="Bold" 
-                                             Foreground="White" 
-                                             Background="#2196F3"
+                                             Foreground="{TemplateBinding RefreshButtonForeground}" 
+                                             Background="{TemplateBinding RefreshButtonBackground}"
                                              CornerRadius="28"
                                              BorderThickness="0"
                                              Height="56" 

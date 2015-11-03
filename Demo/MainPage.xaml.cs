@@ -69,6 +69,12 @@ namespace Demo
             SplitView.IsPaneOpen = false;
         }
 
+        private void NavigateToRefreshButton(object sender, RoutedEventArgs e)
+        {
+            FrameContent.Navigate(typeof(RefreshButtonPage));
+            SplitView.IsPaneOpen = false;
+        }
+
         private void NavigateToLoadMore(object sender, RoutedEventArgs e)
         {
             FrameContent.Navigate(typeof(LoadMorePage));
@@ -80,6 +86,5 @@ namespace Demo
             FrameContent.Navigate(typeof(LoadMoreForGroupListPage));
             SplitView.IsPaneOpen = false;
         }
-        
     }
 }
