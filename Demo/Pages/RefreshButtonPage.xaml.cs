@@ -42,5 +42,10 @@ namespace Demo.Pages
                 MasterListView.SetRefresh(false);
             };
         }
+
+        private void MasterListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+
+        }
     }
 }
