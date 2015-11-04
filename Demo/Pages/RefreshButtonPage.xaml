@@ -12,7 +12,9 @@
                           ItemsSource="{Binding Contacts, Mode=OneWay}"
                           ItemTemplate="{StaticResource ContactListViewTemplate}" 
                           CanPullToRefresh="True"
-                          RefreshButtonVisibility="{x:Bind RefreshBtnVisibility}">
+                          RefreshButtonVisibility="{x:Bind RefreshBtnVisibility}"
+                          IsItemClickEnabled="True"
+                          ItemClick="MasterListView_ItemClick">
         </ctrl:LLMListView>
     </Grid>
 </Page>

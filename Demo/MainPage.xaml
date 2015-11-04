@@ -45,7 +45,7 @@
                     <Button Style="{StaticResource HomeButtonStyle}" 
                             HorizontalAlignment="Stretch" 
                             HorizontalContentAlignment="Left" 
-                            Content="Refresh Button" 
+                            Content="Button(desktop) and Pull(mobile)" 
                             Click="NavigateToRefreshButton" />
                     <Button Style="{StaticResource HomeButtonStyle}" 
                             HorizontalAlignment="Stretch" 
@@ -57,6 +57,9 @@
                             HorizontalContentAlignment="Left" 
                             Content="Load More For Group List" 
                             Click="NavigateToLoadMoreForGroup" />
+                    <ListView>
+                        <ListViewItem></ListViewItem>
+                    </ListView>
                 </StackPanel>
             </SplitView.Pane>
             <Frame x:Name="FrameContent"/>

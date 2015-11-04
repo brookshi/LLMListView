@@ -461,7 +461,7 @@ namespace LLM
             _isRefreshing = isRefresh;
             if (_isRefreshing)
             {
-                VisualStateManager.GoToState(this, CanPullToRefresh && Utils.IsOnMobile ? Refreshing_State : RefreshBtn_Refreshing_State, true);
+                VisualStateManager.GoToState(this, RefreshState, true);
                 if (Refresh != null)
                 {
                     Refresh();
@@ -469,9 +469,11 @@ namespace LLM
             }
             else
             {
-                VisualStateManager.GoToState(this, CanPullToRefresh && Utils.IsOnMobile ? Normal_State : RefreshBtn_Normal_State, true);
+                VisualStateManager.GoToState(this, RefreshState, true);
             }
         }
+
+        private string RefreshState { get { return CanPullToRefresh && Utils.IsOnMobile ? Refreshing_State : RefreshBtn_Refreshing_State; } }
 
         #region events
 
