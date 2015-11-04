@@ -1,4 +1,5 @@
 ﻿using ListViewSample.Model;
+using LLM;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,6 +14,7 @@ namespace Demo.Pages
     public sealed partial class RefreshButtonPage : Page
     {
         ObservableCollection<Contact> _contacts = new ObservableCollection<Contact>();
+        public Visibility RefreshBtnVisibility { get { return Utils.IsOnMobile ? Visibility.Collapsed : Visibility.Visible; } }
 
         public ObservableCollection<Contact> Contacts
         {
