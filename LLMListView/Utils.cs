@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using Windows.ApplicationModel.Resources.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
@@ -65,6 +66,15 @@ namespace LLM
                     return parentOfParent;
             }
             return null;
+        }
+
+        public static bool IsOnMobile
+        {
+            get
+            {
+                var qualifierValues = ResourceContext.GetForCurrentView().QualifierValues;
+                return qualifierValues.ContainsKey("DeviceFamily") && qualifierValues["DeviceFamily"] == "Mobile";
+            }
         }
     }
 }

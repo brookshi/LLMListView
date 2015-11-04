@@ -15,6 +15,7 @@
 #endregion
 
 using System;
+using Windows.ApplicationModel.Resources.Core;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -335,7 +336,7 @@ namespace LLM
 
         private void InitTimer()
         {
-            if (!CanPullToRefresh)
+            if (!CanPullToRefresh || !Utils.IsOnMobile)
                 return;
 
             _notifyToRefreshTimer = new DispatcherTimer();
@@ -350,7 +351,7 @@ namespace LLM
 
         private void InitVisualState()
         {
-            if (CanPullToRefresh)
+            if (CanPullToRefresh && Utils.IsOnMobile)
             {
                 VisualStateManager.GoToState(this, Normal_State, false);
             }
@@ -386,7 +387,7 @@ namespace LLM
 
         private void InitScrollViewEventsForPullToRefresh()
         {
-            if (CanPullToRefresh)
+            if (CanPullToRefresh && Utils.IsOnMobile)
             {
                 _scrollViewer.ViewChanging += ScrollViewer_ViewChanging;
                 _scrollViewer.Margin = new Thickness(0, 0, 0, -RefreshAreaHeight);
@@ -460,7 +461,7 @@ namespace LLM
             _isRefreshing = isRefresh;
             if (_isRefreshing)
             {
-                VisualStateManager.GoToState(this, CanPullToRefresh ? Refreshing_State : RefreshBtn_Refreshing_State, true);
+                VisualStateManager.GoToState(this, CanPullToRefresh && Utils.IsOnMobile ? Refreshing_State : RefreshBtn_Refreshing_State, true);
                 if (Refresh != null)
                 {
                     Refresh();
@@ -468,7 +469,7 @@ namespace LLM
             }
             else
             {
-                VisualStateManager.GoToState(this, CanPullToRefresh ? Normal_State : RefreshBtn_Normal_State, true);
+                VisualStateManager.GoToState(this, CanPullToRefresh && Utils.IsOnMobile ? Normal_State : RefreshBtn_Normal_State, true);
             }
         }
 
@@ -508,7 +509,7 @@ namespace LLM
 
         private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
-            if (!CanPullToRefresh)
+            if (!CanPullToRefresh || !Utils.IsOnMobile)
                 return;
 
             if (e.NextView.VerticalOffset == 0)
