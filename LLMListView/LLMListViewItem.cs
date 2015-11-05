@@ -31,7 +31,6 @@ namespace LLM
         private RectangleGeometry _swipeLayerClip;
         private ContentControl _rightSwipeContent;
         private ContentControl _leftSwipeContent;
-        private Border _mainLayer;
         private SwipeReleaseAnimationConstructor _swipeAnimationConstructor;
         private bool _isTriggerInTouch = false;
 
@@ -201,8 +200,7 @@ namespace LLM
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            _mainLayer = (Border)GetTemplateChild("MainLayer");
-            _mainLayerTransform = (TranslateTransform)GetTemplateChild("MainLayerTransform");
+            _mainLayerTransform = (TranslateTransform)GetTemplateChild("ContentPresenterTranslateTransform");
             _swipeLayerClipTransform = (ScaleTransform)GetTemplateChild("SwipeLayerClipTransform");
             _swipeLayerClip = (RectangleGeometry)GetTemplateChild("SwipeLayerClip");
             _rightSwipeContent = (ContentControl)GetTemplateChild("RightSwipeContent");
