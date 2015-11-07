@@ -469,9 +469,11 @@ namespace LLM
             }
             else
             {
-                VisualStateManager.GoToState(this, RefreshState, true);
+                VisualStateManager.GoToState(this, NormalState, true);
             }
         }
+
+        private string NormalState { get { return CanPullToRefresh && Utils.IsOnMobile ? Normal_State : RefreshBtn_Normal_State; } }
 
         private string RefreshState { get { return CanPullToRefresh && Utils.IsOnMobile ? Refreshing_State : RefreshBtn_Refreshing_State; } }
 
