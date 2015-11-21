@@ -428,7 +428,7 @@ namespace LLM
             {
                 VisualStateManager.GoToState(this, RefreshBtn_Collapse_State, true);
             }
-            else
+            else if(_lastVerticalOffset > _scrollViewer.VerticalOffset)
             {
                 VisualStateManager.GoToState(this, RefreshBtn_Visible_State, true);
             }
