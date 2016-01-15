@@ -83,6 +83,14 @@ namespace LLM
         public static readonly DependencyProperty RefreshProgressRingBrushProperty =
             DependencyProperty.Register("RefreshProgressRingBrush", typeof(Brush), typeof(LLMListView), new PropertyMetadata(Application.Current.Resources["ProgressBarForegroundThemeBrush"]));
 
+        public Brush RefreshProgressBarBrush
+        {
+            get { return (Brush)GetValue(RefreshProgressBarBrushProperty); }
+            set { SetValue(RefreshProgressBarBrushProperty, value); }
+        }
+        public static readonly DependencyProperty RefreshProgressBarBrushProperty =
+            DependencyProperty.Register("RefreshProgressBarBrush", typeof(Brush), typeof(LLMListView), new PropertyMetadata(Application.Current.Resources["ProgressBarForegroundThemeBrush"]));
+
         public Brush LoadMoreProgressBarBrush
         {
             get { return (Brush)GetValue(LoadMoreProgressBarBrushProperty); }
@@ -321,14 +329,14 @@ namespace LLM
 
         private void LLMListView_Loaded(object sender, RoutedEventArgs e)
         {
-            InitLayout();
-
             InitTimer();
 
             InitVisualState();
+
+            UpdateProgressBarLayout();
         }
 
-        private void InitLayout()
+        private void UpdateProgressBarLayout()
         {
             _pullProgressBar.Width = ActualWidth;
             _loadMoreProgressBar.Width = ActualWidth;
@@ -532,6 +540,7 @@ namespace LLM
         private void LLMListView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             Clip = new RectangleGeometry() { Rect = new Rect(0, 0, e.NewSize.Width, e.NewSize.Height) };
+            UpdateProgressBarLayout();
         }
 
         #endregion
