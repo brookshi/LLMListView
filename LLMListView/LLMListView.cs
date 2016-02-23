@@ -245,6 +245,7 @@ namespace LLM
         {
             DefaultStyleKey = typeof(LLMListView);
             Loaded += LLMListView_Loaded;
+            Unloaded += LLMListView_OnUnloaded;
         }
 
         protected override DependencyObject GetContainerForItemOverride()
@@ -334,6 +335,14 @@ namespace LLM
             InitVisualState();
 
             UpdateProgressBarLayout();
+        }
+
+        private void LLMListView_OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            _timer.Tick -= Timer_Tick;
+            _timer.Stop();
+            _notifyToRefreshTimer.Tick -= NotifyToRefreshTimer_Tick;
+            _notifyToRefreshTimer.Stop();
         }
 
         private void UpdateProgressBarLayout()
