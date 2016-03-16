@@ -16,9 +16,9 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <ctrl:LLMListView x:Name="MasterListView"
                           IsItemClickEnabled="True"
-                          ItemRightActionRateForSwipeLength="0.5"
-                          ItemRightSwipeMaxLength="135"
-                          ItemRightSwipeMode="{Binding Culture,
+                          ItemLeftActionRateForSwipeLength="0.5"
+                          ItemLeftSwipeMaxLength="135"
+                          ItemLeftSwipeMode="{Binding Culture,
                                                        Converter={StaticResource LangConverter}}"
                           ItemTemplate="{StaticResource ContactListViewTemplate}"
                           ItemsSource="{x:Bind Contacts, Mode=OneWay}"

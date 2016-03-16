@@ -44,9 +44,9 @@ namespace LLM
             return constructor;
         }
 
-        public void DisplaySwipeAnimation(AnimationCallback beginTriggerCallback, Action triggerCompleteCallback, AnimationCallback beginRestoreCallback, Action restoreCompleteCallback)
+        public void DisplaySwipeAnimation(SwipeDirection direction, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback, AnimationCallback beginRestoreCallback, Action restoreCompleteCallback)
         {
-            var swipeAnimator = GetSwipeAnimator(_config.SwipeMode);
+            var swipeAnimator = GetSwipeAnimator(_config.GetSwipeMode(direction));
 
             if (swipeAnimator == null)
                 return;
@@ -55,7 +55,7 @@ namespace LLM
 
             if (swipeAnimator.ShouldTriggerAction(Config))
             {
-                swipeAnimator.ActionTrigger(Config, beginTriggerCallback, triggerCompleteCallback);
+                swipeAnimator.ActionTrigger(direction, Config, beginTriggerCallback, triggerCompleteCallback);
             }
             else
             {
@@ -84,13 +84,13 @@ namespace LLM
     public interface ISwipeAnimator
     {
         void Restore(SwipeConfig config, AnimationCallback beginRestoreCallback, Action restoreCompleteCallback);
-        void ActionTrigger(SwipeConfig config, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback);
+        void ActionTrigger(SwipeDirection direction, SwipeConfig config, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback);
         bool ShouldTriggerAction(SwipeConfig config);
     }
 
     public abstract class BaseSwipeAnimator : ISwipeAnimator
     {
-        public abstract void ActionTrigger(SwipeConfig config, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback);
+        public abstract void ActionTrigger(SwipeDirection direction, SwipeConfig config, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback);
 
         public virtual bool ShouldTriggerAction(SwipeConfig config)
         {
@@ -129,7 +129,7 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new CollapseSwipeAnimator();
 
-        public override void ActionTrigger(SwipeConfig config, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback)
+        public override void ActionTrigger(SwipeDirection direction, SwipeConfig config, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback)
         {
             beginTriggerCallback?.Invoke(config.EasingFunc, 0, config.Duration);
 
@@ -147,7 +147,7 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new FixedSwipeAnimator();
 
-        public override void ActionTrigger(SwipeConfig config, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback)
+        public override void ActionTrigger(SwipeDirection direction, SwipeConfig config, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback)
         {
             var targetWidth = config.TriggerActionTargetWidth;
             var targetX = config.Direction == SwipeDirection.Left ? targetWidth : -targetWidth;
@@ -160,7 +160,7 @@ namespace LLM
                 triggerCompleteCallback?.Invoke();
 
                 config.SwipeClipTransform.ScaleX = 1;
-                if(config.Direction == SwipeDirection.Left)
+                if(direction == SwipeDirection.Left)
                     config.SwipeClipRectangle.Rect = new Rect(0, 0, targetWidth, config.SwipeClipRectangle.Rect.Height);
                 else
                     config.SwipeClipRectangle.Rect = new Rect(config.ItemActualWidth - targetWidth, 0, targetWidth, config.SwipeClipRectangle.Rect.Height);
@@ -172,7 +172,7 @@ namespace LLM
     {
         public readonly static ISwipeAnimator Instance = new ExpandSwipeAnimator();
 
-        public override void ActionTrigger(SwipeConfig config, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback)
+        public override void ActionTrigger(SwipeDirection direction, SwipeConfig config, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback)
         {
             var targetX = config.Direction == SwipeDirection.Left ? config.ItemActualWidth : -config.ItemActualWidth;
             var clipScaleX = config.ItemActualWidth / config.CurrentSwipeWidth;

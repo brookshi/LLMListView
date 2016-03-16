@@ -74,7 +74,10 @@ namespace LLM
 
         public double ActionRateForSwipeLength { get { return Direction == SwipeDirection.Left ? LeftActionRateForSwipeLength : RightActionRateForSwipeLength; } }
 
-        public SwipeMode SwipeMode { get { return Direction == SwipeDirection.Left ? LeftSwipeMode : RightSwipeMode; } }
+        public SwipeMode GetSwipeMode(SwipeDirection swipeDirection)
+        {
+            return swipeDirection == SwipeDirection.Left ? LeftSwipeMode : RightSwipeMode;
+        }
 
         public double CurrentSwipeRate { get { return CurrentSwipeWidth / ItemActualWidth / SwipeLengthRate; } }
 

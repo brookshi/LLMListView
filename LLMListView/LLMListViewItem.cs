@@ -319,11 +319,10 @@ namespace LLM
         protected override void OnManipulationCompleted(ManipulationCompletedRoutedEventArgs e)
         {
             var oldDirection = Config.Direction;
-            bool isFixMode = Config.SwipeMode == SwipeMode.Fix;
             var swipeRate = e.Cumulative.Translation.X / ActualWidth * Config.SwipeLengthRate;
             _swipeAnimationConstructor.Config.CurrentSwipeWidth = Math.Abs(_mainLayerTransform.X);
 
-            _swipeAnimationConstructor.DisplaySwipeAnimation(
+            _swipeAnimationConstructor.DisplaySwipeAnimation(oldDirection,
                 (easingFunc, itemToX, duration) => ReleaseAnimationBeginTrigger(oldDirection, easingFunc, itemToX, duration),
                 () => ReleaseAnimationTriggerComplete(oldDirection),
                 (easingFunc, itemToX, duration) => ReleaseAnimationBeginRestore(oldDirection, easingFunc, itemToX, duration),
@@ -340,7 +339,7 @@ namespace LLM
 
         private void ReleaseAnimationTriggerComplete(SwipeDirection direction)
         {
-            if (Config.SwipeMode == SwipeMode.Fix)
+            if (Config.GetSwipeMode(direction) == SwipeMode.Fix)
             {
                 Config.Direction = direction;
             }
