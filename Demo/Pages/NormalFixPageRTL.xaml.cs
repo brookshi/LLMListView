@@ -79,7 +79,7 @@ namespace Demo.Pages
 
         private void AddSwipeTemplate()
         {
-            MasterListView.ItemRightSwipeContentTemplate = CreateTemplate();
+            MasterListView.ItemLeftSwipeContentTemplate = CreateTemplate();
         }
 
         DataTemplate CreateTemplate()
