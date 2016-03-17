@@ -40,6 +40,11 @@
                             Style="{StaticResource HomeButtonStyle}" />
                     <Button HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left"
+                            Click="NormalFixPageWithDynamicTemplate"
+                            Content="Normal Fix Swipe With Dynamic Template"
+                            Style="{StaticResource HomeButtonStyle}" />
+                    <Button HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
                             Click="NavigateToNormalFixRTL"
                             Content="Normal Fix Swipe RTL"
                             Style="{StaticResource HomeButtonStyle}" />

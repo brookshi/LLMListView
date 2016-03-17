@@ -305,7 +305,7 @@ namespace LLM
             SwipeProgressInTouch?.Invoke(this, new SwipeProgressEventArgs(Config.Direction, cumulativeX, deltaX, Math.Abs(cumulativeX) / ActualWidth));
         }
 
-        private void ResetSwipe()
+        public void ResetSwipe()
         {
             if (Config == null)
                 return;
@@ -314,6 +314,14 @@ namespace LLM
             _swipeLayerClip.Rect = new Rect(0, 0, 0, 0);
             _mainLayerTransform.X = 0;
             _isTriggerInTouch = false;
+        }
+
+        public void ResetSwipeWithAnimation()
+        {
+            FixedSwipeAnimator.Instance.Restore(Config, null, () =>
+            {
+                ResetSwipe();
+            });
         }
 
         protected override void OnManipulationCompleted(ManipulationCompletedRoutedEventArgs e)
