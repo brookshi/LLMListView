@@ -12,8 +12,8 @@
                           ItemsSource="{Binding Contacts, Mode=OneWay}"
                           ItemTemplate="{StaticResource ContactListViewTemplate}" 
                           CanPullToRefresh="True"
-                          RefreshIcon="Refresh"
-                          RefreshButtonVisibility="{x:Bind RefreshBtnVisibility}">
+                          FloatButtonIcon="Refresh"
+                          FloatButtonVisibility="{x:Bind RefreshBtnVisibility}">
             <ctrl:LLMListView.EmptyDataTemplate>
                 <DataTemplate>
                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"
