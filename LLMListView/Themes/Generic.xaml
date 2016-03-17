@@ -59,8 +59,8 @@
                                 </VisualState>
                             </VisualStateGroup>
                             <VisualStateGroup>
-                                <VisualState x:Name="RefreshBtnNormal" />
-                                <VisualState x:Name="RefreshBtnRefreshing">
+                                <VisualState x:Name="FloatBtnNormal" />
+                                <VisualState x:Name="FloatBtnWorking">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshProgressRing" Storyboard.TargetProperty="IsActive">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="True" />
@@ -69,11 +69,11 @@
                                 </VisualState>
                             </VisualStateGroup>
                             <VisualStateGroup>
-                                <VisualState x:Name="RefreshBtnCollapse">
+                                <VisualState x:Name="FloatBtnCollapse">
                                     <Storyboard>
                                         <DoubleAnimation Duration="00:00:00.2"
                                                          From="0"
-                                                         Storyboard.TargetName="RefreshButtonBorderTransform"
+                                                         Storyboard.TargetName="FloatButtonBorderTransform"
                                                          Storyboard.TargetProperty="Y"
                                                          To="120">
                                             <DoubleAnimation.EasingFunction>
@@ -82,11 +82,11 @@
                                         </DoubleAnimation>
                                     </Storyboard>
                                 </VisualState>
-                                <VisualState x:Name="RefreshBtnVisible">
+                                <VisualState x:Name="FloatBtnVisible">
                                     <Storyboard>
                                         <DoubleAnimation Duration="00:00:00.2"
                                                          From="120"
-                                                         Storyboard.TargetName="RefreshButtonBorderTransform"
+                                                         Storyboard.TargetName="FloatButtonBorderTransform"
                                                          Storyboard.TargetProperty="Y"
                                                          To="0">
                                             <DoubleAnimation.EasingFunction>
@@ -168,32 +168,32 @@
                                      Foreground="{TemplateBinding LoadMoreProgressBarBrush}"
                                      IsIndeterminate="True"
                                      Visibility="Collapsed" />
-                        <Border x:Name="RefreshButtonBorder"
+                        <Border x:Name="FloatButtonBorder"
                                 Margin="0, 0, 30, 50"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
-                                Visibility="{TemplateBinding RefreshButtonVisibility}">
+                                Visibility="{TemplateBinding FloatButtonVisibility}">
                             <Border.RenderTransform>
-                                <TranslateTransform x:Name="RefreshButtonBorderTransform" />
+                                <TranslateTransform x:Name="FloatButtonBorderTransform" />
                             </Border.RenderTransform>
                             <Grid>
-                                <Image x:Name="RefreshButtonShadow"
+                                <Image x:Name="FloatButtonShadow"
                                        Width="62"
                                        Height="62"
                                        Source=""
                                        Stretch="Fill" />
-                                <xp:XPButton x:Name="RefreshButton"
+                                <xp:XPButton x:Name="FloatButton"
                                              Width="56"
                                              Height="56"
                                              Margin="0, 0, 0, 2"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Center"
-                                             Background="{TemplateBinding RefreshButtonBackground}"
+                                             Background="{TemplateBinding FloatButtonBackground}"
                                              BorderThickness="0"
                                              CornerRadius="28"
                                              FontWeight="Bold"
-                                             Foreground="{TemplateBinding RefreshButtonForeground}"
-                                             Icon="{TemplateBinding RefreshIcon}"
+                                             Foreground="{TemplateBinding FloatButtonForeground}"
+                                             Icon="{TemplateBinding FloatButtonIcon}"
                                              IconPosition="OnlyIcon"
                                              IconSize="24" />
                             </Grid>
