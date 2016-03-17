@@ -1,0 +1,20 @@
+﻿<Page x:Class="Demo.Pages.NormalFixPageWithDynamicTemplate"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ctrl="using:LLM"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="using:Demo.Pages"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <ctrl:LLMListView x:Name="MasterListView"
+                          IsItemClickEnabled="True"
+                          ItemLeftSwipeMode="None"
+                          ItemRightActionRateForSwipeLength="0.5"
+                          ItemRightSwipeMaxLength="135"
+                          ItemRightSwipeMode="Fix"
+                          ItemTemplate="{StaticResource ContactListViewTemplate}"
+                          ItemsSource="{x:Bind Contacts, Mode=OneWay}"
+                          SelectionMode="Single" />
+    </Grid>
+</Page>

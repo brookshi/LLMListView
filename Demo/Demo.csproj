@@ -123,11 +123,14 @@
     <Compile Include="Pages\NormalExpandAndCollapsePage.xaml.cs">
       <DependentUpon>NormalExpandAndCollapsePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\NormalFixPage.xaml.cs">
+      <DependentUpon>NormalFixPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\NormalFixPageRTL.xaml.cs">
       <DependentUpon>NormalFixPageRTL.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\NormalFixPage.xaml.cs">
-      <DependentUpon>NormalFixPage.xaml</DependentUpon>
+    <Compile Include="Pages\NormalFixPageWithDynamicTemplate.xaml.cs">
+      <DependentUpon>NormalFixPageWithDynamicTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\EmptyDataPage.xaml.cs">
       <DependentUpon>EmptyDataPage.xaml</DependentUpon>
@@ -185,11 +188,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\NormalFixPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\NormalFixPageRTL.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\NormalFixPage.xaml">
+    <Page Include="Pages\NormalFixPageWithDynamicTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

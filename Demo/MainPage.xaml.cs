@@ -63,6 +63,12 @@ namespace Demo
             SplitView.IsPaneOpen = false;
         }
 
+        private void NormalFixPageWithDynamicTemplate(object sender, RoutedEventArgs e)
+        {
+            FrameContent.Navigate(typeof(NormalFixPageWithDynamicTemplate));
+            SplitView.IsPaneOpen = false;
+        }
+
         private void NavigateToNormalFixRTL(object sender, RoutedEventArgs e)
         {
             FrameContent.Navigate(typeof(NormalFixPageRTL));
