@@ -167,10 +167,17 @@
                             <Border.RenderTransform>
                                 <TranslateTransform x:Name="RefreshButtonBorderTransform" />
                             </Border.RenderTransform>
-                            <xp:Shadow CornerRadius="0.5" Z_Depth="1">
+                            <Grid>
+                                <Image Width="62"
+                                       Height="62"
+                                       Source="ms-appx:///LLMListView/Assets/shadow.png"
+                                       Stretch="Fill" />
                                 <xp:XPButton x:Name="RefreshButton"
                                              Width="56"
                                              Height="56"
+                                             Margin="0, 0, 0, 2"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
                                              Background="{TemplateBinding RefreshButtonBackground}"
                                              BorderThickness="0"
                                              CornerRadius="28"
@@ -179,7 +186,7 @@
                                              Icon="Refresh"
                                              IconPosition="OnlyIcon"
                                              IconSize="24" />
-                            </xp:Shadow>
+                            </Grid>
                         </Border>
                     </Grid>
                 </ControlTemplate>
