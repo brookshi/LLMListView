@@ -121,6 +121,7 @@
     <Compile Include="SwipeConfig.cs" />
     <Compile Include="SwipeEvent.cs" />
     <Compile Include="Utils.cs" />
+    <Content Include="Assets\shadow.png" />
     <Content Include="Properties\LLMListView.rd.xml" />
   </ItemGroup>
   <ItemGroup>
