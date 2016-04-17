@@ -23,6 +23,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Imaging;
 using XP;
 
 namespace LLM
@@ -38,6 +39,7 @@ namespace LLM
         private const string RefreshBtn_Normal_State = "RefreshBtnNormal";
         private const string RefreshBtn_Visible_State = "RefreshBtnVisible";
         private const string RefreshBtn_Collapse_State = "RefreshBtnCollapse";
+        private const string RefreshBtn_Shadow_Base64 = "iVBORw0KGgoAAAANSUhEUgAAAF4AAABeCAMAAACdDFNcAAAAnFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEAAAAAAAAAAABLnuFaiK1sos4AAAB3l698rdRqrOA4kdc2l+RcfphWa3xejbROm9g7lt4ykNxllr1Ij8eIqsVSksVGks5+lKdPX2thfZM2P0RecoJBRkwdICNicoFMV2BZZG0tV3O/AAAANHRSTlMAAgUICg0SGzEhFg8qDBQYJx8tIzUkETIiOiMgHA4DNzctGAoGKCEeJRwaMzEzLREtIycXLy7ODAAAA/NJREFUaN60k91qg0AQhU+ru4KyK7lZZLVexATBmxD6/u/W0bWMaTH+jd9dCHxz9syItXy8ABnY/PmC1IzRHEVRPIF+8oiD7t5surJyDgPOVWVnaMY44oiccpq2qvGPumoN/bl3QAhObodZXGvGJ+yUV1igMuEFm+0kL7GCkgfIynlAzAPW2eMW66m79f4QvcEmXHjAOnv8wFbqB/sXijEtdtCZUNCCPZ7d6fKG2T9rV1fspFLv/YO9wW4c+ef1nP1Y/jf2AocoZv3DzXgcgO9nxv6NwzwU+1/0kdI4Tq1NxPpp8dkXBHAZ1z+tRnmI4DOqR7oa5qYV18PVFBDC/73OvhoNMTi+YHimGLfL4TMLQWzYLofXHF44Puk5vBB20n4f3kMUryn+5OYdRLny8dBidQphUk3LHfXGegjj7W871E1eQJgipXZO6wZNmlH5493kECen2wl6lT4hztMa0ofq7xDnnlP54ZNNihP0CZUfqk8cxLkm/eUH/Q3iuIuOg94mkKe52KA3p+jrxJpBr9Iz9EjSk/XqRH19rr75adbsdtSGgSh8s8QzjuP4JyHiYku2CxFoYbXq+z9cx3Yi09IFQuaivkICfTOcOePYsTHj3/nx64zHNT/+iLIajYkHfvwedTW2Fb7x49+mtnop7Cc//pctJrzw/HiMU1qakJF9TntFmpCnx0nLXtt9mx4nyZknbvwnpodhqm3LjW9TZdNCROBPXvoQpSf8KP6JWRs/LaNS37bc2uRFYFRnz9qyo+unBbj0hhNvUOb9Q2pcxnmn8yL6Jm9+6lax0XfG1zH5vHXT1ndc+JOKyRN+Uiekb3ZM0w0lP208885TKCbvf+Tkc/rBPCyte8y2+TN9o3YM0ijzd/LJ+xrVeTn+S9m8Z874UF1v+sXCX9b1Wp6F7txeSnMlD/EPi+YaousqSHOFj+6xyi2wz1EF4b9/kVlKVO7wdO5OoSwz/Vr+siZ+96TuRK/L2y+Ri8Dvn2vWTL/NV1/vs7vJ3aMTPuojrQE4ziwqgLEy0Al/jy8MuP51RuofzpEjM/0WP/jfK4Dtj8fguy2A8oIceZue/U8FMNBA95BhoHHG1kU14+Cq1AIVOLj7AO7AgcIgzCP0LFAhRRsC9MP3vzz0Ae6FLFazDw1JIUsBGmj67h9lXnc9fQWqJV1WLxN9ToCyqIU3DpoNNOdtN4z/Yxi67bmBTQPOoKiLMsPn8GMAKbA1CijEhoLEAfSxAVDGWyHnw3OAKJGuhQ0hnINxOKdMi8TWUZZAf/4oniKEEBQD0dNAJLKodVESOx3FL71IUK1KiqFlHFoXhK7yRQKeaxAUJI7q8hrE/32JY+EVlN/KRTd0EkKQDQAAAABJRU5ErkJggg==";
 
         private bool _isNotifyToRefreshTimerStarting = false;
         private bool _isRefreshing = false;
@@ -53,7 +55,7 @@ namespace LLM
         private ProgressRing _refreshProgressRing;
         private ProgressBar _loadMoreProgressBar;
         private XPButton _refreshButton;
-
+        private Image _refreshButtonShadow;
 
         public Action Refresh { get; set; }
 
@@ -339,10 +341,16 @@ namespace LLM
 
         private void LLMListView_OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            _timer.Tick -= Timer_Tick;
-            _timer.Stop();
-            _notifyToRefreshTimer.Tick -= NotifyToRefreshTimer_Tick;
-            _notifyToRefreshTimer.Stop();
+            if (_timer != null)
+            {
+                _timer.Tick -= Timer_Tick;
+                _timer.Stop();
+            }
+            if (_notifyToRefreshTimer != null)
+            {
+                _notifyToRefreshTimer.Tick -= NotifyToRefreshTimer_Tick;
+                _notifyToRefreshTimer.Stop();
+            }
         }
 
         private void UpdateProgressBarLayout()
@@ -400,6 +408,9 @@ namespace LLM
             _refreshProgressRing = (ProgressRing)GetTemplateChild("RefreshProgressRing");
             _loadMoreProgressBar = (ProgressBar)GetTemplateChild("LoadMoreProgressBar");
             _refreshButton = (XPButton)GetTemplateChild("RefreshButton");
+            _refreshButtonShadow = (Image)GetTemplateChild("RefreshButtonShadow");
+
+            Utils.SetBase64ToImage((BitmapSource)_refreshButtonShadow.Source, RefreshBtn_Shadow_Base64);
         }
 
         private void InitScrollViewEventsForPullToRefresh()
