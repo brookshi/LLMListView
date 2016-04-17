@@ -168,9 +168,10 @@
                                 <TranslateTransform x:Name="RefreshButtonBorderTransform" />
                             </Border.RenderTransform>
                             <Grid>
-                                <Image Width="62"
+                                <Image x:Name="RefreshButtonShadow"
+                                       Width="62"
                                        Height="62"
-                                       Source="ms-appx:///LLMListView/Assets/shadow.png"
+                                       Source=""
                                        Stretch="Fill" />
                                 <xp:XPButton x:Name="RefreshButton"
                                              Width="56"
