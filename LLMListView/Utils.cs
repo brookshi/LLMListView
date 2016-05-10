@@ -22,7 +22,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 
-namespace LLM
+namespace LLMListView
 {
     public class Utils
     {

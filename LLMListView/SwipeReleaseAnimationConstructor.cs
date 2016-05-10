@@ -14,6 +14,7 @@
 //   limitations under the License. 
 #endregion
 
+using LLMListView;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,16 +100,14 @@ namespace LLM
 
         public void Restore(SwipeConfig config, AnimationCallback beginRestoreCallback, Action restoreCompleteCallback)
         {
-            if (beginRestoreCallback != null)
-                beginRestoreCallback(config.EasingFunc, 0, config.Duration);
+            beginRestoreCallback?.Invoke(config.EasingFunc, 0, config.Duration);
 
             DisplayAnimation(config, 0, 0, ()=>
             {
                 config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, 0);
                 config.SwipeClipTransform.ScaleX = 1;
 
-                if (restoreCompleteCallback != null)
-                    restoreCompleteCallback();
+                restoreCompleteCallback?.Invoke();
             });
         }
 
@@ -120,8 +119,7 @@ namespace LLM
 
             animStory.Completed += (sender, e) =>
             {
-                if (complete != null)
-                    complete();
+                complete?.Invoke();
             };
 
             animStory.Begin();
@@ -134,13 +132,11 @@ namespace LLM
 
         public override void ActionTrigger(SwipeConfig config, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback)
         {
-            if (beginTriggerCallback != null)
-                beginTriggerCallback(config.EasingFunc, 0, config.Duration);
+            beginTriggerCallback?.Invoke(config.EasingFunc, 0, config.Duration);
 
             DisplayAnimation(config, 0, 0, () =>
             {
-                if (triggerCompleteCallback != null)
-                    triggerCompleteCallback();
+                triggerCompleteCallback?.Invoke();
 
                 config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, 0);
                 config.SwipeClipTransform.ScaleX = 1;
@@ -158,13 +154,11 @@ namespace LLM
             var targetX = config.Direction == SwipeDirection.Left ? targetWidth : -targetWidth;
             var clipScaleX = targetWidth / config.CurrentSwipeWidth;
 
-            if (beginTriggerCallback != null)
-                beginTriggerCallback(config.EasingFunc, targetX, config.Duration);
+            beginTriggerCallback?.Invoke(config.EasingFunc, targetX, config.Duration);
 
             DisplayAnimation(config, targetX, clipScaleX, ()=>
             {
-                if (triggerCompleteCallback != null)
-                    triggerCompleteCallback();
+                triggerCompleteCallback?.Invoke();
 
                 config.SwipeClipTransform.ScaleX = 1;
                 if(config.Direction == SwipeDirection.Left)
@@ -184,13 +178,11 @@ namespace LLM
             var targetX = config.Direction == SwipeDirection.Left ? config.ItemActualWidth : -config.ItemActualWidth;
             var clipScaleX = config.ItemActualWidth / config.CurrentSwipeWidth;
 
-            if (beginTriggerCallback != null)
-                beginTriggerCallback(config.EasingFunc, targetX, config.Duration);
+            beginTriggerCallback?.Invoke(config.EasingFunc, targetX, config.Duration);
 
             DisplayAnimation(config, targetX, clipScaleX, ()=>
             {
-                if (triggerCompleteCallback != null)
-                    triggerCompleteCallback();
+                triggerCompleteCallback?.Invoke();
 
                 config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, 0);
                 config.SwipeClipTransform.ScaleX = 1;

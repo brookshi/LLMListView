@@ -1,27 +1,40 @@
-﻿<Page
-    x:Class="Demo.Pages.NormalFixPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Demo.Pages"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ctrl="using:LLM"
-    mc:Ignorable="d">
+﻿<Page x:Class="Demo.Pages.NormalFixPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ctrl="using:LLM"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="using:Demo.Pages"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <ctrl:LLMListView x:Name="MasterListView" 
-                          ItemsSource="{x:Bind Contacts, Mode=OneWay}"
-                          ItemTemplate="{StaticResource ContactListViewTemplate}" 
-                          ItemLeftSwipeMode="None" 
-                          ItemRightSwipeMode="Fix"
+        <ctrl:LLMListView x:Name="MasterListView"
+                          IsItemClickEnabled="True"
+                          ItemLeftSwipeMode="None"
+                          ItemRightActionRateForSwipeLength="0.5"
                           ItemRightSwipeMaxLength="135"
-                          ItemRightActionRateForSwipeLength="0.5">
+                          ItemRightSwipeMode="Fix"
+                          ItemSwipeProgressInTouch="MasterListView_ItemSwipeProgressInTouch"
+                          ItemTemplate="{StaticResource ContactListViewTemplate}"
+                          ItemsSource="{x:Bind Contacts, Mode=OneWay}"
+                          SelectionChanged="MasterListView_SelectionChanged"
+                          SelectionMode="Single">
             <ctrl:LLMListView.ItemRightSwipeContentTemplate>
                 <DataTemplate>
                     <Grid Background="Red">
-                        <StackPanel x:Name="RightPanel" HorizontalAlignment="Right" Orientation="Horizontal">
-                            <AppBarButton x:Name="Edit" Icon="Edit" Label="Edit" Background="Green" Click="Edit_Click"/>
-                            <AppBarButton x:Name="Delete" Icon="Delete" Label="Delete" Background="Red" Click="Delete_Click"/>
+                        <StackPanel x:Name="RightPanel"
+                                    HorizontalAlignment="Right"
+                                    Orientation="Horizontal">
+                            <AppBarButton x:Name="Edit"
+                                          Background="Green"
+                                          Click="Edit_Click"
+                                          Icon="Edit"
+                                          Label="Edit" />
+                            <AppBarButton x:Name="Delete"
+                                          Background="Red"
+                                          Click="Delete_Click"
+                                          Icon="Delete"
+                                          Label="Delete" />
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
