@@ -14,6 +14,7 @@
 //   limitations under the License. 
 #endregion
 
+using LLMListView;
 using System;
 using Windows.ApplicationModel.Resources.Core;
 using Windows.Foundation;
@@ -278,50 +279,32 @@ namespace LLM
 
         private void Item_SwipeTriggerComplete(object sender, SwipeCompleteEventArgs args)
         {
-            if(ItemSwipeTriggerComplete != null)
-            {
-                ItemSwipeTriggerComplete(sender, args);
-            }
+            ItemSwipeTriggerComplete?.Invoke(sender, args);
         }
 
         private void Item_SwipeTriggerInTouch(object sender, SwipeTriggerEventArgs args)
         {
-            if(ItemSwipeTriggerInTouch != null)
-            {
-                ItemSwipeTriggerInTouch(sender, args);
-            }
+            ItemSwipeTriggerInTouch?.Invoke(sender, args);
         }
 
         private void Item_SwipeBeginRestore(object sender, SwipeReleaseEventArgs args)
         {
-            if(ItemSwipeBeginRestore != null)
-            {
-                ItemSwipeBeginRestore(sender, args);
-            }
+            ItemSwipeBeginRestore?.Invoke(sender, args);
         }
 
         private void Item_SwipeBeginTrigger(object sender, SwipeReleaseEventArgs args)
         {
-            if(ItemSwipeBeginTrigger!=null)
-            {
-                ItemSwipeBeginTrigger(sender, args);
-            }
+            ItemSwipeBeginTrigger?.Invoke(sender, args);
         }
 
         private void Item_SwipeStoreComplete(object sender, SwipeCompleteEventArgs args)
         {
-            if (ItemSwipeRestoreComplete != null)
-            {
-                ItemSwipeRestoreComplete(sender, args);
-            }
+            ItemSwipeRestoreComplete?.Invoke(sender, args);
         }
 
         private void Item_SwipeProgressInTouch(object sender, SwipeProgressEventArgs args)
         {
-            if(ItemSwipeProgressInTouch != null)
-            {
-                ItemSwipeProgressInTouch(sender, args);
-            }
+            ItemSwipeProgressInTouch?.Invoke(sender, args);
         }
 
         private void SetItemBinding(LLMListViewItem item, DependencyProperty originProperty, string targetProperty)
@@ -355,8 +338,11 @@ namespace LLM
 
         private void UpdateProgressBarLayout()
         {
-            _pullProgressBar.Width = ActualWidth;
-            _loadMoreProgressBar.Width = ActualWidth;
+            if(_pullProgressBar != null)
+                _pullProgressBar.Width = ActualWidth;
+
+            if(_loadMoreProgressBar != null)
+                _loadMoreProgressBar.Width = ActualWidth;
         }
 
         private void InitTimer()
@@ -490,10 +476,7 @@ namespace LLM
             if (_isRefreshing)
             {
                 VisualStateManager.GoToState(this, RefreshState, true);
-                if (Refresh != null)
-                {
-                    Refresh();
-                }
+                Refresh?.Invoke();
             }
             else
             {

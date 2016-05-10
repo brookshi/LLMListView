@@ -1,5 +1,6 @@
 ﻿using ListViewSample.Model;
 using LLM;
+using LLMListView;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -58,6 +59,30 @@ namespace Demo.Pages
             })));
             dlg.Commands.Add(new UICommand("Cancel"));
             await dlg.ShowAsync();
+        }
+
+        private void MasterListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void MasterListView_ItemSwipeBeginTrigger(object sender, SwipeReleaseEventArgs args)
+        {
+
+        }
+
+        private void MasterListView_ItemSwipeTriggerInTouch(object sender, SwipeTriggerEventArgs args)
+        {
+        }
+
+        private void MasterListView_ItemSwipeProgressInTouch(object sender, SwipeProgressEventArgs args)
+        {
+            var item = sender as LLMListViewItem;
+            if (item == null)
+                return;
+
+            if (!item.IsSelected)
+                item.IsSelected = true;
         }
     }
 }

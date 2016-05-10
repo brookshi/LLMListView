@@ -14,6 +14,7 @@
 //   limitations under the License. 
 #endregion
 
+using LLMListView;
 using System;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -275,15 +276,9 @@ namespace LLM
             if (_isTriggerInTouch != isTriggerRate)
             {
                 _isTriggerInTouch = isTriggerRate;
-                if(SwipeTriggerInTouch != null)
-                {
-                    SwipeTriggerInTouch(this, new SwipeTriggerEventArgs(Config.Direction, isTriggerRate));
-                }
+                SwipeTriggerInTouch?.Invoke(this, new SwipeTriggerEventArgs(Config.Direction, isTriggerRate));
             }
-            if (SwipeProgressInTouch != null)
-            {
-                SwipeProgressInTouch(this, new SwipeProgressEventArgs(Config.Direction, cumulativeX, deltaX, Math.Abs(cumulativeX) / ActualWidth));
-            }
+            SwipeProgressInTouch?.Invoke(this, new SwipeProgressEventArgs(Config.Direction, cumulativeX, deltaX, Math.Abs(cumulativeX) / ActualWidth));
         }
 
         private void ResetSwipe()
@@ -316,10 +311,7 @@ namespace LLM
 
         private void ReleaseAnimationBeginTrigger(SwipeDirection direction, EasingFunctionBase easingFunc, double itemToX, double duration)
         {
-            if (SwipeBeginTrigger != null)
-            {
-                SwipeBeginTrigger(this, new SwipeReleaseEventArgs(direction, easingFunc, itemToX, duration));
-            }
+            SwipeBeginTrigger?.Invoke(this, new SwipeReleaseEventArgs(direction, easingFunc, itemToX, duration));
         }
 
         private void ReleaseAnimationTriggerComplete(SwipeDirection direction)
@@ -328,26 +320,17 @@ namespace LLM
             {
                 Config.Direction = direction;
             }
-            if (SwipeTriggerComplete != null)
-            {
-                SwipeTriggerComplete(this, new SwipeCompleteEventArgs(direction));
-            }
+            SwipeTriggerComplete?.Invoke(this, new SwipeCompleteEventArgs(direction));
         }
 
         private void ReleaseAnimationBeginRestore(SwipeDirection direction, EasingFunctionBase easingFunc, double itemToX, double duration)
         {
-            if (SwipeBeginRestore != null)
-            {
-                SwipeBeginRestore(this, new SwipeReleaseEventArgs(direction, easingFunc, itemToX, duration));
-            }
+            SwipeBeginRestore?.Invoke(this, new SwipeReleaseEventArgs(direction, easingFunc, itemToX, duration));
         }
 
         private void ReleaseAnimationRestoreComplete(SwipeDirection direction)
         {
-            if (SwipeRestoreComplete != null)
-            {
-                SwipeRestoreComplete(this, new SwipeCompleteEventArgs(direction));
-            }
+            SwipeRestoreComplete?.Invoke(this, new SwipeCompleteEventArgs(direction));
         }
 
         public T GetSwipeControl<T>(SwipeDirection direction, string name) where T : FrameworkElement
