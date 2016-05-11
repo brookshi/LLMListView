@@ -7,29 +7,6 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d">
 
-    <Page.Resources>
-        <ResourceDictionary>
-            <DataTemplate x:Key="SwipeRightTemplate">
-                <Grid Background="Red">
-                    <StackPanel x:Name="RightPanel"
-                                HorizontalAlignment="Right"
-                                Orientation="Horizontal">
-                        <AppBarButton x:Name="Edit"
-                                      Background="Green"
-                                      Click="Edit_Click"
-                                      Icon="Edit"
-                                      Label="Edit" />
-                        <AppBarButton x:Name="Delete"
-                                      Background="Red"
-                                      Click="Delete_Click"
-                                      Icon="Delete"
-                                      Label="Delete" />
-                    </StackPanel>
-                </Grid>
-            </DataTemplate>
-        </ResourceDictionary>
-    </Page.Resources>
-
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <ctrl:LLMListView x:Name="MasterListView"
                           IsItemClickEnabled="True"
@@ -37,10 +14,8 @@
                           ItemRightActionRateForSwipeLength="0.5"
                           ItemRightSwipeMaxLength="135"
                           ItemRightSwipeMode="Fix"
-                          ItemSwipeProgressInTouch="MasterListView_ItemSwipeProgressInTouch"
                           ItemTemplate="{StaticResource ContactListViewTemplate}"
                           ItemsSource="{x:Bind Contacts, Mode=OneWay}"
-                          SelectionChanged="MasterListView_SelectionChanged"
                           SelectionMode="Single" />
     </Grid>
 </Page>
