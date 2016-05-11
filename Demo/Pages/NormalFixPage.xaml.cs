@@ -35,7 +35,14 @@ namespace Demo.Pages
         public NormalFixPage()
         {
             this.InitializeComponent();
+            AddSwipeTemplate();
             Contacts = Contact.GetContacts(140);
+        }
+
+        private void AddSwipeTemplate()
+        {
+            var template = (DataTemplate)Resources["SwipeRightTemplate"];
+            MasterListView.ItemRightSwipeContentTemplate = template;
         }
 
         private async void Edit_Click(object sender, RoutedEventArgs e)
