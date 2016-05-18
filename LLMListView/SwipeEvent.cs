@@ -24,6 +24,7 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace LLM
 {
+    public delegate void SwipeBeginEventHandler(object sender);
     public delegate void SwipeProgressEventHandler(object sender, SwipeProgressEventArgs args);
     public delegate void SwipeCompleteEventHandler(object sender, SwipeCompleteEventArgs args);
     public delegate void SwipeReleaseEventHandler(object sender, SwipeReleaseEventArgs args);

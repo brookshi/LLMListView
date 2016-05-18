@@ -35,6 +35,7 @@ namespace LLM
         private SwipeReleaseAnimationConstructor _swipeAnimationConstructor;
         private bool _isTriggerInTouch = false;
 
+        public event SwipeBeginEventHandler SwipeBeginInTouch;
         public event SwipeProgressEventHandler SwipeProgressInTouch;
         public event SwipeCompleteEventHandler SwipeRestoreComplete;
         public event SwipeCompleteEventHandler SwipeTriggerComplete;
@@ -215,6 +216,7 @@ namespace LLM
 
         protected override void OnManipulationDelta(ManipulationDeltaRoutedEventArgs e)
         {
+            SwipeBeginInTouch?.Invoke(this);
             var cumulativeX = e.Cumulative.Translation.X;
             var deltaX = e.Delta.Translation.X;
 

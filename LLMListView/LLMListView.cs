@@ -126,9 +126,10 @@ namespace LLM
         public static readonly DependencyProperty RefreshButtonVisibilityProperty =
             DependencyProperty.Register("RefreshButtonVisibility", typeof(Visibility), typeof(LLMListView), new PropertyMetadata(Visibility.Collapsed));
 
-       
+
         #region list view item property
 
+        public event SwipeBeginEventHandler ItemSwipeBeginInTouch;
         public event SwipeProgressEventHandler ItemSwipeProgressInTouch;
         public event SwipeCompleteEventHandler ItemSwipeRestoreComplete;
         public event SwipeCompleteEventHandler ItemSwipeTriggerComplete;
@@ -268,6 +269,7 @@ namespace LLM
             SetItemBinding(item, LLMListViewItem.LeftSwipeMaxLengthProperty, "ItemLeftSwipeMaxLength");
             SetItemBinding(item, LLMListViewItem.RightSwipeMaxLengthProperty, "ItemRightSwipeMaxLength");
 
+            item.SwipeBeginInTouch += Item_SwipeBeginInTouch;
             item.SwipeProgressInTouch += Item_SwipeProgressInTouch;
             item.SwipeRestoreComplete += Item_SwipeStoreComplete;
             item.SwipeTriggerComplete += Item_SwipeTriggerComplete;
@@ -301,10 +303,15 @@ namespace LLM
         {
             ItemSwipeRestoreComplete?.Invoke(sender, args);
         }
-
+        
         private void Item_SwipeProgressInTouch(object sender, SwipeProgressEventArgs args)
         {
             ItemSwipeProgressInTouch?.Invoke(sender, args);
+        }
+        
+        private void Item_SwipeBeginInTouch(object sender)
+        {
+            ItemSwipeBeginInTouch?.Invoke(sender);
         }
 
         private void SetItemBinding(LLMListViewItem item, DependencyProperty originProperty, string targetProperty)
