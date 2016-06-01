@@ -137,6 +137,14 @@ namespace LLM
         public event SwipeReleaseEventHandler ItemSwipeBeginRestore;
         public event SwipeTriggerEventHandler ItemSwipeTriggerInTouch;
 
+        public bool IsItemSwipeEnabled
+        {
+            get { return (bool)GetValue(IsItemSwipeEnabledProperty); }
+            set { SetValue(IsItemSwipeEnabledProperty, value); }
+        }
+        public static readonly DependencyProperty IsItemSwipeEnabledProperty =
+            DependencyProperty.Register("IsItemSwipeEnabled", typeof(bool), typeof(LLMListView), new PropertyMetadata(true));
+
         public DataTemplate ItemLeftSwipeContentTemplate
         {
             get { return (DataTemplate)GetValue(ItemLeftSwipeContentTemplateProperty); }
@@ -267,7 +275,8 @@ namespace LLM
             SetItemBinding(item, LLMListViewItem.RightSwipeLengthRateProperty, "ItemRightSwipeLengthRate");
             SetItemBinding(item, LLMListViewItem.RightActionRateForSwipeLengthProperty, "ItemRightActionRateForSwipeLength");
             SetItemBinding(item, LLMListViewItem.LeftSwipeMaxLengthProperty, "ItemLeftSwipeMaxLength");
-            SetItemBinding(item, LLMListViewItem.RightSwipeMaxLengthProperty, "ItemRightSwipeMaxLength");
+            SetItemBinding(item, LLMListViewItem.RightSwipeMaxLengthProperty, "ItemRightSwipeMaxLength"); 
+            SetItemBinding(item, LLMListViewItem.IsSwipeEnabledProperty, "IsItemSwipeEnabled");
 
             item.SwipeBeginInTouch += Item_SwipeBeginInTouch;
             item.SwipeProgressInTouch += Item_SwipeProgressInTouch;
