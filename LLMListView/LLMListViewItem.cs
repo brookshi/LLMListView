@@ -47,6 +47,29 @@ namespace LLM
 
         #region property
 
+        public bool IsSwipeEnabled
+        {
+            get { return (bool)GetValue(IsSwipeEnabledProperty); }
+            set { SetValue(IsSwipeEnabledProperty, value); }
+        }
+        public static readonly DependencyProperty IsSwipeEnabledProperty =
+            DependencyProperty.Register("IsSwipeEnabled", typeof(bool), typeof(LLMListViewItem), new PropertyMetadata(true, (s,e)=>
+            {
+                var listViewItem = s as LLMListViewItem;
+                if (listViewItem == null)
+                    return;
+
+                listViewItem.ItemManipulationMode = (bool)e.NewValue ? ManipulationModes.TranslateX | ManipulationModes.System : ManipulationModes.System;
+            }));
+
+        public ManipulationModes ItemManipulationMode
+        {
+            get { return (ManipulationModes)GetValue(ItemManipulationModeProperty); }
+            set { SetValue(ItemManipulationModeProperty, value); }
+        }
+        public static readonly DependencyProperty ItemManipulationModeProperty =
+            DependencyProperty.Register("ItemManipulationMode", typeof(ManipulationModes), typeof(LLMListViewItem), new PropertyMetadata(ManipulationModes.TranslateX | ManipulationModes.System));
+
         public DataTemplate LeftSwipeContentTemplate
         {
             get { return (DataTemplate)GetValue(LeftSwipeContentTemplateProperty); }

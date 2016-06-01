@@ -506,7 +506,7 @@
                         </Grid>
                         <Grid x:Name="MainLayer"
                               Background="Transparent"
-                              ManipulationMode="TranslateX,System">
+                              ManipulationMode="{TemplateBinding ItemManipulationMode}">
                             <Grid.RenderTransform>
                                 <TranslateTransform x:Name="ContentPresenterTranslateTransform" />
                             </Grid.RenderTransform>
