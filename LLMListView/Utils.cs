@@ -17,6 +17,7 @@
 using System;
 using Windows.ApplicationModel.Resources.Core;
 using Windows.Storage.Streams;
+using Windows.System.Profile;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
@@ -74,8 +75,7 @@ namespace LLMListView
         {
             get
             {
-                var qualifierValues = ResourceContext.GetForCurrentView().QualifierValues;
-                return qualifierValues.ContainsKey("DeviceFamily") && qualifierValues["DeviceFamily"] == "Mobile";
+                return AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile";
             }
         }
 
