@@ -126,6 +126,13 @@ namespace LLM
         public static readonly DependencyProperty RefreshButtonVisibilityProperty =
             DependencyProperty.Register("RefreshButtonVisibility", typeof(Visibility), typeof(LLMListView), new PropertyMetadata(Visibility.Collapsed));
 
+        public IconElement RefreshIcon
+        {
+            get { return (IconElement)GetValue(RefreshIconProperty); }
+            set { SetValue(RefreshIconProperty, value); }
+        }
+        public static readonly DependencyProperty RefreshIconProperty =
+            DependencyProperty.Register("RefreshIcon", typeof(IconElement), typeof(LLMListView), new PropertyMetadata(null));
 
         #region list view item property
 

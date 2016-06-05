@@ -184,7 +184,7 @@
                                              CornerRadius="28"
                                              FontWeight="Bold"
                                              Foreground="{TemplateBinding RefreshButtonForeground}"
-                                             Icon="Refresh"
+                                             Icon="{TemplateBinding RefreshIcon}"
                                              IconPosition="OnlyIcon"
                                              IconSize="24" />
                             </Grid>
