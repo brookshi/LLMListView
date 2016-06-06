@@ -1,18 +1,25 @@
-﻿<Page x:Class="Demo.Pages.NormalFixPage"
+﻿<Page x:Class="Demo.Pages.NormalFixPageExtended"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:converter="using:Demo.Converters"
       xmlns:ctrl="using:LLM"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="using:Demo.Pages"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <converter:LangToSwipeModeConverter x:Key="LangConverter" />
+        </ResourceDictionary>
+    </Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <ctrl:LLMListView x:Name="MasterListView"
                           IsItemClickEnabled="True"
-                          ItemLeftSwipeMode="None"
                           ItemRightActionRateForSwipeLength="0.5"
                           ItemRightSwipeMaxLength="135"
-                          ItemRightSwipeMode="Fix"
+                          ItemRightSwipeMode="{Binding Culture,
+                                                       Converter={StaticResource LangConverter}}"
                           ItemTemplate="{StaticResource ContactListViewTemplate}"
                           ItemsSource="{x:Bind Contacts, Mode=OneWay}"
                           SelectionMode="Single" />
