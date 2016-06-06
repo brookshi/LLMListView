@@ -99,6 +99,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\LangToSwipeModeConverter.cs" />
     <Compile Include="Converters\BoolToBrushConverter.cs" />
     <Compile Include="Pages\AnimationExpandAndCollapsePage.xaml.cs">
       <DependentUpon>AnimationExpandAndCollapsePage.xaml</DependentUpon>
@@ -121,6 +122,9 @@
     </Compile>
     <Compile Include="Pages\NormalExpandAndCollapsePage.xaml.cs">
       <DependentUpon>NormalExpandAndCollapsePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\NormalFixPageExtended.xaml.cs">
+      <DependentUpon>NormalFixPageExtended.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\NormalFixPage.xaml.cs">
       <DependentUpon>NormalFixPage.xaml</DependentUpon>
@@ -177,6 +181,10 @@
     <Page Include="Pages\NormalExpandAndCollapsePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\NormalFixPageExtended.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\NormalFixPage.xaml">
       <SubType>Designer</SubType>
