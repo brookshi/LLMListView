@@ -92,5 +92,11 @@ namespace Demo
             FrameContent.Navigate(typeof(LoadMoreForGroupListPage));
             SplitView.IsPaneOpen = false;
         }
+
+        private void NavigateToEmptyData(object sender, RoutedEventArgs e)
+        {
+            FrameContent.Navigate(typeof(EmptyDataPage));
+            SplitView.IsPaneOpen = false;
+        }
     }
 }
