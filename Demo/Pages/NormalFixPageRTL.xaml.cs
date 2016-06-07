@@ -23,7 +23,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Demo.Pages
 {
-    public sealed partial class NormalFixPageExtended : Page
+    public sealed partial class NormalFixPageRTL : Page
     {
         ObservableCollection<Contact> _contacts = new ObservableCollection<Contact>();
 
@@ -37,7 +37,7 @@ namespace Demo.Pages
 
         public string Culture { get; set; } = "US";
 
-        public NormalFixPageExtended()
+        public NormalFixPageRTL()
         {
             this.InitializeComponent();
             DataContext = this;
@@ -61,8 +61,14 @@ namespace Demo.Pages
                 dlg.Commands.Add(new UICommand("Cancel"));
                 await dlg.ShowAsync();
             });
+
+            Loaded += NormalFixPageRTL_Loaded;
         }
-        
+
+        private void NormalFixPageRTL_Loaded(object sender, RoutedEventArgs e)
+        {
+            Frame.FlowDirection = FlowDirection.RightToLeft;
+        }
 
         private void AddSwipeTemplate()
         {

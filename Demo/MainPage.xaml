@@ -40,8 +40,8 @@
                             Style="{StaticResource HomeButtonStyle}" />
                     <Button HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left"
-                            Click="NavigateToNormalFixExtended"
-                            Content="Normal Fix Swipe Extended"
+                            Click="NavigateToNormalFixRTL"
+                            Content="Normal Fix Swipe RTL"
                             Style="{StaticResource HomeButtonStyle}" />
                     <Button HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left"
