@@ -130,7 +130,8 @@
                                                          Foreground="{TemplateBinding RefreshProgressBarBrush}" />
                                         </ContentPresenter>
                                     </Border>
-                                    <ItemsPresenter Grid.Row="1"
+                                    <ItemsPresenter x:Name="ItemsPresenter" 
+                                                    Grid.Row="1"
                                                     Footer="{TemplateBinding Footer}"
                                                     FooterTemplate="{TemplateBinding FooterTemplate}"
                                                     FooterTransitions="{TemplateBinding FooterTransitions}"
@@ -138,6 +139,14 @@
                                                     HeaderTemplate="{TemplateBinding HeaderTemplate}"
                                                     HeaderTransitions="{TemplateBinding HeaderTransitions}"
                                                     Padding="{TemplateBinding Padding}" />
+                                    <ContentControl x:Name="EmptyTemplateControl" 
+                                                    Grid.Row="1" 
+                                                    ContentTemplate="{TemplateBinding EmptyDataTemplate}"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Stretch" 
+                                                    HorizontalContentAlignment="Stretch"
+                                                    VerticalContentAlignment="Stretch" 
+                                                    Visibility="Collapsed" />
                                 </Grid>
                             </ScrollViewer>
                         </Border>

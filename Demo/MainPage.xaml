@@ -55,6 +55,11 @@
                             Style="{StaticResource HomeButtonStyle}" />
                     <Button HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left"
+                            Click="NavigateToEmptyData"
+                            Content="Empty data"
+                            Style="{StaticResource HomeButtonStyle}" />
+                    <Button HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
                             Click="NavigateToLoadMore"
                             Content="Load More"
                             Style="{StaticResource HomeButtonStyle}" />
