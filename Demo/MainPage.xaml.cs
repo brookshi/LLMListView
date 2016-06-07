@@ -63,9 +63,9 @@ namespace Demo
             SplitView.IsPaneOpen = false;
         }
 
-        private void NavigateToNormalFixExtended(object sender, RoutedEventArgs e)
+        private void NavigateToNormalFixRTL(object sender, RoutedEventArgs e)
         {
-            FrameContent.Navigate(typeof(NormalFixPageExtended));
+            FrameContent.Navigate(typeof(NormalFixPageRTL));
             SplitView.IsPaneOpen = false;
         }
 

@@ -123,8 +123,8 @@
     <Compile Include="Pages\NormalExpandAndCollapsePage.xaml.cs">
       <DependentUpon>NormalExpandAndCollapsePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\NormalFixPageExtended.xaml.cs">
-      <DependentUpon>NormalFixPageExtended.xaml</DependentUpon>
+    <Compile Include="Pages\NormalFixPageRTL.xaml.cs">
+      <DependentUpon>NormalFixPageRTL.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\NormalFixPage.xaml.cs">
       <DependentUpon>NormalFixPage.xaml</DependentUpon>
@@ -185,7 +185,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\NormalFixPageExtended.xaml">
+    <Page Include="Pages\NormalFixPageRTL.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -130,7 +130,7 @@
                                                          Foreground="{TemplateBinding RefreshProgressBarBrush}" />
                                         </ContentPresenter>
                                     </Border>
-                                    <ItemsPresenter x:Name="ItemsPresenter" 
+                                    <ItemsPresenter x:Name="ItemsPresenter"
                                                     Grid.Row="1"
                                                     Footer="{TemplateBinding Footer}"
                                                     FooterTemplate="{TemplateBinding FooterTemplate}"
@@ -139,13 +139,13 @@
                                                     HeaderTemplate="{TemplateBinding HeaderTemplate}"
                                                     HeaderTransitions="{TemplateBinding HeaderTransitions}"
                                                     Padding="{TemplateBinding Padding}" />
-                                    <ContentControl x:Name="EmptyTemplateControl" 
-                                                    Grid.Row="1" 
-                                                    ContentTemplate="{TemplateBinding EmptyDataTemplate}"
+                                    <ContentControl x:Name="EmptyTemplateControl"
+                                                    Grid.Row="1"
                                                     HorizontalAlignment="Stretch"
-                                                    VerticalAlignment="Stretch" 
+                                                    VerticalAlignment="Stretch"
                                                     HorizontalContentAlignment="Stretch"
-                                                    VerticalContentAlignment="Stretch" 
+                                                    VerticalContentAlignment="Stretch"
+                                                    ContentTemplate="{TemplateBinding EmptyDataTemplate}"
                                                     Visibility="Collapsed" />
                                 </Grid>
                             </ScrollViewer>
@@ -494,7 +494,7 @@
                                    Fill="{ThemeResource SystemControlHighlightListAccentLowBrush}"
                                    IsHitTestVisible="False"
                                    Opacity="0" />
-                        <Grid x:Name="SwipeLayer">
+                        <Grid x:Name="SwipeLayer" FlowDirection="LeftToRight">
                             <Grid.Clip>
                                 <RectangleGeometry x:Name="SwipeLayerClip" Rect="0,0,0,0">
                                     <RectangleGeometry.Transform>
@@ -515,17 +515,20 @@
                         </Grid>
                         <Grid x:Name="MainLayer"
                               Background="Transparent"
+                              FlowDirection="LeftToRight"
                               ManipulationMode="{TemplateBinding ItemManipulationMode}">
                             <Grid.RenderTransform>
                                 <TranslateTransform x:Name="ContentPresenterTranslateTransform" />
                             </Grid.RenderTransform>
-                            <ContentPresenter x:Name="ContentPresenter"
-                                              Margin="{TemplateBinding Padding}"
-                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                              Content="{TemplateBinding Content}"
-                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                              ContentTransitions="{TemplateBinding ContentTransitions}" />
+                            <Grid FlowDirection="{Binding ElementName=ContentBorder, Path=FlowDirection}">
+                                <ContentPresenter x:Name="ContentPresenter"
+                                                  Margin="{TemplateBinding Padding}"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  Content="{TemplateBinding Content}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  ContentTransitions="{TemplateBinding ContentTransitions}" />
+                            </Grid>
                         </Grid>
                         <TextBlock x:Name="PlaceholderTextBlock"
                                    Margin="{TemplateBinding Padding}"
