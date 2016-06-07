@@ -57,6 +57,8 @@ namespace LLM
         private ProgressBar _loadMoreProgressBar;
         private XPButton _refreshButton;
         private Image _refreshButtonShadow;
+        private ItemsPresenter _itemsPresenter;
+        private ContentControl _emptyTemplateControl;
 
         public Action Refresh { get; set; }
 
@@ -133,6 +135,15 @@ namespace LLM
         }
         public static readonly DependencyProperty RefreshIconProperty =
             DependencyProperty.Register("RefreshIcon", typeof(IconElement), typeof(LLMListView), new PropertyMetadata(null));
+
+        public static readonly DependencyProperty EmptyDataTemplateProperty = DependencyProperty.Register(
+            "EmptyDataTemplate", typeof (DataTemplate), typeof (LLMListView), new PropertyMetadata(default(DataTemplate)));
+
+        public DataTemplate EmptyDataTemplate
+        {
+            get { return (DataTemplate) GetValue(EmptyDataTemplateProperty); }
+            set { SetValue(EmptyDataTemplateProperty, value); }
+        }
 
         #region list view item property
 
@@ -338,11 +349,32 @@ namespace LLM
 
         private void LLMListView_Loaded(object sender, RoutedEventArgs e)
         {
+            UpdateEmptyDataTemplateVisibility();
             InitTimer();
-
             InitVisualState();
-
             UpdateProgressBarLayout();
+        }
+
+        protected override void OnItemsChanged(object e)
+        {
+            base.OnItemsChanged(e);
+            UpdateEmptyDataTemplateVisibility();
+        }
+
+        private void UpdateEmptyDataTemplateVisibility()
+        {
+            if (EmptyDataTemplate == null) return;
+            var itemsCount = Items?.Count ?? 0;
+            if (itemsCount > 0)
+            {
+                _itemsPresenter.Visibility = Visibility.Visible;
+                _emptyTemplateControl.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                _itemsPresenter.Visibility = Visibility.Collapsed;
+                _emptyTemplateControl.Visibility = Visibility.Visible;
+            }
         }
 
         private void LLMListView_OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
@@ -410,16 +442,18 @@ namespace LLM
 
         private void InitControls()
         {
-            _scrollViewer = (ScrollViewer)GetTemplateChild("ScrollViewer");
-            _container = (Grid)GetTemplateChild("Container");
-            _pullToRefreshIndicator = (Border)GetTemplateChild("PullToRefreshIndicator");
-            _pullProgressBar = (ProgressBar)GetTemplateChild("PullProgressBar");
-            _refreshProgressRing = (ProgressRing)GetTemplateChild("RefreshProgressRing");
-            _loadMoreProgressBar = (ProgressBar)GetTemplateChild("LoadMoreProgressBar");
-            _refreshButton = (XPButton)GetTemplateChild("RefreshButton");
-            _refreshButtonShadow = (Image)GetTemplateChild("RefreshButtonShadow");
+            _scrollViewer = (ScrollViewer) GetTemplateChild("ScrollViewer");
+            _container = (Grid) GetTemplateChild("Container");
+            _pullToRefreshIndicator = (Border) GetTemplateChild("PullToRefreshIndicator");
+            _pullProgressBar = (ProgressBar) GetTemplateChild("PullProgressBar");
+            _refreshProgressRing = (ProgressRing) GetTemplateChild("RefreshProgressRing");
+            _loadMoreProgressBar = (ProgressBar) GetTemplateChild("LoadMoreProgressBar");
+            _refreshButton = (XPButton) GetTemplateChild("RefreshButton");
+            _refreshButtonShadow = (Image) GetTemplateChild("RefreshButtonShadow");
+            _itemsPresenter = (ItemsPresenter) GetTemplateChild("ItemsPresenter");
+            _emptyTemplateControl = (ContentControl) GetTemplateChild("EmptyTemplateControl");
 
-            Utils.SetBase64ToImage((BitmapSource)_refreshButtonShadow.Source, RefreshBtn_Shadow_Base64);
+            Utils.SetBase64ToImage((BitmapSource) _refreshButtonShadow.Source, RefreshBtn_Shadow_Base64);
         }
 
         private void InitScrollViewEventsForPullToRefresh()
