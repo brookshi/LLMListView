@@ -12,6 +12,7 @@
                           ItemsSource="{Binding Contacts, Mode=OneWay}"
                           ItemTemplate="{StaticResource ContactListViewTemplate}" 
                           CanPullToRefresh="True"
+                          RefreshIcon="Refresh"
                           RefreshButtonVisibility="{x:Bind RefreshBtnVisibility}">
             <ctrl:LLMListView.EmptyDataTemplate>
                 <DataTemplate>
