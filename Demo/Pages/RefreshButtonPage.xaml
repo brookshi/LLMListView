@@ -14,6 +14,7 @@
                           CanPullToRefresh="True"
                           RefreshButtonVisibility="{x:Bind RefreshBtnVisibility}"
                           IsItemClickEnabled="True"
+                          RefreshIcon="Refresh"
                           ItemClick="MasterListView_ItemClick">
         </ctrl:LLMListView>
     </Grid>
