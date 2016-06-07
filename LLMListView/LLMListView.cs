@@ -136,14 +136,13 @@ namespace LLM
         public static readonly DependencyProperty RefreshIconProperty =
             DependencyProperty.Register("RefreshIcon", typeof(IconElement), typeof(LLMListView), new PropertyMetadata(null));
 
-        public static readonly DependencyProperty EmptyDataTemplateProperty = DependencyProperty.Register(
-            "EmptyDataTemplate", typeof (DataTemplate), typeof (LLMListView), new PropertyMetadata(default(DataTemplate)));
-
         public DataTemplate EmptyDataTemplate
         {
             get { return (DataTemplate) GetValue(EmptyDataTemplateProperty); }
             set { SetValue(EmptyDataTemplateProperty, value); }
         }
+        public static readonly DependencyProperty EmptyDataTemplateProperty = DependencyProperty.Register(
+            "EmptyDataTemplate", typeof(DataTemplate), typeof(LLMListView), new PropertyMetadata(default(DataTemplate)));
 
         #region list view item property
 
@@ -349,10 +348,10 @@ namespace LLM
 
         private void LLMListView_Loaded(object sender, RoutedEventArgs e)
         {
-            UpdateEmptyDataTemplateVisibility();
             InitTimer();
             InitVisualState();
             UpdateProgressBarLayout();
+            UpdateEmptyDataTemplateVisibility();
         }
 
         protected override void OnItemsChanged(object e)

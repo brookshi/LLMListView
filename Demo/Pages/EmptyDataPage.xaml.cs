@@ -18,10 +18,10 @@ namespace Demo.Pages
         public EmptyDataPage()
         {
             InitializeComponent();
-            Loaded += PullToRefreshPage_Loaded;
+            Loaded += EmptyDataPage_Loaded;
         }
 
-        private void PullToRefreshPage_Loaded(object sender, RoutedEventArgs e)
+        private void EmptyDataPage_Loaded(object sender, RoutedEventArgs e)
         {
             Contacts = Contact.GetContacts(0);
             MasterListView.DataContext = this;
