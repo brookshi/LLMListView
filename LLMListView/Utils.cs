@@ -15,7 +15,6 @@
 #endregion
 
 using System;
-using Windows.ApplicationModel.Resources.Core;
 using Windows.Storage.Streams;
 using Windows.System.Profile;
 using Windows.UI.Xaml;
@@ -23,13 +22,13 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 
-namespace LLMListView
+namespace LLM
 {
     public class Utils
     {
         public static DoubleAnimation CreateDoubleAnimation(DependencyObject target, string propertyPath, EasingFunctionBase easingFunc, double to, double duration)
         {
-            var anim = new DoubleAnimation()
+            var anim = new DoubleAnimation
             {
                 To = to,
                 Duration = new Duration(TimeSpan.FromMilliseconds(duration)),
@@ -44,40 +43,27 @@ namespace LLMListView
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
             {
-                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
-                if (child != null && child is T && ((T)child).Name == childName)
-                    return (T)child;
-                else
-                {
-                    T childOfChild = FindVisualChild<T>(child, childName);
-                    if (childOfChild != null)
-                        return childOfChild;
-                }
+                var child = VisualTreeHelper.GetChild(obj, i);
+                var visualChild = child as T;
+                if (visualChild != null && visualChild.Name == childName) return visualChild;
+
+                var childOfChild = FindVisualChild<T>(child, childName);
+                if (childOfChild != null) return childOfChild;
             }
             return null;
         }
 
         public static T FindVisualParent<T>(DependencyObject obj) where T : DependencyObject
         {
-            DependencyObject parent = VisualTreeHelper.GetParent(obj);
-            if (parent is T)
-                return (T)parent;
-            else
-            {
-                T parentOfParent = FindVisualParent<T>(parent);
-                if (parentOfParent != null)
-                    return parentOfParent;
-            }
-            return null;
+            var parent = VisualTreeHelper.GetParent(obj);
+            var visualParent = parent as T;
+            if (visualParent != null) return visualParent;
+
+            var parentOfParent = FindVisualParent<T>(parent);
+            return parentOfParent;
         }
 
-        public static bool IsOnMobile
-        {
-            get
-            {
-                return AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile";
-            }
-        }
+        public static bool IsOnMobile => AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile";
 
         public static async void SetBase64ToImage(BitmapSource imageSource, string base64Str)
         {
