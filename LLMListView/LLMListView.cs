@@ -143,6 +143,15 @@ namespace LLM
         public static readonly DependencyProperty EmptyDataTemplateProperty = DependencyProperty.Register(
             "EmptyDataTemplate", typeof(DataTemplate), typeof(LLMListView), new PropertyMetadata(default(DataTemplate)));
 
+        public int ScrollOffsetOfLoadMoreTrigger
+        {
+            get { return (int)GetValue(ScrollOffsetOfLoadMoreTriggerProperty); }
+            set { SetValue(ScrollOffsetOfLoadMoreTriggerProperty, value); }
+        }
+        public static readonly DependencyProperty ScrollOffsetOfLoadMoreTriggerProperty =
+            DependencyProperty.Register("ScrollOffsetOfLoadMoreTrigger", typeof(int), typeof(LLMListView), new PropertyMetadata(300, (s, e)=> { if ((s as LLMListView).ScrollOffsetOfLoadMoreTrigger <= 0) throw new ArgumentException("invalid ScrollOffsetOfLoadMoreTrigger"); }));
+
+
         #region list view item property
 
         public event SwipeBeginEventHandler ItemSwipeBeginInTouch;
@@ -510,7 +519,7 @@ namespace LLM
             if (LoadMore == null || _isLoadingMore || _scrollViewer == null) return;
 
             var bottomOffset = _scrollViewer.ExtentHeight - _scrollViewer.VerticalOffset - _scrollViewer.ViewportHeight;
-            if (bottomOffset < 300)
+            if (bottomOffset < ScrollOffsetOfLoadMoreTrigger)
             {
                 ToggleLoadingMoreStatus(true);
                 LoadMore();
