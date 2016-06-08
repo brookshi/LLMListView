@@ -362,7 +362,7 @@ namespace LLM
 
         private void UpdateEmptyDataTemplateVisibility()
         {
-            if (EmptyDataTemplate == null) return;
+            if (EmptyDataTemplate == null || _itemsPresenter == null || _emptyTemplateControl == null) return;
             var itemsCount = Items?.Count ?? 0;
             if (itemsCount > 0)
             {
