@@ -24,6 +24,7 @@ namespace Demo.Pages
 {
     public sealed partial class NormalFixPageRTL : Page
     {
+        private FlowDirection _previousFlowDirection;
         ObservableCollection<Contact> _contacts = new ObservableCollection<Contact>();
 
         public ObservableCollection<Contact> Contacts
@@ -62,10 +63,17 @@ namespace Demo.Pages
             });
 
             Loaded += NormalFixPageRTL_Loaded;
+            Unloaded += NormalFixPageRTL_OnUnloaded;
+        }
+
+        private void NormalFixPageRTL_OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            Frame.FlowDirection = _previousFlowDirection;
         }
 
         private void NormalFixPageRTL_Loaded(object sender, RoutedEventArgs e)
         {
+            _previousFlowDirection = Frame.FlowDirection;
             Frame.FlowDirection = FlowDirection.RightToLeft;
         }
 
