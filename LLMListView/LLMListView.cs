@@ -356,6 +356,7 @@ namespace LLM
         protected override void OnItemsChanged(object e)
         {
             base.OnItemsChanged(e);
+            UpdateLoadingMore();
             UpdateEmptyDataTemplateVisibility();
         }
 
@@ -506,8 +507,10 @@ namespace LLM
 
         private void UpdateLoadingMore()
         {
+            if (LoadMore == null || _isLoadingMore || _scrollViewer == null) return;
+
             var bottomOffset = _scrollViewer.ExtentHeight - _scrollViewer.VerticalOffset - _scrollViewer.ViewportHeight;
-            if (!_isLoadingMore && LoadMore != null && bottomOffset < 300)
+            if (bottomOffset < 300)
             {
                 ToggleLoadingMoreStatus(true);
                 LoadMore();
