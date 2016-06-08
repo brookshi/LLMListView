@@ -14,7 +14,6 @@
 //   limitations under the License. 
 #endregion
 
-using LLMListView;
 using System;
 using Windows.ApplicationModel.Resources.Core;
 using Windows.Foundation;
@@ -362,7 +361,7 @@ namespace LLM
 
         private void UpdateEmptyDataTemplateVisibility()
         {
-            if (EmptyDataTemplate == null) return;
+            if (EmptyDataTemplate == null || _itemsPresenter == null || _emptyTemplateControl == null) return;
             var itemsCount = Items?.Count ?? 0;
             if (itemsCount > 0)
             {
