@@ -35,11 +35,11 @@ namespace LLM
         private const string Refreshing_State = "Refreshing";
         private const string Normal_State = "Normal";
         private const string Unvalid_State = "Unvalid";
-        private const string RefreshBtn_Refreshing_State = "RefreshBtnRefreshing";
-        private const string RefreshBtn_Normal_State = "RefreshBtnNormal";
-        private const string RefreshBtn_Visible_State = "RefreshBtnVisible";
-        private const string RefreshBtn_Collapse_State = "RefreshBtnCollapse";
-        private const string RefreshBtn_Shadow_Base64 = "iVBORw0KGgoAAAANSUhEUgAAAF4AAABeCAMAAACdDFNcAAAAnFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEAAAAAAAAAAABLnuFaiK1sos4AAAB3l698rdRqrOA4kdc2l+RcfphWa3xejbROm9g7lt4ykNxllr1Ij8eIqsVSksVGks5+lKdPX2thfZM2P0RecoJBRkwdICNicoFMV2BZZG0tV3O/AAAANHRSTlMAAgUICg0SGzEhFg8qDBQYJx8tIzUkETIiOiMgHA4DNzctGAoGKCEeJRwaMzEzLREtIycXLy7ODAAAA/NJREFUaN60k91qg0AQhU+ru4KyK7lZZLVexATBmxD6/u/W0bWMaTH+jd9dCHxz9syItXy8ABnY/PmC1IzRHEVRPIF+8oiD7t5surJyDgPOVWVnaMY44oiccpq2qvGPumoN/bl3QAhObodZXGvGJ+yUV1igMuEFm+0kL7GCkgfIynlAzAPW2eMW66m79f4QvcEmXHjAOnv8wFbqB/sXijEtdtCZUNCCPZ7d6fKG2T9rV1fspFLv/YO9wW4c+ef1nP1Y/jf2AocoZv3DzXgcgO9nxv6NwzwU+1/0kdI4Tq1NxPpp8dkXBHAZ1z+tRnmI4DOqR7oa5qYV18PVFBDC/73OvhoNMTi+YHimGLfL4TMLQWzYLofXHF44Puk5vBB20n4f3kMUryn+5OYdRLny8dBidQphUk3LHfXGegjj7W871E1eQJgipXZO6wZNmlH5493kECen2wl6lT4hztMa0ofq7xDnnlP54ZNNihP0CZUfqk8cxLkm/eUH/Q3iuIuOg94mkKe52KA3p+jrxJpBr9Iz9EjSk/XqRH19rr75adbsdtSGgSh8s8QzjuP4JyHiYku2CxFoYbXq+z9cx3Yi09IFQuaivkICfTOcOePYsTHj3/nx64zHNT/+iLIajYkHfvwedTW2Fb7x49+mtnop7Cc//pctJrzw/HiMU1qakJF9TntFmpCnx0nLXtt9mx4nyZknbvwnpodhqm3LjW9TZdNCROBPXvoQpSf8KP6JWRs/LaNS37bc2uRFYFRnz9qyo+unBbj0hhNvUOb9Q2pcxnmn8yL6Jm9+6lax0XfG1zH5vHXT1ndc+JOKyRN+Uiekb3ZM0w0lP208885TKCbvf+Tkc/rBPCyte8y2+TN9o3YM0ijzd/LJ+xrVeTn+S9m8Z874UF1v+sXCX9b1Wp6F7txeSnMlD/EPi+YaousqSHOFj+6xyi2wz1EF4b9/kVlKVO7wdO5OoSwz/Vr+siZ+96TuRK/L2y+Ri8Dvn2vWTL/NV1/vs7vJ3aMTPuojrQE4ziwqgLEy0Al/jy8MuP51RuofzpEjM/0WP/jfK4Dtj8fguy2A8oIceZue/U8FMNBA95BhoHHG1kU14+Cq1AIVOLj7AO7AgcIgzCP0LFAhRRsC9MP3vzz0Ae6FLFazDw1JIUsBGmj67h9lXnc9fQWqJV1WLxN9ToCyqIU3DpoNNOdtN4z/Yxi67bmBTQPOoKiLMsPn8GMAKbA1CijEhoLEAfSxAVDGWyHnw3OAKJGuhQ0hnINxOKdMi8TWUZZAf/4oniKEEBQD0dNAJLKodVESOx3FL71IUK1KiqFlHFoXhK7yRQKeaxAUJI7q8hrE/32JY+EVlN/KRTd0EkKQDQAAAABJRU5ErkJggg==";
+        private const string FloatBtn_Refreshing_State = "FloatBtnWorking";
+        private const string FloatBtn_Normal_State = "FloatBtnNormal";
+        private const string FloatBtn_Visible_State = "FloatBtnVisible";
+        private const string FloatBtn_Collapse_State = "FloatBtnCollapse";
+        private const string FloatBtn_Shadow_Base64 = "iVBORw0KGgoAAAANSUhEUgAAAF4AAABeCAMAAACdDFNcAAAAnFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEAAAAAAAAAAABLnuFaiK1sos4AAAB3l698rdRqrOA4kdc2l+RcfphWa3xejbROm9g7lt4ykNxllr1Ij8eIqsVSksVGks5+lKdPX2thfZM2P0RecoJBRkwdICNicoFMV2BZZG0tV3O/AAAANHRSTlMAAgUICg0SGzEhFg8qDBQYJx8tIzUkETIiOiMgHA4DNzctGAoGKCEeJRwaMzEzLREtIycXLy7ODAAAA/NJREFUaN60k91qg0AQhU+ru4KyK7lZZLVexATBmxD6/u/W0bWMaTH+jd9dCHxz9syItXy8ABnY/PmC1IzRHEVRPIF+8oiD7t5surJyDgPOVWVnaMY44oiccpq2qvGPumoN/bl3QAhObodZXGvGJ+yUV1igMuEFm+0kL7GCkgfIynlAzAPW2eMW66m79f4QvcEmXHjAOnv8wFbqB/sXijEtdtCZUNCCPZ7d6fKG2T9rV1fspFLv/YO9wW4c+ef1nP1Y/jf2AocoZv3DzXgcgO9nxv6NwzwU+1/0kdI4Tq1NxPpp8dkXBHAZ1z+tRnmI4DOqR7oa5qYV18PVFBDC/73OvhoNMTi+YHimGLfL4TMLQWzYLofXHF44Puk5vBB20n4f3kMUryn+5OYdRLny8dBidQphUk3LHfXGegjj7W871E1eQJgipXZO6wZNmlH5493kECen2wl6lT4hztMa0ofq7xDnnlP54ZNNihP0CZUfqk8cxLkm/eUH/Q3iuIuOg94mkKe52KA3p+jrxJpBr9Iz9EjSk/XqRH19rr75adbsdtSGgSh8s8QzjuP4JyHiYku2CxFoYbXq+z9cx3Yi09IFQuaivkICfTOcOePYsTHj3/nx64zHNT/+iLIajYkHfvwedTW2Fb7x49+mtnop7Cc//pctJrzw/HiMU1qakJF9TntFmpCnx0nLXtt9mx4nyZknbvwnpodhqm3LjW9TZdNCROBPXvoQpSf8KP6JWRs/LaNS37bc2uRFYFRnz9qyo+unBbj0hhNvUOb9Q2pcxnmn8yL6Jm9+6lax0XfG1zH5vHXT1ndc+JOKyRN+Uiekb3ZM0w0lP208885TKCbvf+Tkc/rBPCyte8y2+TN9o3YM0ijzd/LJ+xrVeTn+S9m8Z874UF1v+sXCX9b1Wp6F7txeSnMlD/EPi+YaousqSHOFj+6xyi2wz1EF4b9/kVlKVO7wdO5OoSwz/Vr+siZ+96TuRK/L2y+Ri8Dvn2vWTL/NV1/vs7vJ3aMTPuojrQE4ziwqgLEy0Al/jy8MuP51RuofzpEjM/0WP/jfK4Dtj8fguy2A8oIceZue/U8FMNBA95BhoHHG1kU14+Cq1AIVOLj7AO7AgcIgzCP0LFAhRRsC9MP3vzz0Ae6FLFazDw1JIUsBGmj67h9lXnc9fQWqJV1WLxN9ToCyqIU3DpoNNOdtN4z/Yxi67bmBTQPOoKiLMsPn8GMAKbA1CijEhoLEAfSxAVDGWyHnw3OAKJGuhQ0hnINxOKdMi8TWUZZAf/4oniKEEBQD0dNAJLKodVESOx3FL71IUK1KiqFlHFoXhK7yRQKeaxAUJI7q8hrE/32JY+EVlN/KRTd0EkKQDQAAAABJRU5ErkJggg==";
 
         private bool _isNotifyToRefreshTimerStarting = false;
         private bool _isRefreshing = false;
@@ -54,14 +54,16 @@ namespace LLM
         private ProgressBar _pullProgressBar;
         private ProgressRing _refreshProgressRing;
         private ProgressBar _loadMoreProgressBar;
-        private XPButton _refreshButton;
-        private Image _refreshButtonShadow;
+        private XPButton _floatButton;
+        private Image _floatButtonShadow;
         private ItemsPresenter _itemsPresenter;
         private ContentControl _emptyTemplateControl;
 
         public Action Refresh { get; set; }
 
         public Action LoadMore { get; set; }
+
+        public Action FloatButtonAction { get; set; }
 
         public bool CanPullToRefresh
         {
@@ -103,37 +105,37 @@ namespace LLM
         public static readonly DependencyProperty LoadMoreProgressBarBrushProperty =
             DependencyProperty.Register("LoadMoreProgressBarBrush", typeof(Brush), typeof(LLMListView), new PropertyMetadata(Application.Current.Resources["ProgressBarForegroundThemeBrush"]));
 
-        public Brush RefreshButtonForeground
+        public Brush FloatButtonForeground
         {
-            get { return (Brush)GetValue(RefreshButtonForegroundProperty); }
-            set { SetValue(RefreshButtonForegroundProperty, value); }
+            get { return (Brush)GetValue(FloatButtonForegroundProperty); }
+            set { SetValue(FloatButtonForegroundProperty, value); }
         }
-        public static readonly DependencyProperty RefreshButtonForegroundProperty =
-            DependencyProperty.Register("RefreshButtonForeground", typeof(Brush), typeof(LLMListView), new PropertyMetadata(new SolidColorBrush(Colors.White)));
+        public static readonly DependencyProperty FloatButtonForegroundProperty =
+            DependencyProperty.Register("FloatButtonForeground", typeof(Brush), typeof(LLMListView), new PropertyMetadata(new SolidColorBrush(Colors.White)));
 
-        public Brush RefreshButtonBackground
+        public Brush FloatButtonBackground
         {
-            get { return (Brush)GetValue(RefreshButtonBackgroundProperty); }
-            set { SetValue(RefreshButtonBackgroundProperty, value); }
+            get { return (Brush)GetValue(FloatButtonBackgroundProperty); }
+            set { SetValue(FloatButtonBackgroundProperty, value); }
         }
-        public static readonly DependencyProperty RefreshButtonBackgroundProperty =
-            DependencyProperty.Register("RefreshButtonBackground", typeof(Brush), typeof(LLMListView), new PropertyMetadata(new SolidColorBrush(Color.FromArgb(255, 33, 150, 243))));
+        public static readonly DependencyProperty FloatButtonBackgroundProperty =
+            DependencyProperty.Register("FloatButtonBackground", typeof(Brush), typeof(LLMListView), new PropertyMetadata(new SolidColorBrush(Color.FromArgb(255, 33, 150, 243))));
 
-        public Visibility RefreshButtonVisibility
+        public Visibility FloatButtonVisibility
         {
-            get { return (Visibility)GetValue(RefreshButtonVisibilityProperty); }
-            set { SetValue(RefreshButtonVisibilityProperty, value); }
+            get { return (Visibility)GetValue(FloatButtonVisibilityProperty); }
+            set { SetValue(FloatButtonVisibilityProperty, value); }
         }
-        public static readonly DependencyProperty RefreshButtonVisibilityProperty =
-            DependencyProperty.Register("RefreshButtonVisibility", typeof(Visibility), typeof(LLMListView), new PropertyMetadata(Visibility.Collapsed));
+        public static readonly DependencyProperty FloatButtonVisibilityProperty =
+            DependencyProperty.Register("FloatButtonVisibility", typeof(Visibility), typeof(LLMListView), new PropertyMetadata(Visibility.Collapsed));
 
-        public IconElement RefreshIcon
+        public IconElement FloatButtonIcon
         {
-            get { return (IconElement)GetValue(RefreshIconProperty); }
-            set { SetValue(RefreshIconProperty, value); }
+            get { return (IconElement)GetValue(FloatButtonIconProperty); }
+            set { SetValue(FloatButtonIconProperty, value); }
         }
-        public static readonly DependencyProperty RefreshIconProperty =
-            DependencyProperty.Register("RefreshIcon", typeof(IconElement), typeof(LLMListView), new PropertyMetadata(null));
+        public static readonly DependencyProperty FloatButtonIconProperty =
+            DependencyProperty.Register("FloatButtonIcon", typeof(IconElement), typeof(LLMListView), new PropertyMetadata(null));
 
         public DataTemplate EmptyDataTemplate
         {
@@ -443,7 +445,7 @@ namespace LLM
 
             InitScrollViewEventsForPullToRefresh();
 
-            InitRefreshButtonClickEvent();
+            InitFloatButtonClickEvent();
 
             InitOtherEvents();
         }
@@ -456,12 +458,12 @@ namespace LLM
             _pullProgressBar = (ProgressBar) GetTemplateChild("PullProgressBar");
             _refreshProgressRing = (ProgressRing) GetTemplateChild("RefreshProgressRing");
             _loadMoreProgressBar = (ProgressBar) GetTemplateChild("LoadMoreProgressBar");
-            _refreshButton = (XPButton) GetTemplateChild("RefreshButton");
-            _refreshButtonShadow = (Image) GetTemplateChild("RefreshButtonShadow");
+            _floatButton = (XPButton) GetTemplateChild("FloatButton");
+            _floatButtonShadow = (Image) GetTemplateChild("FloatButtonShadow");
             _itemsPresenter = (ItemsPresenter) GetTemplateChild("ItemsPresenter");
             _emptyTemplateControl = (ContentControl) GetTemplateChild("EmptyTemplateControl");
 
-            Utils.SetBase64ToImage((BitmapSource) _refreshButtonShadow.Source, RefreshBtn_Shadow_Base64);
+            Utils.SetBase64ToImage((BitmapSource) _floatButtonShadow.Source, FloatBtn_Shadow_Base64);
         }
 
         private void InitScrollViewEventsForPullToRefresh()
@@ -474,12 +476,18 @@ namespace LLM
             }
         }
 
-        private void InitRefreshButtonClickEvent()
+        private void InitFloatButtonClickEvent()
         {
-            if (RefreshButtonVisibility == Visibility.Visible)
+            if (FloatButtonVisibility == Visibility.Visible)
             {
-                _refreshButton.Click += (s, e) =>
+                _floatButton.Click += (s, e) =>
                 {
+                    if(FloatButtonAction != null)
+                    {
+                        FloatButtonAction();
+                        return;
+                    }
+
                     if (_isRefreshing)
                         return;
 
@@ -496,22 +504,25 @@ namespace LLM
 
         private void _scrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            UpdateRefreshButtonState();
+            UpdateFloatButtonState();
 
             UpdateLoadingMore();
         }
 
-        private void UpdateRefreshButtonState()
+        private void UpdateFloatButtonState()
         {
-            if (_lastVerticalOffset < _scrollViewer.VerticalOffset)
+            const int responseOffset = 2;
+            var verticalOffset = (int)_scrollViewer.VerticalOffset;
+
+            if (_lastVerticalOffset + responseOffset < verticalOffset)
             {
-                VisualStateManager.GoToState(this, RefreshBtn_Collapse_State, true);
+                VisualStateManager.GoToState(this, FloatBtn_Collapse_State, true);
             }
-            else if(_lastVerticalOffset > _scrollViewer.VerticalOffset)
+            else if(_lastVerticalOffset > verticalOffset + responseOffset)
             {
-                VisualStateManager.GoToState(this, RefreshBtn_Visible_State, true);
+                VisualStateManager.GoToState(this, FloatBtn_Visible_State, true);
             }
-            _lastVerticalOffset = _scrollViewer.VerticalOffset;
+            _lastVerticalOffset = verticalOffset;
         }
 
         private void UpdateLoadingMore()
@@ -551,9 +562,9 @@ namespace LLM
             }
         }
 
-        private string NormalState { get { return CanPullToRefresh && Utils.IsOnMobile ? Normal_State : RefreshBtn_Normal_State; } }
+        private string NormalState { get { return CanPullToRefresh && Utils.IsOnMobile ? Normal_State : FloatBtn_Normal_State; } }
 
-        private string RefreshState { get { return CanPullToRefresh && Utils.IsOnMobile ? Refreshing_State : RefreshBtn_Refreshing_State; } }
+        private string RefreshState { get { return CanPullToRefresh && Utils.IsOnMobile ? Refreshing_State : FloatBtn_Refreshing_State; } }
 
         #region events
 
