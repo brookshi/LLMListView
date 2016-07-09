@@ -278,6 +278,14 @@ namespace LLM
         public static readonly DependencyProperty ItemRightActionRateForSwipeLengthProperty =
             DependencyProperty.Register("ItemRightActionRateForSwipeLength", typeof(double), typeof(LLMListView), new PropertyMetadata(0.5));
 
+        public string IsItemSwipedMemberPath
+        {
+            get { return (string)GetValue(IsItemSwipedMemberPathProperty); }
+            set { SetValue(IsItemSwipedMemberPathProperty, value); }
+        }
+        public static readonly DependencyProperty IsItemSwipedMemberPathProperty =
+            DependencyProperty.Register("IsItemSwipedMemberPath", typeof(string), typeof(LLMListViewItem), new PropertyMetadata(null));
+
         #endregion
 
         public LLMListView()
@@ -304,7 +312,8 @@ namespace LLM
             SetItemBinding(item, LLMListViewItem.LeftSwipeMaxLengthProperty, "ItemLeftSwipeMaxLength");
             SetItemBinding(item, LLMListViewItem.RightSwipeMaxLengthProperty, "ItemRightSwipeMaxLength"); 
             SetItemBinding(item, LLMListViewItem.IsSwipeEnabledProperty, "IsItemSwipeEnabled");
-
+            SetItemBinding(item, LLMListViewItem.IsSwipedMemberPathProperty, "IsItemSwipedMemberPath");
+            
             item.SwipeBeginInTouch += Item_SwipeBeginInTouch;
             item.SwipeProgressInTouch += Item_SwipeProgressInTouch;
             item.SwipeRestoreComplete += Item_SwipeStoreComplete;

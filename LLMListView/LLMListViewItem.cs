@@ -21,6 +21,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
+using System.Reflection;
+using Windows.UI.Xaml.Data;
 
 namespace LLM
 {
@@ -45,6 +47,25 @@ namespace LLM
         public SwipeConfig Config { get { return _swipeAnimationConstructor == null ? null : _swipeAnimationConstructor.Config; } }
 
         #region property
+
+        public string IsSwipedMemberPath
+        {
+            get { return (string)GetValue(IsSwipedMemberPathProperty); }
+            set { SetValue(IsSwipedMemberPathProperty, value); }
+        }
+        public static readonly DependencyProperty IsSwipedMemberPathProperty =
+            DependencyProperty.Register("IsSwipedMemberPath", typeof(string), typeof(LLMListView), new PropertyMetadata(null));
+
+        public bool IsSwiped
+        {
+            get { return (bool)GetValue(IsSwipedProperty); }
+            set { SetValue(IsSwipedProperty, value); }
+        }
+        public static readonly DependencyProperty IsSwipedProperty =
+            DependencyProperty.Register("IsSwiped", typeof(bool), typeof(LLMListViewItem), new PropertyMetadata(false, new PropertyChangedCallback((s,e)=>
+            {
+                System.Diagnostics.Debug.WriteLine("1111111111");
+            })));
 
         public bool IsSwipeEnabled
         {
@@ -186,6 +207,20 @@ namespace LLM
         {
             this.DefaultStyleKey = typeof(LLMListViewItem);
             this.Loaded += LLMListViewItem_Loaded;
+            DataContextChanged += LLMListViewItem_DataContextChanged;
+        }
+
+        private void LLMListViewItem_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            var context = args.NewValue;
+            if (context == null || string.IsNullOrEmpty(IsSwipedMemberPath))
+                return;
+
+            var isSwipedFieldInfo = context.GetType().GetField(IsSwipedMemberPath);
+            if (isSwipedFieldInfo.FieldType != typeof(bool))
+                return;
+
+            SetBinding(IsSwipedProperty, new Binding() { Source = context, Path = new PropertyPath("IsSwipedMemberPath") });
         }
 
         private void LLMListViewItem_Loaded(object sender, RoutedEventArgs e)
@@ -234,6 +269,15 @@ namespace LLM
         protected override void OnContentChanged(object oldContent, object newContent)
         {
             ResetSwipe();
+            var context = newContent;
+            if (context == null || string.IsNullOrEmpty(IsSwipedMemberPath))
+                return;
+
+            var isSwipedFieldInfo = context.GetType().GetProperty(IsSwipedMemberPath);
+            if (isSwipedFieldInfo.PropertyType != typeof(bool))
+                return;
+
+            SetBinding(IsSwipedProperty, new Binding() { Source = context, Path = new PropertyPath(IsSwipedMemberPath) });
         }
 
         protected override void OnManipulationDelta(ManipulationDeltaRoutedEventArgs e)
