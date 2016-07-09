@@ -103,7 +103,7 @@ namespace LLM
 
             DisplayAnimation(config, 0, 0, ()=>
             {
-                config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, 0);
+                config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, config.SwipeClipRectangle.Rect.Height);
                 config.SwipeClipTransform.ScaleX = 1;
 
                 restoreCompleteCallback?.Invoke();
@@ -112,9 +112,14 @@ namespace LLM
 
         protected void DisplayAnimation(SwipeConfig config, double itemTo, double clipTo, Action complete)
         {
+            DisplayAnimation(config, "X", itemTo, "ScaleX", clipTo, complete);
+        }
+
+        protected void DisplayAnimation(SwipeConfig config, string itemProperty, double itemTo, string clipProperty, double clipTo, Action complete)
+        {
             Storyboard animStory = new Storyboard();
-            animStory.Children.Add(Utils.CreateDoubleAnimation(config.MainTransform, "X", config.EasingFunc, itemTo, config.Duration));
-            animStory.Children.Add(Utils.CreateDoubleAnimation(config.SwipeClipTransform, "ScaleX", config.EasingFunc, clipTo, config.Duration));
+            animStory.Children.Add(Utils.CreateDoubleAnimation(config.MainTransform, itemProperty, config.EasingFunc, itemTo, config.Duration));
+            animStory.Children.Add(Utils.CreateDoubleAnimation(config.SwipeClipTransform, clipProperty, config.EasingFunc, clipTo, config.Duration));
 
             animStory.Completed += (sender, e) =>
             {
@@ -145,7 +150,7 @@ namespace LLM
 
     public class FixedSwipeAnimator : BaseSwipeAnimator
     {
-        public readonly static ISwipeAnimator Instance = new FixedSwipeAnimator();
+        public readonly static FixedSwipeAnimator Instance = new FixedSwipeAnimator();
 
         public override void ActionTrigger(SwipeDirection direction, SwipeConfig config, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback)
         {
@@ -164,6 +169,23 @@ namespace LLM
                     config.SwipeClipRectangle.Rect = new Rect(0, 0, targetWidth, config.SwipeClipRectangle.Rect.Height);
                 else
                     config.SwipeClipRectangle.Rect = new Rect(config.ItemActualWidth - targetWidth, 0, targetWidth, config.SwipeClipRectangle.Rect.Height);
+            });
+        }
+
+        public void SwipeTo(SwipeDirection direction, SwipeConfig config)
+        {
+            config.ResetSwipeClipCenterX();
+            var targetWidth = config.TriggerActionTargetWidth;
+            var targetX = config.Direction == SwipeDirection.Left ? targetWidth : -targetWidth;
+            config.SwipeClipRectangle.Rect = new Rect(config.ItemActualWidth - 1, 0, 1, config.ItemActualHeight);
+            var clipScaleX = targetWidth;
+            DisplayAnimation(config, targetX, clipScaleX, () =>
+            {
+                config.SwipeClipTransform.ScaleX = 1;
+                if (direction == SwipeDirection.Left)
+                    config.SwipeClipRectangle.Rect = new Rect(0, 0, targetWidth, config.ItemActualHeight);
+                else
+                    config.SwipeClipRectangle.Rect = new Rect(config.ItemActualWidth - targetWidth, 0, targetWidth, config.ItemActualHeight);
             });
         }
     }

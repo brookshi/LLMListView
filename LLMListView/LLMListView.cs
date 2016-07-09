@@ -284,7 +284,7 @@ namespace LLM
             set { SetValue(IsItemSwipedMemberPathProperty, value); }
         }
         public static readonly DependencyProperty IsItemSwipedMemberPathProperty =
-            DependencyProperty.Register("IsItemSwipedMemberPath", typeof(string), typeof(LLMListViewItem), new PropertyMetadata(null));
+            DependencyProperty.Register("IsItemSwipedMemberPath", typeof(string), typeof(LLMListView), new PropertyMetadata(null));
 
         #endregion
 
