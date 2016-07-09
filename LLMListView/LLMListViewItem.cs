@@ -54,7 +54,7 @@ namespace LLM
             set { SetValue(IsSwipedMemberPathProperty, value); }
         }
         public static readonly DependencyProperty IsSwipedMemberPathProperty =
-            DependencyProperty.Register("IsSwipedMemberPath", typeof(string), typeof(LLMListView), new PropertyMetadata(null));
+            DependencyProperty.Register("IsSwipedMemberPath", typeof(string), typeof(LLMListViewItem), new PropertyMetadata(null));
 
         public bool IsSwiped
         {
@@ -64,8 +64,25 @@ namespace LLM
         public static readonly DependencyProperty IsSwipedProperty =
             DependencyProperty.Register("IsSwiped", typeof(bool), typeof(LLMListViewItem), new PropertyMetadata(false, new PropertyChangedCallback((s,e)=>
             {
-                System.Diagnostics.Debug.WriteLine("1111111111");
+                var item = ((LLMListViewItem)s);
+                if (item.IsSwipedByGesture)
+                {
+                    item.IsSwipedByGesture = false;
+                    return;
+                }
+                
+                if (item.IsSwiped)
+                    item.SwipeTo(SwipeDirection.Right);
+                else
+                    item.ResetSwipeWithAnimation();
             })));
+
+        private bool IsSwipedByGesture { get; set; }
+        private void SetIsSwipedByGesture(bool isSwiped)
+        {
+            IsSwipedByGesture = IsSwiped != isSwiped;
+            IsSwiped = isSwiped;
+        }
 
         public bool IsSwipeEnabled
         {
@@ -207,20 +224,6 @@ namespace LLM
         {
             this.DefaultStyleKey = typeof(LLMListViewItem);
             this.Loaded += LLMListViewItem_Loaded;
-            DataContextChanged += LLMListViewItem_DataContextChanged;
-        }
-
-        private void LLMListViewItem_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-            var context = args.NewValue;
-            if (context == null || string.IsNullOrEmpty(IsSwipedMemberPath))
-                return;
-
-            var isSwipedFieldInfo = context.GetType().GetField(IsSwipedMemberPath);
-            if (isSwipedFieldInfo.FieldType != typeof(bool))
-                return;
-
-            SetBinding(IsSwipedProperty, new Binding() { Source = context, Path = new PropertyPath("IsSwipedMemberPath") });
         }
 
         private void LLMListViewItem_Loaded(object sender, RoutedEventArgs e)
@@ -248,6 +251,7 @@ namespace LLM
             Config.LeftSwipeLengthRate = ActualLeftSwipeLengthRate;
             Config.RightSwipeLengthRate = ActualRightSwipeLengthRate;
             Config.ItemActualWidth = ActualWidth;
+            Config.ItemActualHeight = ActualHeight;
         }
 
         private void LLMListViewItem_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -269,7 +273,11 @@ namespace LLM
         protected override void OnContentChanged(object oldContent, object newContent)
         {
             ResetSwipe();
-            var context = newContent;
+            BindIsSwipedProperty(newContent);
+        }
+
+        private void BindIsSwipedProperty(object context)
+        {
             if (context == null || string.IsNullOrEmpty(IsSwipedMemberPath))
                 return;
 
@@ -277,7 +285,7 @@ namespace LLM
             if (isSwipedFieldInfo.PropertyType != typeof(bool))
                 return;
 
-            SetBinding(IsSwipedProperty, new Binding() { Source = context, Path = new PropertyPath(IsSwipedMemberPath) });
+            SetBinding(IsSwipedProperty, new Binding() { Source = context, Path = new PropertyPath(IsSwipedMemberPath), Mode = BindingMode.TwoWay });
         }
 
         protected override void OnManipulationDelta(ManipulationDeltaRoutedEventArgs e)
@@ -349,7 +357,7 @@ namespace LLM
             SwipeProgressInTouch?.Invoke(this, new SwipeProgressEventArgs(Config.Direction, cumulativeX, deltaX, Math.Abs(cumulativeX) / ActualWidth));
         }
 
-        public void ResetSwipe()
+        private void ResetSwipe()
         {
             if (Config == null)
                 return;
@@ -360,7 +368,12 @@ namespace LLM
             _isTriggerInTouch = false;
         }
 
-        public void ResetSwipeWithAnimation()
+        private void SwipeTo(SwipeDirection direction)
+        {
+            FixedSwipeAnimator.Instance.SwipeTo(direction, Config);
+        }
+
+        private void ResetSwipeWithAnimation()
         {
             FixedSwipeAnimator.Instance.Restore(Config, null, () =>
             {
@@ -394,6 +407,7 @@ namespace LLM
             if (Config.GetSwipeMode(direction) == SwipeMode.Fix)
             {
                 Config.Direction = direction;
+                SetIsSwipedByGesture(true);
             }
             SwipeTriggerComplete?.Invoke(this, new SwipeCompleteEventArgs(direction));
         }
@@ -405,6 +419,7 @@ namespace LLM
 
         private void ReleaseAnimationRestoreComplete(SwipeDirection direction)
         {
+            SetIsSwipedByGesture(false);
             SwipeRestoreComplete?.Invoke(this, new SwipeCompleteEventArgs(direction));
         }
 

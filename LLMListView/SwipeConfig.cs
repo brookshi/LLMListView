@@ -49,6 +49,8 @@ namespace LLM
 
         public double ItemActualWidth { get; set; }
 
+        public double ItemActualHeight { get; set; }
+
         public double CurrentSwipeWidth { get; set; }
 
         public Timeline LeftCustomStoreAnimation { get; set; }

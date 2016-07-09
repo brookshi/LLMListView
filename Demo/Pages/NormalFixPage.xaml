@@ -7,15 +7,24 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d">
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Button Grid.Row="0"
+                Click="{x:Bind SwipeFirstItem}"
+                Content="Swipe First Item in VM" />
         <ctrl:LLMListView x:Name="MasterListView"
+                          Grid.Row="1"
                           IsItemClickEnabled="True"
+                          IsItemSwipedMemberPath="IsSwiped"
                           ItemLeftSwipeMode="None"
                           ItemRightActionRateForSwipeLength="0.5"
                           ItemRightSwipeMaxLength="135"
                           ItemRightSwipeMode="Fix"
                           ItemTemplate="{StaticResource ContactListViewTemplate}"
                           ItemsSource="{x:Bind Contacts, Mode=OneWay}"
-                          SelectionMode="Single" >
+                          SelectionMode="Single">
             <ctrl:LLMListView.ItemRightSwipeContentTemplate>
                 <DataTemplate>
                     <Grid Background="Red">

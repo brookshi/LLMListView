@@ -41,12 +41,20 @@ namespace Demo.Pages
             Contacts = Contact.GetContacts(140);
         }
 
+        private void SwipeFirstItem(object sender, RoutedEventArgs e)
+        {
+            if (Contacts.Count == 0)
+                return;
+
+            Contacts[0].IsSwiped = !Contacts[0].IsSwiped;
+        }
+
         private async void Edit_Click(object sender, RoutedEventArgs e)
         {
             var item = Utils.FindVisualParent<LLMListViewItem>(sender as AppBarButton);
             var itemData = item.Content as Contact;
             var dlg = new MessageDialog("Edit " + itemData.Name);
-            dlg.Commands.Add(new UICommand("OK", new UICommandInvokedHandler(command=> { item.ResetSwipeWithAnimation(); })));
+            dlg.Commands.Add(new UICommand("OK", new UICommandInvokedHandler(command=> { itemData.IsSwiped = false; })));
             dlg.Commands.Add(new UICommand("Cancel"));
             await dlg.ShowAsync();
         }
