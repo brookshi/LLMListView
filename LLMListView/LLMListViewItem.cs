@@ -64,20 +64,20 @@ namespace LLM
         public static readonly DependencyProperty IsSwipedProperty =
             DependencyProperty.Register("IsSwiped", typeof(bool), typeof(LLMListViewItem), new PropertyMetadata(false, new PropertyChangedCallback((s,e)=>
             {
-                var item = ((LLMListViewItem)s);
-                if (item.IsSwipedByGesture)
+                var ctrl = ((LLMListViewItem)s);
+                if (ctrl.IsSwipedByGesture)
                 {
-                    item.IsSwipedByGesture = false;
+                    ctrl.IsSwipedByGesture = false;
                     return;
                 }
                 
-                if (item.IsSwiped)
-                    item.SwipeTo(SwipeDirection.Right);
+                if (ctrl.IsSwiped)
+                    ctrl.SwipeTo(SwipeDirection.Right);
                 else
-                    item.ResetSwipeWithAnimation();
+                    ctrl.ResetSwipeWithAnimation();
             })));
 
-        private bool IsSwipedByGesture { get; set; }
+        private bool IsSwipedByGesture;
         private void SetIsSwipedByGesture(bool isSwiped)
         {
             IsSwipedByGesture = IsSwiped != isSwiped;
@@ -272,6 +272,7 @@ namespace LLM
 
         protected override void OnContentChanged(object oldContent, object newContent)
         {
+            System.Diagnostics.Debug.WriteLine("#######content changed");
             ResetSwipe();
             BindIsSwipedProperty(newContent);
         }
