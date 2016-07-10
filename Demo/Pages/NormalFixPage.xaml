@@ -12,14 +12,16 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel x:Name="RightPanel"
+                    Margin="10, 0, 0, 0"
                     HorizontalAlignment="Left"
                     Orientation="Horizontal">
             <Button Grid.Row="0"
                     Click="{x:Bind SwipeLeftFirstItem}"
-                    Content="Swipe Left First Item by Model" />
+                    Content="Swipe First Item Left by Model" />
             <Button Grid.Row="0"
+                    Margin="10, 0, 0, 0"
                     Click="{x:Bind SwipeRightFirstItem}"
-                    Content="Swipe Right First Item by Model" />
+                    Content="Swipe First Item Right by Model" />
         </StackPanel>
         <ctrl:LLMListView x:Name="MasterListView"
                           Grid.Row="1"
