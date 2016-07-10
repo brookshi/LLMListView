@@ -48,21 +48,21 @@ namespace LLM
 
         #region property
 
-        public string IsSwipedMemberPath
+        public string IsSwipedRightMemberPath
         {
-            get { return (string)GetValue(IsSwipedMemberPathProperty); }
-            set { SetValue(IsSwipedMemberPathProperty, value); }
+            get { return (string)GetValue(IsSwipedRightMemberPathProperty); }
+            set { SetValue(IsSwipedRightMemberPathProperty, value); }
         }
-        public static readonly DependencyProperty IsSwipedMemberPathProperty =
-            DependencyProperty.Register("IsSwipedMemberPath", typeof(string), typeof(LLMListViewItem), new PropertyMetadata(null));
+        public static readonly DependencyProperty IsSwipedRightMemberPathProperty =
+            DependencyProperty.Register("IsSwipedRightMemberPath", typeof(string), typeof(LLMListViewItem), new PropertyMetadata(null));
 
-        public bool IsSwiped
+        public bool IsSwipedRight
         {
-            get { return (bool)GetValue(IsSwipedProperty); }
-            set { SetValue(IsSwipedProperty, value); }
+            get { return (bool)GetValue(IsSwipedRightProperty); }
+            set { SetValue(IsSwipedRightProperty, value); }
         }
-        public static readonly DependencyProperty IsSwipedProperty =
-            DependencyProperty.Register("IsSwiped", typeof(bool), typeof(LLMListViewItem), new PropertyMetadata(false, new PropertyChangedCallback((s,e)=>
+        public static readonly DependencyProperty IsSwipedRightProperty =
+            DependencyProperty.Register("IsSwipedRight", typeof(bool), typeof(LLMListViewItem), new PropertyMetadata(false, new PropertyChangedCallback((s,e)=>
             {
                 var ctrl = ((LLMListViewItem)s);
                 if (ctrl.IsSwipedByGesture)
@@ -71,17 +71,54 @@ namespace LLM
                     return;
                 }
                 
-                if (ctrl.IsSwiped)
+                if (ctrl.IsSwipedRight)
                     ctrl.SwipeTo(SwipeDirection.Right);
                 else
                     ctrl.ResetSwipeWithAnimation();
             })));
 
-        private bool IsSwipedByGesture;
-        private void SetIsSwipedByGesture(bool isSwiped)
+        public string IsSwipedLeftMemberPath
         {
-            IsSwipedByGesture = IsSwiped != isSwiped;
-            IsSwiped = isSwiped;
+            get { return (string)GetValue(IsSwipedLeftMemberPathProperty); }
+            set { SetValue(IsSwipedLeftMemberPathProperty, value); }
+        }
+        public static readonly DependencyProperty IsSwipedLeftMemberPathProperty =
+            DependencyProperty.Register("IsSwipedLeftMemberPath", typeof(string), typeof(LLMListViewItem), new PropertyMetadata(null));
+
+        public bool IsSwipedLeft
+        {
+            get { return (bool)GetValue(IsSwipedLeftProperty); }
+            set { SetValue(IsSwipedLeftProperty, value); }
+        }
+        public static readonly DependencyProperty IsSwipedLeftProperty =
+            DependencyProperty.Register("IsSwipedLeft", typeof(bool), typeof(LLMListViewItem), new PropertyMetadata(false, new PropertyChangedCallback((s, e) =>
+            {
+                var ctrl = ((LLMListViewItem)s);
+                if (ctrl.IsSwipedByGesture)
+                {
+                    ctrl.IsSwipedByGesture = false;
+                    return;
+                }
+
+                if (ctrl.IsSwipedLeft)
+                    ctrl.SwipeTo(SwipeDirection.Left);
+                else
+                    ctrl.ResetSwipeWithAnimation();
+            })));
+
+        private bool IsSwipedByGesture;
+        private void SetIsSwipedByGesture(SwipeDirection direction, bool isSwiped)
+        {
+            if(direction == SwipeDirection.Right)
+            {
+                IsSwipedByGesture = IsSwipedRight != isSwiped;
+                IsSwipedRight = isSwiped;
+            }
+            else if(direction == SwipeDirection.Left)
+            {
+                IsSwipedByGesture = IsSwipedLeft != isSwiped;
+                IsSwipedLeft = isSwiped;
+            }
         }
 
         public bool IsSwipeEnabled
@@ -272,21 +309,21 @@ namespace LLM
 
         protected override void OnContentChanged(object oldContent, object newContent)
         {
-            System.Diagnostics.Debug.WriteLine("#######content changed");
             ResetSwipe();
-            BindIsSwipedProperty(newContent);
+            BindIsSwipedProperty(newContent, IsSwipedRightProperty, IsSwipedRightMemberPath);
+            BindIsSwipedProperty(newContent, IsSwipedLeftProperty, IsSwipedLeftMemberPath);
         }
 
-        private void BindIsSwipedProperty(object context)
+        private void BindIsSwipedProperty(object context, DependencyProperty dependencyProperty, string property)
         {
-            if (context == null || string.IsNullOrEmpty(IsSwipedMemberPath))
+            if (context == null || string.IsNullOrEmpty(property))
                 return;
 
-            var isSwipedFieldInfo = context.GetType().GetProperty(IsSwipedMemberPath);
+            var isSwipedFieldInfo = context.GetType().GetProperty(property);
             if (isSwipedFieldInfo.PropertyType != typeof(bool))
                 return;
 
-            SetBinding(IsSwipedProperty, new Binding() { Source = context, Path = new PropertyPath(IsSwipedMemberPath), Mode = BindingMode.TwoWay });
+            SetBinding(dependencyProperty, new Binding() { Source = context, Path = new PropertyPath(property), Mode = BindingMode.TwoWay });
         }
 
         protected override void OnManipulationDelta(ManipulationDeltaRoutedEventArgs e)
@@ -371,6 +408,9 @@ namespace LLM
 
         private void SwipeTo(SwipeDirection direction)
         {
+            Config.Direction = direction;
+            _leftSwipeContent.Visibility = Config.CanSwipeLeft ? Visibility.Visible : Visibility.Collapsed;
+            _rightSwipeContent.Visibility = Config.CanSwipeRight ? Visibility.Visible : Visibility.Collapsed;
             FixedSwipeAnimator.Instance.SwipeTo(direction, Config);
         }
 
@@ -408,7 +448,7 @@ namespace LLM
             if (Config.GetSwipeMode(direction) == SwipeMode.Fix)
             {
                 Config.Direction = direction;
-                SetIsSwipedByGesture(true);
+                SetIsSwipedByGesture(direction, true);
             }
             SwipeTriggerComplete?.Invoke(this, new SwipeCompleteEventArgs(direction));
         }
@@ -420,7 +460,7 @@ namespace LLM
 
         private void ReleaseAnimationRestoreComplete(SwipeDirection direction)
         {
-            SetIsSwipedByGesture(false);
+            SetIsSwipedByGesture(direction, false);
             SwipeRestoreComplete?.Invoke(this, new SwipeCompleteEventArgs(direction));
         }
 

@@ -11,14 +11,24 @@
             <RowDefinition Height="30" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Button Grid.Row="0"
-                Click="{x:Bind SwipeFirstItem}"
-                Content="Swipe First Item in VM" />
+        <StackPanel x:Name="RightPanel"
+                    HorizontalAlignment="Left"
+                    Orientation="Horizontal">
+            <Button Grid.Row="0"
+                    Click="{x:Bind SwipeLeftFirstItem}"
+                    Content="Swipe Left First Item by Model" />
+            <Button Grid.Row="0"
+                    Click="{x:Bind SwipeRightFirstItem}"
+                    Content="Swipe Right First Item by Model" />
+        </StackPanel>
         <ctrl:LLMListView x:Name="MasterListView"
                           Grid.Row="1"
                           IsItemClickEnabled="True"
-                          IsItemSwipedMemberPath="IsSwiped"
-                          ItemLeftSwipeMode="None"
+                          IsSwipedLeftMemberPath="IsSwipedLeft"
+                          IsSwipedRightMemberPath="IsSwipedRight"
+                          ItemLeftActionRateForSwipeLength="0.5"
+                          ItemLeftSwipeMaxLength="135"
+                          ItemLeftSwipeMode="Fix"
                           ItemRightActionRateForSwipeLength="0.5"
                           ItemRightSwipeMaxLength="135"
                           ItemRightSwipeMode="Fix"
@@ -27,7 +37,7 @@
                           SelectionMode="Single">
             <ctrl:LLMListView.ItemRightSwipeContentTemplate>
                 <DataTemplate>
-                    <Grid Background="Red">
+                    <Grid Height="60" Background="Red">
                         <StackPanel x:Name="RightPanel"
                                     HorizontalAlignment="Right"
                                     Orientation="Horizontal">
@@ -45,6 +55,18 @@
                     </Grid>
                 </DataTemplate>
             </ctrl:LLMListView.ItemRightSwipeContentTemplate>
+
+            <ctrl:LLMListView.ItemLeftSwipeContentTemplate>
+                <DataTemplate>
+                    <Grid Height="60" Background="Blue">
+                        <StackPanel x:Name="RightPanel"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal">
+                            <TextBlock Foreground="White" Text="Left Swiped" />
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ctrl:LLMListView.ItemLeftSwipeContentTemplate>
         </ctrl:LLMListView>
     </Grid>
 </Page>

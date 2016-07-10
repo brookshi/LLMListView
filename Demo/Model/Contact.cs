@@ -70,15 +70,28 @@ namespace ListViewSample.Model
         public string PhoneNumber { get; set; }
         public string Biography { get; set; }
 
-        private bool isSwiped = false;
-        public bool IsSwiped
+        private bool isSwipedRight = false;
+        public bool IsSwipedRight
         {
-            get { return isSwiped; }
+            get { return isSwipedRight; }
             set
             {
                 {
-                    isSwiped = value;
-                    Notify("IsSwiped");
+                    isSwipedRight = value;
+                    Notify("IsSwipedRight");
+                }
+            }
+        }
+
+        private bool isSwipedLeft = false;
+        public bool IsSwipedLeft
+        {
+            get { return isSwipedLeft; }
+            set
+            {
+                {
+                    isSwipedLeft = value;
+                    Notify("IsSwipedLeft");
                 }
             }
         }
