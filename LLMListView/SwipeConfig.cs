@@ -37,7 +37,12 @@ namespace LLM
 
         public SwipeMode RightSwipeMode { get; set; }
 
-        public SwipeDirection Direction { get; set; }
+        private SwipeDirection _direction;
+        public SwipeDirection Direction
+        {
+            get { return _direction; }
+            set { _direction = value; }
+        }
 
         public double LeftActionRateForSwipeLength { get; set; }
 

@@ -174,14 +174,21 @@ namespace LLM
 
         public void SwipeTo(SwipeDirection direction, SwipeConfig config)
         {
-            config.ResetSwipeClipCenterX();
             var targetWidth = config.TriggerActionTargetWidth;
             var targetX = config.Direction == SwipeDirection.Left ? targetWidth : -targetWidth;
-            config.SwipeClipRectangle.Rect = new Rect(config.ItemActualWidth - 1, 0, 1, config.ItemActualHeight);
+            config.ResetSwipeClipCenterX();
+
+            if (direction == SwipeDirection.Left)
+                config.SwipeClipRectangle.Rect = new Rect(0, 0, 1, config.ItemActualHeight);
+            else
+                config.SwipeClipRectangle.Rect = new Rect(config.ItemActualWidth - 1, 0, 1, config.ItemActualHeight);
+
             var clipScaleX = targetWidth;
+
             DisplayAnimation(config, targetX, clipScaleX, () =>
             {
                 config.SwipeClipTransform.ScaleX = 1;
+                config.Direction = direction;
                 if (direction == SwipeDirection.Left)
                     config.SwipeClipRectangle.Rect = new Rect(0, 0, targetWidth, config.ItemActualHeight);
                 else
