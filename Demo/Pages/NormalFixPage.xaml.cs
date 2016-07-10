@@ -41,12 +41,20 @@ namespace Demo.Pages
             Contacts = Contact.GetContacts(140);
         }
 
-        private void SwipeFirstItem(object sender, RoutedEventArgs e)
+        private void SwipeLeftFirstItem(object sender, RoutedEventArgs e)
         {
             if (Contacts.Count == 0)
                 return;
 
-            Contacts[0].IsSwiped = !Contacts[0].IsSwiped;
+            Contacts[0].IsSwipedLeft = !Contacts[0].IsSwipedLeft;
+        }
+
+        private void SwipeRightFirstItem(object sender, RoutedEventArgs e)
+        {
+            if (Contacts.Count == 0)
+                return;
+
+            Contacts[0].IsSwipedRight = !Contacts[0].IsSwipedRight;
         }
 
         private async void Edit_Click(object sender, RoutedEventArgs e)
@@ -54,7 +62,7 @@ namespace Demo.Pages
             var item = Utils.FindVisualParent<LLMListViewItem>(sender as AppBarButton);
             var itemData = item.Content as Contact;
             var dlg = new MessageDialog("Edit " + itemData.Name);
-            dlg.Commands.Add(new UICommand("OK", new UICommandInvokedHandler(command=> { itemData.IsSwiped = false; })));
+            dlg.Commands.Add(new UICommand("OK", new UICommandInvokedHandler(command=> { itemData.IsSwipedRight = false; })));
             dlg.Commands.Add(new UICommand("Cancel"));
             await dlg.ShowAsync();
         }

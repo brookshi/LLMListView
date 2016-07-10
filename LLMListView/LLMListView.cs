@@ -278,13 +278,21 @@ namespace LLM
         public static readonly DependencyProperty ItemRightActionRateForSwipeLengthProperty =
             DependencyProperty.Register("ItemRightActionRateForSwipeLength", typeof(double), typeof(LLMListView), new PropertyMetadata(0.5));
 
-        public string IsItemSwipedMemberPath
+        public string IsSwipedRightMemberPath
         {
-            get { return (string)GetValue(IsItemSwipedMemberPathProperty); }
-            set { SetValue(IsItemSwipedMemberPathProperty, value); }
+            get { return (string)GetValue(IsSwipedRightMemberPathProperty); }
+            set { SetValue(IsSwipedRightMemberPathProperty, value); }
         }
-        public static readonly DependencyProperty IsItemSwipedMemberPathProperty =
-            DependencyProperty.Register("IsItemSwipedMemberPath", typeof(string), typeof(LLMListView), new PropertyMetadata(null));
+        public static readonly DependencyProperty IsSwipedRightMemberPathProperty =
+            DependencyProperty.Register("IsSwipedRightMemberPath", typeof(string), typeof(LLMListView), new PropertyMetadata(null));
+
+        public string IsSwipedLeftMemberPath
+        {
+            get { return (string)GetValue(IsSwipedLeftMemberPathProperty); }
+            set { SetValue(IsSwipedLeftMemberPathProperty, value); }
+        }
+        public static readonly DependencyProperty IsSwipedLeftMemberPathProperty =
+            DependencyProperty.Register("IsSwipedLeftMemberPath", typeof(string), typeof(LLMListView), new PropertyMetadata(null));
 
         #endregion
 
@@ -312,8 +320,9 @@ namespace LLM
             SetItemBinding(item, LLMListViewItem.LeftSwipeMaxLengthProperty, "ItemLeftSwipeMaxLength");
             SetItemBinding(item, LLMListViewItem.RightSwipeMaxLengthProperty, "ItemRightSwipeMaxLength"); 
             SetItemBinding(item, LLMListViewItem.IsSwipeEnabledProperty, "IsItemSwipeEnabled");
-            SetItemBinding(item, LLMListViewItem.IsSwipedMemberPathProperty, "IsItemSwipedMemberPath");
-            
+            SetItemBinding(item, LLMListViewItem.IsSwipedRightMemberPathProperty, "IsSwipedRightMemberPath");
+            SetItemBinding(item, LLMListViewItem.IsSwipedLeftMemberPathProperty, "IsSwipedLeftMemberPath");
+
             item.SwipeBeginInTouch += Item_SwipeBeginInTouch;
             item.SwipeProgressInTouch += Item_SwipeProgressInTouch;
             item.SwipeRestoreComplete += Item_SwipeStoreComplete;

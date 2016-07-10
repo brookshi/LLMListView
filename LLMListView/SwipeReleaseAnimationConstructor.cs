@@ -103,7 +103,7 @@ namespace LLM
 
             DisplayAnimation(config, 0, 0, ()=>
             {
-                config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, config.SwipeClipRectangle.Rect.Height);
+                config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, config.ItemActualHeight);
                 config.SwipeClipTransform.ScaleX = 1;
 
                 restoreCompleteCallback?.Invoke();
@@ -141,9 +141,7 @@ namespace LLM
             DisplayAnimation(config, 0, 0, () =>
             {
                 triggerCompleteCallback?.Invoke();
-
-                config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, 0);
-                config.SwipeClipTransform.ScaleX = 1;
+                config.AdjustForNotSwipeFixCompleted();
             });
         }
     }
@@ -163,12 +161,7 @@ namespace LLM
             DisplayAnimation(config, targetX, clipScaleX, ()=>
             {
                 triggerCompleteCallback?.Invoke();
-
-                config.SwipeClipTransform.ScaleX = 1;
-                if(direction == SwipeDirection.Left)
-                    config.SwipeClipRectangle.Rect = new Rect(0, 0, targetWidth, config.SwipeClipRectangle.Rect.Height);
-                else
-                    config.SwipeClipRectangle.Rect = new Rect(config.ItemActualWidth - targetWidth, 0, targetWidth, config.SwipeClipRectangle.Rect.Height);
+                config.AdjustForSwipeFixCompleted(targetWidth);
             });
         }
 
@@ -176,23 +169,12 @@ namespace LLM
         {
             var targetWidth = config.TriggerActionTargetWidth;
             var targetX = config.Direction == SwipeDirection.Left ? targetWidth : -targetWidth;
-            config.ResetSwipeClipCenterX();
-
-            if (direction == SwipeDirection.Left)
-                config.SwipeClipRectangle.Rect = new Rect(0, 0, 1, config.ItemActualHeight);
-            else
-                config.SwipeClipRectangle.Rect = new Rect(config.ItemActualWidth - 1, 0, 1, config.ItemActualHeight);
-
+            config.AdjustForSwipeToFixStarted();
             var clipScaleX = targetWidth;
 
             DisplayAnimation(config, targetX, clipScaleX, () =>
             {
-                config.SwipeClipTransform.ScaleX = 1;
-                config.Direction = direction;
-                if (direction == SwipeDirection.Left)
-                    config.SwipeClipRectangle.Rect = new Rect(0, 0, targetWidth, config.ItemActualHeight);
-                else
-                    config.SwipeClipRectangle.Rect = new Rect(config.ItemActualWidth - targetWidth, 0, targetWidth, config.ItemActualHeight);
+                config.AdjustForSwipeFixCompleted(targetWidth);
             });
         }
     }
@@ -211,9 +193,7 @@ namespace LLM
             DisplayAnimation(config, targetX, clipScaleX, ()=>
             {
                 triggerCompleteCallback?.Invoke();
-
-                config.SwipeClipRectangle.Rect = new Rect(0, 0, 0, 0);
-                config.SwipeClipTransform.ScaleX = 1;
+                config.AdjustForNotSwipeFixCompleted();
             });
         }
     }

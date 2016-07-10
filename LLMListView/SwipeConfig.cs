@@ -14,6 +14,7 @@
 //   limitations under the License. 
 #endregion
 
+using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 
@@ -97,6 +98,31 @@ namespace LLM
         public void ResetSwipeClipCenterX()
         {
             SwipeClipTransform.CenterX = Direction == SwipeDirection.Left ? 0 : ItemActualWidth;
+        }
+
+        public void AdjustForSwipeFixCompleted(double targetWidth)
+        {
+            SwipeClipTransform.ScaleX = 1;
+            if (Direction == SwipeDirection.Left)
+                SwipeClipRectangle.Rect = new Rect(0, 0, targetWidth, ItemActualHeight);
+            else
+                SwipeClipRectangle.Rect = new Rect(ItemActualWidth - targetWidth, 0, targetWidth, ItemActualHeight);
+        }
+
+        public void AdjustForSwipeToFixStarted()
+        {
+            ResetSwipeClipCenterX();
+
+            if (Direction == SwipeDirection.Left)
+                SwipeClipRectangle.Rect = new Rect(0, 0, 1, ItemActualHeight);
+            else
+                SwipeClipRectangle.Rect = new Rect(ItemActualWidth - 1, 0, 1, ItemActualHeight);
+        }
+
+        public void AdjustForNotSwipeFixCompleted()
+        {
+            SwipeClipRectangle.Rect = new Rect(0, 0, 0, 0);
+            SwipeClipTransform.ScaleX = 1;
         }
     }
 }
