@@ -8,128 +8,123 @@ namespace ListViewSample.Model
 {
     public class Contact : INotifyPropertyChanged
     {
-        private static Random random = new Random();
+        private static readonly Random Random = new Random();
 
         #region Properties
-        private string initials;
+        private string _initials;
         public string Initials
         {
             get
             {
-                if (initials == string.Empty && FirstName != string.Empty && LastName != string.Empty)
+                if (_initials == string.Empty && FirstName != string.Empty && LastName != string.Empty)
                 {
-                    initials = FirstName[0].ToString() + LastName[0].ToString();
+                    _initials = FirstName[0].ToString() + LastName[0];
                 }
-                return initials;
+                return _initials;
             }
         }
-        private string name;
+
+        private string _name;
         public string Name
         {
             get
             {
-                if (name == string.Empty && FirstName != string.Empty && LastName != string.Empty)
+                if (_name == string.Empty && FirstName != string.Empty && LastName != string.Empty)
                 {
-                    name = FirstName + " " + LastName;
+                    _name = FirstName + " " + LastName;
                 }
-                return name;
+                return _name;
             }
         }
-        private string lastName;
+
+        private string _lastName;
         public string LastName
         {
             get
             {
-                return lastName;
+                return _lastName;
             }
             set
             {
-                lastName = value;
-                initials = string.Empty; // force to recalculate the value 
-                name = string.Empty; // force to recalculate the value 
+                _lastName = value;
+                _initials = string.Empty; // force to recalculate the value 
+                _name = string.Empty; // force to recalculate the value 
             }
         }
-        private string firstName;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private string _firstName;
         public string FirstName
         {
             get
             {
-                return firstName;
+                return _firstName;
             }
             set
             {
-                firstName = value;
-                initials = string.Empty; // force to recalculate the value 
-                name = string.Empty; // force to recalculate the value 
+                _firstName = value;
+                _initials = string.Empty; // force to recalculate the value 
+                _name = string.Empty; // force to recalculate the value 
             }
         }
         public string Position { get; set; }
         public string PhoneNumber { get; set; }
         public string Biography { get; set; }
 
-        private bool isSwipedRight = false;
+        private bool _isSwipedRight;
         public bool IsSwipedRight
         {
-            get { return isSwipedRight; }
+            get { return _isSwipedRight; }
             set
             {
-                {
-                    isSwipedRight = value;
-                    Notify("IsSwipedRight");
-                }
+                _isSwipedRight = value;
+                Notify(nameof(IsSwipedRight));
             }
         }
 
-        private bool isSwipedLeft = false;
+        private bool _isSwipedLeft;
         public bool IsSwipedLeft
         {
-            get { return isSwipedLeft; }
+            get { return _isSwipedLeft; }
             set
             {
-                {
-                    isSwipedLeft = value;
-                    Notify("IsSwipedLeft");
-                }
+                _isSwipedLeft = value;
+                Notify(nameof(IsSwipedLeft));
             }
         }
 
-        private bool isStar = false;
+        private bool _isStar;
         public bool IsStar
         {
-            get { return isStar; }
+            get { return _isStar; }
             set
             {
-                if(value != isStar)
+                if (value != _isStar)
                 {
-                    isStar = value;
-                    Notify("IsStar");
+                    _isStar = value;
+                    Notify(nameof(IsStar));
                 }
             }
         }
 
-        private bool isDelete = false;
+        private bool _isDelete;
         public bool IsDelete
         {
-            get { return isDelete; }
+            get { return _isDelete; }
             set
             {
-                if (value != isDelete)
+                if (value != _isDelete)
                 {
-                    isDelete = value;
-                    Notify("IsDelete");
+                    _isDelete = value;
+                    Notify(nameof(IsDelete));
                 }
             }
         }
 
         protected void Notify(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion
@@ -137,15 +132,15 @@ namespace ListViewSample.Model
         public Contact()
         {
             // default values for each property.
-            initials = string.Empty;
-            name = string.Empty;
+            _initials = string.Empty;
+            _name = string.Empty;
             LastName = string.Empty;
             FirstName = string.Empty;
             Position = string.Empty;
             PhoneNumber = string.Empty;
             Biography = string.Empty;
         }
-     
+
         #region Public Methods
         public static Contact GetNewContact()
         {
@@ -156,6 +151,8 @@ namespace ListViewSample.Model
                 Biography = GetBiography(),
                 PhoneNumber = GeneratePhoneNumber(),
                 Position = GeneratePosition(),
+                IsSwipedRight = false,
+                IsSwipedLeft = true
             };
         }
         public static ObservableCollection<Contact> GetContacts(int numberOfContacts)
@@ -196,7 +193,7 @@ namespace ListViewSample.Model
         private static string GeneratePosition()
         {
             List<string> positions = new List<string>() { "Program Manager", "Developer", "Product Manager", "Evangelist" };
-            return positions[random.Next(0, positions.Count)];
+            return positions[Random.Next(0, positions.Count)];
         }
         private static string GetBiography()
         {
@@ -213,22 +210,22 @@ namespace ListViewSample.Model
                 @"Duis facilisis, quam ut laoreet commodo, elit ex aliquet massa, non varius tellus lectus et nunc. Donec vitae risus ut ante pretium semper. Phasellus consectetur volutpat orci, eu dapibus turpis. Fusce varius sapien eu mattis pharetra.",
                 @"Nam vulputate eu erat ornare blandit. Proin eget lacinia erat. Praesent nisl lectus, pretium eget leo et, dapibus dapibus velit. Integer at bibendum mi, et fringilla sem."
             };
-            return biographies[random.Next(0, biographies.Count)];
+            return biographies[Random.Next(0, biographies.Count)];
         }
 
         private static string GeneratePhoneNumber()
         {
-            return string.Format("{0:(###)} {1:###}-{2:####}", random.Next(100, 999), random.Next(100, 999), random.Next(1000, 9999));
+            return string.Format("{0:(###)} {1:###}-{2:####}", Random.Next(100, 999), Random.Next(100, 999), Random.Next(1000, 9999));
         }
         private static string GenerateFirstName()
         {
             List<string> names = new List<string>() { "Lilly", "Mukhtar", "Sophie", "Femke", "Abdul-Rafi'", "Chirag-ud-D...", "Mariana", "Aarif", "Sara", "Ibadah", "Fakhr", "Ilene", "Sardar", "Hanna", "Julie", "Iain", "Natalia", "Henrik", "Rasa", "Quentin", "Gadi", "Pernille", "Ishtar", "Jimme", "Justina", "Lale", "Elize", "Rand", "Roshanara", "Rajab", "Bijou", "Marcus", "Marcus", "Alima", "Francisco", "Thaqib", "Andreas", "Mariana", "Amalie", "Rodney", "Dena", "Fadl", "Ammar", "Anna", "Nasreen", "Reem", "Tomas", "Filipa", "Frank", "Bari'ah", "Parvaiz", "Jibran", "Tomas", "Elli", "Carlos", "Diego", "Henrik", "Aruna", "Vahid", "Eliana", "Roxane", "Amanda", "Ingrid", "Wander", "Malika", "Basim", "Eisa", "Alina", "Andreas", "Deeba", "Diya", "Parveen", "Bakr", "Celine", "Bakr", "Marcus", "Daniel", "Mathea", "Edmee", "Hedda", "Maria", "Maja", "Alhasan", "Alina", "Hedda", "Victor", "Aaftab", "Guilherme", "Maria", "Kai", "Sabien", "Abdel", "Fadl", "Bahaar", "Vasco", "Jibran", "Parsa", "Catalina", "Fouad", "Colette" };
-            return names[random.Next(0, names.Count)];
+            return names[Random.Next(0, names.Count)];
         }
         private static string GenerateLastName()
         {
             List<string> lastnames = new List<string>() { "Carlson", "Attia", "Quint", "Hollenberg", "Khoury", "Araujo", "Hakimi", "Seegers", "Abadi", "al", "Krommenhoek", "Siavashi", "Kvistad", "Sjo", "Vanderslik", "Fernandes", "Dehli", "Sheibani", "Laamers", "Batlouni", "Lyngvær", "Oveisi", "Veenhuizen", "Gardenier", "Siavashi", "Mutlu", "Karzai", "Mousavi", "Natsheh", "Seegers", "Nevland", "Lægreid", "Bishara", "Cunha", "Hotaki", "Kyvik", "Cardoso", "Pilskog", "Pennekamp", "Nuijten", "Bettar", "Borsboom", "Skistad", "Asef", "Sayegh", "Sousa", "Medeiros", "Kregel", "Shamoun", "Behzadi", "Kuzbari", "Ferreira", "Van", "Barros", "Fernandes", "Formo", "Nolet", "Shahrestaani", "Correla", "Amiri", "Sousa", "Fretheim", "Van", "Hamade", "Baba", "Mustafa", "Bishara", "Formo", "Hemmati", "Nader", "Hatami", "Natsheh", "Langen", "Maloof", "Berger", "Ostrem", "Bardsen", "Kramer", "Bekken", "Salcedo", "Holter", "Nader", "Bettar", "Georgsen", "Cunha", "Zardooz", "Araujo", "Batalha", "Antunes", "Vanderhoorn", "Nader", "Abadi", "Siavashi", "Montes", "Sherzai", "Vanderschans", "Neves", "Sarraf", "Kuiters" };
-            return lastnames[random.Next(0, lastnames.Count)];
+            return lastnames[Random.Next(0, lastnames.Count)];
         }
         #endregion
     }
