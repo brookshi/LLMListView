@@ -182,7 +182,6 @@ namespace LLM
             else
             {
                 config.MainTransform.X = targetX;
-                config.SwipeClipTransform.ScaleX = clipScaleX;
                 config.AdjustForSwipeFixCompleted(targetWidth);
             }
         }
