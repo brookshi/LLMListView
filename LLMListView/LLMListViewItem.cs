@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using System.Reflection;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Data;
 
 namespace LLM
@@ -33,8 +34,10 @@ namespace LLM
         private RectangleGeometry _swipeLayerClip;
         private ContentControl _rightSwipeContent;
         private ContentControl _leftSwipeContent;
-        private SwipeReleaseAnimationConstructor _swipeAnimationConstructor;
-        private bool _isTriggerInTouch = false;
+        private readonly SwipeReleaseAnimationConstructor _swipeAnimationConstructor;
+        private bool _isTriggerInTouch;
+        private bool IsSwipedByGesture;
+        private bool _isLoaded;
 
         public event SwipeBeginEventHandler SwipeBeginInTouch;
         public event SwipeProgressEventHandler SwipeProgressInTouch;
@@ -44,7 +47,7 @@ namespace LLM
         public event SwipeReleaseEventHandler SwipeBeginRestore;
         public event SwipeTriggerEventHandler SwipeTriggerInTouch;
 
-        public SwipeConfig Config { get { return _swipeAnimationConstructor == null ? null : _swipeAnimationConstructor.Config; } }
+        public SwipeConfig Config => _swipeAnimationConstructor?.Config;
 
         #region property
 
@@ -54,7 +57,7 @@ namespace LLM
             set { SetValue(IsSwipedRightMemberPathProperty, value); }
         }
         public static readonly DependencyProperty IsSwipedRightMemberPathProperty =
-            DependencyProperty.Register("IsSwipedRightMemberPath", typeof(string), typeof(LLMListViewItem), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(IsSwipedRightMemberPath), typeof(string), typeof(LLMListViewItem), new PropertyMetadata(null));
 
         public bool IsSwipedRight
         {
@@ -62,20 +65,7 @@ namespace LLM
             set { SetValue(IsSwipedRightProperty, value); }
         }
         public static readonly DependencyProperty IsSwipedRightProperty =
-            DependencyProperty.Register("IsSwipedRight", typeof(bool), typeof(LLMListViewItem), new PropertyMetadata(false, new PropertyChangedCallback((s,e)=>
-            {
-                var ctrl = ((LLMListViewItem)s);
-                if (ctrl.IsSwipedByGesture)
-                {
-                    ctrl.IsSwipedByGesture = false;
-                    return;
-                }
-                
-                if (ctrl.IsSwipedRight)
-                    ctrl.SwipeTo(SwipeDirection.Right);
-                else
-                    ctrl.ResetSwipeWithAnimation();
-            })));
+            DependencyProperty.Register(nameof(IsSwipedRight), typeof(bool), typeof(LLMListViewItem), new PropertyMetadata(false, (o, args) => SwipeByDependencyChange(o, args, SwipeDirection.Right)));
 
         public string IsSwipedLeftMemberPath
         {
@@ -83,7 +73,7 @@ namespace LLM
             set { SetValue(IsSwipedLeftMemberPathProperty, value); }
         }
         public static readonly DependencyProperty IsSwipedLeftMemberPathProperty =
-            DependencyProperty.Register("IsSwipedLeftMemberPath", typeof(string), typeof(LLMListViewItem), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(IsSwipedLeftMemberPath), typeof(string), typeof(LLMListViewItem), new PropertyMetadata(null));
 
         public bool IsSwipedLeft
         {
@@ -91,32 +81,21 @@ namespace LLM
             set { SetValue(IsSwipedLeftProperty, value); }
         }
         public static readonly DependencyProperty IsSwipedLeftProperty =
-            DependencyProperty.Register("IsSwipedLeft", typeof(bool), typeof(LLMListViewItem), new PropertyMetadata(false, new PropertyChangedCallback((s, e) =>
-            {
-                var ctrl = ((LLMListViewItem)s);
-                if (ctrl.IsSwipedByGesture)
-                {
-                    ctrl.IsSwipedByGesture = false;
-                    return;
-                }
-
-                if (ctrl.IsSwipedLeft)
-                    ctrl.SwipeTo(SwipeDirection.Left);
-                else
-                    ctrl.ResetSwipeWithAnimation();
-            })));
-
-        private bool IsSwipedByGesture;
+            DependencyProperty.Register(nameof(IsSwipedLeft), typeof(bool), typeof(LLMListViewItem), new PropertyMetadata(false, (o, args) => SwipeByDependencyChange(o, args, SwipeDirection.Left)));
+        
         private void SetIsSwipedByGesture(SwipeDirection direction, bool isSwiped)
         {
-            if(direction == SwipeDirection.Right)
+            IsSwipedByGesture = true;
+            if (direction == SwipeDirection.Right)
             {
-                IsSwipedByGesture = IsSwipedRight != isSwiped;
+                if (IsSwipedLeft) IsSwipedLeft = false;
+                IsSwipedByGesture = true;
                 IsSwipedRight = isSwiped;
             }
-            else if(direction == SwipeDirection.Left)
+            else if (direction == SwipeDirection.Left)
             {
-                IsSwipedByGesture = IsSwipedLeft != isSwiped;
+                if (IsSwipedRight) IsSwipedRight = false;
+                IsSwipedByGesture = true;
                 IsSwipedLeft = isSwiped;
             }
         }
@@ -126,15 +105,19 @@ namespace LLM
             get { return (bool)GetValue(IsSwipeEnabledProperty); }
             set { SetValue(IsSwipeEnabledProperty, value); }
         }
-        public static readonly DependencyProperty IsSwipeEnabledProperty =
-            DependencyProperty.Register("IsSwipeEnabled", typeof(bool), typeof(LLMListViewItem), new PropertyMetadata(true, (s,e)=>
-            {
-                var listViewItem = s as LLMListViewItem;
-                if (listViewItem == null)
-                    return;
 
-                listViewItem.ItemManipulationMode = (bool)e.NewValue ? ManipulationModes.TranslateX | ManipulationModes.System : ManipulationModes.System;
-            }));
+        public static readonly DependencyProperty IsSwipeEnabledProperty =
+            DependencyProperty.Register(nameof(IsSwipeEnabled), typeof(bool), typeof(LLMListViewItem),
+                new PropertyMetadata(true, (s, e) =>
+                {
+                    var listViewItem = s as LLMListViewItem;
+                    if (listViewItem == null)
+                        return;
+
+                    listViewItem.ItemManipulationMode = (bool) e.NewValue
+                        ? ManipulationModes.TranslateX | ManipulationModes.System
+                        : ManipulationModes.System;
+                }));
 
         public ManipulationModes ItemManipulationMode
         {
@@ -142,7 +125,7 @@ namespace LLM
             set { SetValue(ItemManipulationModeProperty, value); }
         }
         public static readonly DependencyProperty ItemManipulationModeProperty =
-            DependencyProperty.Register("ItemManipulationMode", typeof(ManipulationModes), typeof(LLMListViewItem), new PropertyMetadata(ManipulationModes.TranslateX | ManipulationModes.System));
+            DependencyProperty.Register(nameof(ItemManipulationMode), typeof(ManipulationModes), typeof(LLMListViewItem), new PropertyMetadata(ManipulationModes.TranslateX | ManipulationModes.System));
 
         public DataTemplate LeftSwipeContentTemplate
         {
@@ -150,7 +133,7 @@ namespace LLM
             set { SetValue(LeftSwipeContentTemplateProperty, value); }
         }
         public static readonly DependencyProperty LeftSwipeContentTemplateProperty =
-            DependencyProperty.Register("LeftSwipeContentTemplate", typeof(DataTemplate), typeof(LLMListViewItem), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(LeftSwipeContentTemplate), typeof(DataTemplate), typeof(LLMListViewItem), new PropertyMetadata(null));
 
         public DataTemplate RightSwipeContentTemplate
         {
@@ -158,16 +141,15 @@ namespace LLM
             set { SetValue(RightSwipeContentTemplateProperty, value); }
         }
         public static readonly DependencyProperty RightSwipeContentTemplateProperty =
-            DependencyProperty.Register("RightSwipeContentTemplate", typeof(DataTemplate), typeof(LLMListViewItem), new PropertyMetadata(null));
-
-
+            DependencyProperty.Register(nameof(RightSwipeContentTemplate), typeof(DataTemplate), typeof(LLMListViewItem), new PropertyMetadata(null));
+        
         public int BackAnimDuration
         {
             get { return (int)GetValue(BackAnimDurationProperty); }
             set { SetValue(BackAnimDurationProperty, value); UpdateConfig(); }
         }
         public static readonly DependencyProperty BackAnimDurationProperty =
-            DependencyProperty.Register("BackAnimDuration", typeof(int), typeof(LLMListViewItem), new PropertyMetadata(200));
+            DependencyProperty.Register(nameof(BackAnimDuration), typeof(int), typeof(LLMListViewItem), new PropertyMetadata(200));
 
         public SwipeMode LeftSwipeMode
         {
@@ -175,7 +157,7 @@ namespace LLM
             set { SetValue(LeftSwipeModeProperty, value); UpdateConfig(); }
         }
         public static readonly DependencyProperty LeftSwipeModeProperty =
-            DependencyProperty.Register("LeftSwipeMode", typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.None));
+            DependencyProperty.Register(nameof(LeftSwipeMode), typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.None));
 
         public EasingFunctionBase LeftBackAnimEasingFunction
         {
@@ -183,7 +165,7 @@ namespace LLM
             set { SetValue(LeftBackAnimEasingFunctionProperty, value); UpdateConfig(); }
         }
         public static readonly DependencyProperty LeftBackAnimEasingFunctionProperty =
-            DependencyProperty.Register("LeftBackAnimEasingFunction", typeof(EasingFunctionBase), typeof(LLMListViewItem), new PropertyMetadata(new ExponentialEase() { EasingMode = EasingMode.EaseOut }));
+            DependencyProperty.Register(nameof(LeftBackAnimEasingFunction), typeof(EasingFunctionBase), typeof(LLMListViewItem), new PropertyMetadata(new ExponentialEase() { EasingMode = EasingMode.EaseOut }));
 
         public double LeftSwipeMaxLength
         {
@@ -191,7 +173,7 @@ namespace LLM
             set { SetValue(LeftSwipeMaxLengthProperty, value); }
         }
         public static readonly DependencyProperty LeftSwipeMaxLengthProperty =
-            DependencyProperty.Register("LeftSwipeMaxLength", typeof(double ), typeof(LLMListViewItem), new PropertyMetadata(0.0));
+            DependencyProperty.Register(nameof(LeftSwipeMaxLength), typeof(double ), typeof(LLMListViewItem), new PropertyMetadata(0.0));
 
         public double LeftSwipeLengthRate
         {
@@ -199,7 +181,7 @@ namespace LLM
             set { SetValue(LeftSwipeLengthRateProperty, value); UpdateConfig(); }
         }
         public static readonly DependencyProperty LeftSwipeLengthRateProperty =
-            DependencyProperty.Register("LeftSwipeLengthRate", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1.0));
+            DependencyProperty.Register(nameof(LeftSwipeLengthRate), typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1.0));
 
         public double LeftActionRateForSwipeLength
         {
@@ -207,9 +189,9 @@ namespace LLM
             set { SetValue(LeftActionRateForSwipeLengthProperty, value); UpdateConfig(); }
         }
         public static readonly DependencyProperty LeftActionRateForSwipeLengthProperty =
-            DependencyProperty.Register("LeftActionRateForSwipeLength", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.5));
+            DependencyProperty.Register(nameof(LeftActionRateForSwipeLength), typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.5));
 
-        public double ActualLeftSwipeLengthRate { get { return LeftSwipeMaxLength == 0 ? LeftSwipeLengthRate : LeftSwipeMaxLength / ActualWidth; } }
+        public double ActualLeftSwipeLengthRate => LeftSwipeMaxLength.Equals(0) ? LeftSwipeLengthRate : LeftSwipeMaxLength / ActualWidth;
 
 
         public SwipeMode RightSwipeMode
@@ -218,7 +200,7 @@ namespace LLM
             set { SetValue(RightSwipeModeProperty, value); UpdateConfig(); }
         }
         public static readonly DependencyProperty RightSwipeModeProperty =
-            DependencyProperty.Register("RightSwipeMode", typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.None));
+            DependencyProperty.Register(nameof(RightSwipeMode), typeof(SwipeMode), typeof(LLMListViewItem), new PropertyMetadata(SwipeMode.None));
 
         public double RightSwipeMaxLength
         {
@@ -226,7 +208,7 @@ namespace LLM
             set { SetValue(RightSwipeMaxLengthProperty, value); }
         }
         public static readonly DependencyProperty RightSwipeMaxLengthProperty =
-            DependencyProperty.Register("RightSwipeMaxLength", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.0));
+            DependencyProperty.Register(nameof(RightSwipeMaxLength), typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.0));
 
         public double RightSwipeLengthRate
         {
@@ -234,9 +216,9 @@ namespace LLM
             set { SetValue(RightSwipeLengthRateProperty, value); UpdateConfig(); }
         }
         public static readonly DependencyProperty RightSwipeLengthRateProperty =
-            DependencyProperty.Register("RightSwipeLengthRate", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1.0));
+            DependencyProperty.Register(nameof(RightSwipeLengthRate), typeof(double), typeof(LLMListViewItem), new PropertyMetadata(1.0));
 
-        public double ActualRightSwipeLengthRate { get { return RightSwipeMaxLength == 0 ? RightSwipeLengthRate : RightSwipeMaxLength / ActualWidth; } }
+        public double ActualRightSwipeLengthRate => RightSwipeMaxLength.Equals(0) ? RightSwipeLengthRate : RightSwipeMaxLength / ActualWidth;
 
         public double RightActionRateForSwipeLength
         {
@@ -244,7 +226,7 @@ namespace LLM
             set { SetValue(RightActionRateForSwipeLengthProperty, value); UpdateConfig(); }
         }
         public static readonly DependencyProperty RightActionRateForSwipeLengthProperty =
-            DependencyProperty.Register("RightActionRateForSwipeLength", typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.5));
+            DependencyProperty.Register(nameof(RightActionRateForSwipeLength), typeof(double), typeof(LLMListViewItem), new PropertyMetadata(0.5));
 
         public EasingFunctionBase RightBackAnimEasingFunction
         {
@@ -252,29 +234,79 @@ namespace LLM
             set { SetValue(RightBackAnimEasingFunctionProperty, value); UpdateConfig(); }
         }
         public static readonly DependencyProperty RightBackAnimEasingFunctionProperty =
-            DependencyProperty.Register("RightBackAnimEasingFunction", typeof(EasingFunctionBase), typeof(LLMListViewItem), new PropertyMetadata(new ExponentialEase() { EasingMode = EasingMode.EaseOut }));
+            DependencyProperty.Register(nameof(RightBackAnimEasingFunction), typeof(EasingFunctionBase), typeof(LLMListViewItem), new PropertyMetadata(new ExponentialEase() { EasingMode = EasingMode.EaseOut }));
 
         #endregion
 
-
         public LLMListViewItem()
         {
-            this.DefaultStyleKey = typeof(LLMListViewItem);
-            this.Loaded += LLMListViewItem_Loaded;
+            DefaultStyleKey = typeof(LLMListViewItem);
+            Loaded += LLMListViewItem_Loaded;
+            _swipeAnimationConstructor = SwipeReleaseAnimationConstructor.Create(new SwipeConfig());
         }
 
         private void LLMListViewItem_Loaded(object sender, RoutedEventArgs e)
         {
-            _swipeAnimationConstructor = SwipeReleaseAnimationConstructor.Create(new SwipeConfig());
+            _isLoaded = true;
             UpdateConfig();
+            SyncSwipeStateToBindings();
             SizeChanged += LLMListViewItem_SizeChanged;
+        }
+
+        private void SyncSwipeStateToBindings()
+        {
+            if (IsSwipedLeft && IsSwipedRight)
+            {
+                throw new NotSupportedException(
+                    "Item can't be in IsSwipedLeft and IsSwipedRight states at the same time");
+            }
+
+            ResetSwipe();
+            if (IsSwipedRight)
+            {
+                SwipeTo(SwipeDirection.Right, false);
+            }
+            else if (IsSwipedLeft)
+            {
+                SwipeTo(SwipeDirection.Left, false);
+            }
+        }
+
+        private static void SwipeByDependencyChange(DependencyObject obj, DependencyPropertyChangedEventArgs args, SwipeDirection direction)
+        {
+            var ctrl = (LLMListViewItem)obj;
+            if (ctrl.IsSwipedByGesture)
+            {
+                ctrl.IsSwipedByGesture = false;
+                return;
+            }
+
+            if (direction == SwipeDirection.Left && ctrl.IsSwipedRight)
+            {
+                ctrl.IsSwipedByGesture = true;
+                ctrl.IsSwipedRight = false;
+                ctrl.ResetSwipe();
+            }
+            else if (direction == SwipeDirection.Right && ctrl.IsSwipedLeft)
+            {
+                ctrl.IsSwipedByGesture = true;
+                ctrl.IsSwipedLeft = false;
+                ctrl.ResetSwipe();
+            }
+
+            var newSwipeValue = (bool)args.NewValue;
+            if (newSwipeValue)
+            {
+                ctrl.SwipeTo(direction, true);
+            }
+            else
+            {
+                ctrl.ResetSwipeWithAnimation();
+            }
         }
 
         private void UpdateConfig()
         {
-            if (Config == null)
-                return;
-
             Config.Duration = BackAnimDuration;
             Config.LeftEasingFunc = LeftBackAnimEasingFunction;
             Config.RightEasingFunc = RightBackAnimEasingFunction;
@@ -312,18 +344,23 @@ namespace LLM
             ResetSwipe();
             BindIsSwipedProperty(newContent, IsSwipedRightProperty, IsSwipedRightMemberPath);
             BindIsSwipedProperty(newContent, IsSwipedLeftProperty, IsSwipedLeftMemberPath);
+            if (_isLoaded) SyncSwipeStateToBindings();
+            base.OnContentChanged(oldContent, newContent);
         }
 
         private void BindIsSwipedProperty(object context, DependencyProperty dependencyProperty, string property)
         {
-            if (context == null || string.IsNullOrEmpty(property))
-                return;
+            if (context == null || string.IsNullOrEmpty(property)) return;
 
             var isSwipedFieldInfo = context.GetType().GetProperty(property);
-            if (isSwipedFieldInfo.PropertyType != typeof(bool))
-                return;
+            if (isSwipedFieldInfo == null || isSwipedFieldInfo.PropertyType != typeof(bool)) return;
 
-            SetBinding(dependencyProperty, new Binding() { Source = context, Path = new PropertyPath(property), Mode = BindingMode.TwoWay });
+            SetBinding(dependencyProperty, new Binding
+            {
+                Source = context,
+                Path = new PropertyPath(property),
+                Mode = BindingMode.TwoWay
+            });
         }
 
         protected override void OnManipulationDelta(ManipulationDeltaRoutedEventArgs e)
@@ -349,7 +386,7 @@ namespace LLM
             }
         }
 
-        void SwipeToLeft(double cumulativeX, double deltaX)
+        private void SwipeToLeft(double cumulativeX, double deltaX)
         {
             cumulativeX = deltaX + _mainLayerTransform.X;
             var swipeLengthRate = Math.Abs(cumulativeX) / ActualWidth;
@@ -397,8 +434,7 @@ namespace LLM
 
         private void ResetSwipe()
         {
-            if (Config == null)
-                return;
+            if (!_isLoaded) return;
 
             Config.Direction = SwipeDirection.None;
             _swipeLayerClip.Rect = new Rect(0, 0, 0, 0);
@@ -406,20 +442,19 @@ namespace LLM
             _isTriggerInTouch = false;
         }
 
-        private void SwipeTo(SwipeDirection direction)
+        private void SwipeTo(SwipeDirection direction, bool animated)
         {
+            if (!_isLoaded) return;
+
             Config.Direction = direction;
             _leftSwipeContent.Visibility = Config.CanSwipeLeft ? Visibility.Visible : Visibility.Collapsed;
             _rightSwipeContent.Visibility = Config.CanSwipeRight ? Visibility.Visible : Visibility.Collapsed;
-            FixedSwipeAnimator.Instance.SwipeTo(direction, Config);
+            FixedSwipeAnimator.Instance.SwipeTo(direction, Config, animated);
         }
 
         private void ResetSwipeWithAnimation()
         {
-            FixedSwipeAnimator.Instance.Restore(Config, null, () =>
-            {
-                ResetSwipe();
-            });
+            FixedSwipeAnimator.Instance.Restore(Config, null, ResetSwipe);
         }
 
         protected override void OnManipulationCompleted(ManipulationCompletedRoutedEventArgs e)
