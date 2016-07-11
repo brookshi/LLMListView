@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using System.Reflection;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Data;
 
 namespace LLM
@@ -33,7 +34,7 @@ namespace LLM
         private RectangleGeometry _swipeLayerClip;
         private ContentControl _rightSwipeContent;
         private ContentControl _leftSwipeContent;
-        private SwipeReleaseAnimationConstructor _swipeAnimationConstructor;
+        private readonly SwipeReleaseAnimationConstructor _swipeAnimationConstructor;
         private bool _isTriggerInTouch;
         private bool IsSwipedByGesture;
         private bool _isLoaded;
@@ -257,30 +258,30 @@ namespace LLM
             if (IsSwipedLeft && IsSwipedRight)
             {
                 throw new NotSupportedException(
-                    "Item can't be in IsSwipedLeft & IsSwipedRight states at the same time");
+                    "Item can't be in IsSwipedLeft and IsSwipedRight states at the same time");
             }
 
             ResetSwipe();
             if (IsSwipedRight)
             {
-                SwipeTo(SwipeDirection.Right, true);
+                SwipeTo(SwipeDirection.Right, false);
             }
             else if (IsSwipedLeft)
             {
-                SwipeTo(SwipeDirection.Left, true);
+                SwipeTo(SwipeDirection.Left, false);
             }
         }
 
         private static void SwipeByDependencyChange(DependencyObject obj, DependencyPropertyChangedEventArgs args, SwipeDirection direction)
         {
-            var ctrl = (LLMListViewItem) obj;
+            var ctrl = (LLMListViewItem)obj;
             if (ctrl.IsSwipedByGesture)
             {
                 ctrl.IsSwipedByGesture = false;
                 return;
             }
-            
-            if (direction == SwipeDirection.Left & ctrl.IsSwipedRight)
+
+            if (direction == SwipeDirection.Left && ctrl.IsSwipedRight)
             {
                 ctrl.IsSwipedByGesture = true;
                 ctrl.IsSwipedRight = false;
@@ -344,6 +345,7 @@ namespace LLM
             BindIsSwipedProperty(newContent, IsSwipedRightProperty, IsSwipedRightMemberPath);
             BindIsSwipedProperty(newContent, IsSwipedLeftProperty, IsSwipedLeftMemberPath);
             if (_isLoaded) SyncSwipeStateToBindings();
+            base.OnContentChanged(oldContent, newContent);
         }
 
         private void BindIsSwipedProperty(object context, DependencyProperty dependencyProperty, string property)
@@ -447,7 +449,6 @@ namespace LLM
             Config.Direction = direction;
             _leftSwipeContent.Visibility = Config.CanSwipeLeft ? Visibility.Visible : Visibility.Collapsed;
             _rightSwipeContent.Visibility = Config.CanSwipeRight ? Visibility.Visible : Visibility.Collapsed;
-
             FixedSwipeAnimator.Instance.SwipeTo(direction, Config, animated);
         }
 
