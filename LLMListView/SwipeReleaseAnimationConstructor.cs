@@ -148,7 +148,7 @@ namespace LLM
 
     public class FixedSwipeAnimator : BaseSwipeAnimator
     {
-        public readonly static FixedSwipeAnimator Instance = new FixedSwipeAnimator();
+        public static readonly FixedSwipeAnimator Instance = new FixedSwipeAnimator();
 
         public override void ActionTrigger(SwipeDirection direction, SwipeConfig config, AnimationCallback beginTriggerCallback, Action triggerCompleteCallback)
         {
@@ -165,17 +165,26 @@ namespace LLM
             });
         }
 
-        public void SwipeTo(SwipeDirection direction, SwipeConfig config)
+        public void SwipeTo(SwipeDirection direction, SwipeConfig config, bool animated)
         {
             var targetWidth = config.TriggerActionTargetWidth;
             var targetX = config.Direction == SwipeDirection.Left ? targetWidth : -targetWidth;
             config.AdjustForSwipeToFixStarted();
             var clipScaleX = targetWidth;
 
-            DisplayAnimation(config, targetX, clipScaleX, () =>
+            if (animated)
             {
+                DisplayAnimation(config, targetX, clipScaleX, () =>
+                {
+                    config.AdjustForSwipeFixCompleted(targetWidth);
+                });
+            }
+            else
+            {
+                config.MainTransform.X = targetX;
+                config.SwipeClipTransform.ScaleX = clipScaleX;
                 config.AdjustForSwipeFixCompleted(targetWidth);
-            });
+            }
         }
     }
 

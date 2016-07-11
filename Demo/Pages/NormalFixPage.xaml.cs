@@ -60,9 +60,9 @@ namespace Demo.Pages
         private async void Edit_Click(object sender, RoutedEventArgs e)
         {
             var item = Utils.FindVisualParent<LLMListViewItem>(sender as AppBarButton);
-            var itemData = item.Content as Contact;
+            var itemData = (Contact) item.Content;
             var dlg = new MessageDialog("Edit " + itemData.Name);
-            dlg.Commands.Add(new UICommand("OK", new UICommandInvokedHandler(command=> { itemData.IsSwipedRight = false; })));
+            dlg.Commands.Add(new UICommand("OK", command => { itemData.IsSwipedRight = false; }));
             dlg.Commands.Add(new UICommand("Cancel"));
             await dlg.ShowAsync();
         }

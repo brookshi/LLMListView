@@ -38,12 +38,7 @@ namespace LLM
 
         public SwipeMode RightSwipeMode { get; set; }
 
-        private SwipeDirection _direction;
-        public SwipeDirection Direction
-        {
-            get { return _direction; }
-            set { _direction = value; }
-        }
+        public SwipeDirection Direction { get; set; }
 
         public double LeftActionRateForSwipeLength { get; set; }
 
@@ -68,32 +63,32 @@ namespace LLM
         public Timeline RightCustomTriggerAnimation { get; set; }
 
 
-        public double LeftRateForActualWidth { get { return LeftSwipeLengthRate * LeftActionRateForSwipeLength; } }
+        public double LeftRateForActualWidth => LeftSwipeLengthRate * LeftActionRateForSwipeLength;
 
-        public double RightRateForActualWidth { get { return RightSwipeLengthRate * RightActionRateForSwipeLength; } }
+        public double RightRateForActualWidth => RightSwipeLengthRate * RightActionRateForSwipeLength;
 
-        public bool CanSwipeLeft { get { return Direction == SwipeDirection.Left && LeftSwipeMode != SwipeMode.None; } }
+        public bool CanSwipeLeft => Direction == SwipeDirection.Left && LeftSwipeMode != SwipeMode.None;
 
-        public bool CanSwipeRight { get { return Direction == SwipeDirection.Right && RightSwipeMode != SwipeMode.None; } }
+        public bool CanSwipeRight => Direction == SwipeDirection.Right && RightSwipeMode != SwipeMode.None;
 
-        public EasingFunctionBase EasingFunc { get { return Direction == SwipeDirection.Left ? LeftEasingFunc : RightEasingFunc; } }
+        public EasingFunctionBase EasingFunc => Direction == SwipeDirection.Left ? LeftEasingFunc : RightEasingFunc;
 
-        public double SwipeLengthRate { get { return Direction == SwipeDirection.Left ? LeftSwipeLengthRate : RightSwipeLengthRate; } }
+        public double SwipeLengthRate => Direction == SwipeDirection.Left ? LeftSwipeLengthRate : RightSwipeLengthRate;
 
-        public double ActionRateForSwipeLength { get { return Direction == SwipeDirection.Left ? LeftActionRateForSwipeLength : RightActionRateForSwipeLength; } }
+        public double ActionRateForSwipeLength => Direction == SwipeDirection.Left ? LeftActionRateForSwipeLength : RightActionRateForSwipeLength;
 
         public SwipeMode GetSwipeMode(SwipeDirection swipeDirection)
         {
             return swipeDirection == SwipeDirection.Left ? LeftSwipeMode : RightSwipeMode;
         }
 
-        public double CurrentSwipeRate { get { return CurrentSwipeWidth / ItemActualWidth / SwipeLengthRate; } }
+        public double CurrentSwipeRate => CurrentSwipeWidth / ItemActualWidth / SwipeLengthRate;
 
-        public double TriggerActionTargetWidth { get { return ItemActualWidth * SwipeLengthRate; } }
+        public double TriggerActionTargetWidth => ItemActualWidth * SwipeLengthRate;
 
-        public Timeline CustomStoreAnimation { get { return Direction == SwipeDirection.Left ? LeftCustomStoreAnimation : RightCustomStoreAnimation; } }
+        public Timeline CustomStoreAnimation => Direction == SwipeDirection.Left ? LeftCustomStoreAnimation : RightCustomStoreAnimation;
 
-        public Timeline CustomTriggerAnimation { get { return Direction == SwipeDirection.Left ? LeftCustomTriggerAnimation : RightCustomTriggerAnimation; } }
+        public Timeline CustomTriggerAnimation => Direction == SwipeDirection.Left ? LeftCustomTriggerAnimation : RightCustomTriggerAnimation;
 
         public void ResetSwipeClipCenterX()
         {
