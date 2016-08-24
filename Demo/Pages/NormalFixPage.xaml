@@ -6,7 +6,7 @@
       xmlns:local="using:Demo.Pages"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d">
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition Height="*" />
@@ -25,6 +25,7 @@
         </StackPanel>
         <ctrl:LLMListView x:Name="MasterListView"
                           Grid.Row="1"
+                          Background="White"
                           IsItemClickEnabled="True"
                           IsSwipedLeftMemberPath="IsSwipedLeft"
                           IsSwipedRightMemberPath="IsSwipedRight"
@@ -36,7 +37,8 @@
                           ItemRightSwipeMode="Fix"
                           ItemTemplate="{StaticResource ContactListViewTemplate}"
                           ItemsSource="{x:Bind Contacts, Mode=OneWay}"
-                          SelectionMode="Single">
+                          SelectionMode="Single"
+                          ShowsScrollingPlaceholders="False">
             <ctrl:LLMListView.ItemRightSwipeContentTemplate>
                 <DataTemplate>
                     <Grid Height="60" Background="Red">

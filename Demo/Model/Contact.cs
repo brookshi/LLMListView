@@ -152,7 +152,7 @@ namespace ListViewSample.Model
                 PhoneNumber = GeneratePhoneNumber(),
                 Position = GeneratePosition(),
                 IsSwipedRight = false,
-                IsSwipedLeft = true
+                IsSwipedLeft = false
             };
         }
         public static ObservableCollection<Contact> GetContacts(int numberOfContacts)
