@@ -56,6 +56,22 @@ namespace Demo.Pages
 
             Contacts[0].IsSwipedRight = !Contacts[0].IsSwipedRight;
         }
+        
+        private void EnableOrDisableSwipeLeftFirstItem(object sender, RoutedEventArgs e)
+        {
+            if (Contacts.Count == 0)
+                return;
+
+            Contacts[0].EnableSwipeLeft = !Contacts[0].EnableSwipeLeft;
+        }
+
+        private void EnableOrDisableSwipeRightFirstItem(object sender, RoutedEventArgs e)
+        {
+            if (Contacts.Count == 0)
+                return;
+
+            Contacts[0].EnableSwipeRight = !Contacts[0].EnableSwipeRight;
+        }
 
         private async void Edit_Click(object sender, RoutedEventArgs e)
         {

@@ -62,14 +62,18 @@ namespace LLM
 
         public Timeline RightCustomTriggerAnimation { get; set; }
 
+        public bool EnableSwipeRight { get; set; }
+
+        public bool EnableSwipeLeft { get; set; }
+
 
         public double LeftRateForActualWidth => LeftSwipeLengthRate * LeftActionRateForSwipeLength;
 
         public double RightRateForActualWidth => RightSwipeLengthRate * RightActionRateForSwipeLength;
 
-        public bool CanSwipeLeft => Direction == SwipeDirection.Left && LeftSwipeMode != SwipeMode.None;
+        public bool CanSwipeLeft => Direction == SwipeDirection.Left && LeftSwipeMode != SwipeMode.None && EnableSwipeLeft;
 
-        public bool CanSwipeRight => Direction == SwipeDirection.Right && RightSwipeMode != SwipeMode.None;
+        public bool CanSwipeRight => Direction == SwipeDirection.Right && RightSwipeMode != SwipeMode.None && EnableSwipeRight;
 
         public EasingFunctionBase EasingFunc => Direction == SwipeDirection.Left ? LeftEasingFunc : RightEasingFunc;
 

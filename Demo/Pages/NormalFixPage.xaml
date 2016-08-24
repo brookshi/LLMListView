@@ -17,15 +17,25 @@
                     Orientation="Horizontal">
             <Button Grid.Row="0"
                     Click="{x:Bind SwipeLeftFirstItem}"
-                    Content="Swipe First Item Left by Model" />
+                    Content="Swipe First Item Left" />
             <Button Grid.Row="0"
                     Margin="10, 0, 0, 0"
                     Click="{x:Bind SwipeRightFirstItem}"
-                    Content="Swipe First Item Right by Model" />
+                    Content="Swipe First Item Right" />
+            <Button Grid.Row="0"
+                    Margin="20, 0, 0, 0"
+                    Click="{x:Bind EnableOrDisableSwipeLeftFirstItem}"
+                    Content="Enable/Disable Swipe First Item Left" />
+            <Button Grid.Row="0"
+                    Margin="10, 0, 0, 0"
+                    Click="{x:Bind EnableOrDisableSwipeRightFirstItem}"
+                    Content="Enable/Disable Swipe First Item Right" />
         </StackPanel>
         <ctrl:LLMListView x:Name="MasterListView"
                           Grid.Row="1"
                           Background="White"
+                          EnableSwipeLeftMemberPath="EnableSwipeLeft"
+                          EnableSwipeRightMemberPath="EnableSwipeRight"
                           IsItemClickEnabled="True"
                           IsSwipedLeftMemberPath="IsSwipedLeft"
                           IsSwipedRightMemberPath="IsSwipedRight"

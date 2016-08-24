@@ -294,6 +294,22 @@ namespace LLM
         public static readonly DependencyProperty IsSwipedLeftMemberPathProperty =
             DependencyProperty.Register("IsSwipedLeftMemberPath", typeof(string), typeof(LLMListView), new PropertyMetadata(null));
 
+        public string EnableSwipeRightMemberPath
+        {
+            get { return (string)GetValue(EnableSwipeRightMemberPathProperty); }
+            set { SetValue(EnableSwipeRightMemberPathProperty, value); }
+        }
+        public static readonly DependencyProperty EnableSwipeRightMemberPathProperty =
+            DependencyProperty.Register("EnableSwipeRightMemberPath", typeof(string), typeof(LLMListView), new PropertyMetadata(null));
+
+        public string EnableSwipeLeftMemberPath
+        {
+            get { return (string)GetValue(EnableSwipeLeftMemberPathProperty); }
+            set { SetValue(EnableSwipeLeftMemberPathProperty, value); }
+        }
+        public static readonly DependencyProperty EnableSwipeLeftMemberPathProperty =
+            DependencyProperty.Register("EnableSwipeLeftMemberPath", typeof(string), typeof(LLMListView), new PropertyMetadata(null));
+
         #endregion
 
         public LLMListView()
@@ -322,6 +338,8 @@ namespace LLM
             SetItemBinding(item, LLMListViewItem.IsSwipeEnabledProperty, "IsItemSwipeEnabled");
             SetItemBinding(item, LLMListViewItem.IsSwipedRightMemberPathProperty, "IsSwipedRightMemberPath");
             SetItemBinding(item, LLMListViewItem.IsSwipedLeftMemberPathProperty, "IsSwipedLeftMemberPath");
+            SetItemBinding(item, LLMListViewItem.EnableSwipeRightMemberPathProperty, "EnableSwipeRightMemberPath");
+            SetItemBinding(item, LLMListViewItem.EnableSwipeLeftMemberPathProperty, "EnableSwipeLeftMemberPath");
 
             item.SwipeBeginInTouch += Item_SwipeBeginInTouch;
             item.SwipeProgressInTouch += Item_SwipeProgressInTouch;

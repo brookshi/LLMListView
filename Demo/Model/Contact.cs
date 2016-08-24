@@ -72,12 +72,46 @@ namespace ListViewSample.Model
         public string PhoneNumber { get; set; }
         public string Biography { get; set; }
 
+        private bool _enableSwipeRight;
+        public bool EnableSwipeRight
+        {
+            get { return _enableSwipeRight; }
+            set
+            {
+                _enableSwipeRight = value;
+                if (IsSwipedRight)
+                {
+                    _isSwipedRight = value;
+                    Notify(nameof(IsSwipedRight));
+                }
+                Notify(nameof(EnableSwipeRight));
+            }
+        }
+
+        private bool _enableSwipeLeft;
+        public bool EnableSwipeLeft
+        {
+            get { return _enableSwipeLeft; }
+            set
+            {
+                _enableSwipeLeft = value;
+                if (IsSwipedLeft)
+                {
+                    _isSwipedLeft = value;
+                    Notify(nameof(IsSwipedLeft));
+                }
+                Notify(nameof(EnableSwipeLeft));
+            }
+        }
+
         private bool _isSwipedRight;
         public bool IsSwipedRight
         {
             get { return _isSwipedRight; }
             set
             {
+                if (!EnableSwipeRight)
+                    return;
                 _isSwipedRight = value;
                 Notify(nameof(IsSwipedRight));
             }
@@ -89,6 +123,8 @@ namespace ListViewSample.Model
             get { return _isSwipedLeft; }
             set
             {
+                if (!EnableSwipeLeft)
+                    return;
                 _isSwipedLeft = value;
                 Notify(nameof(IsSwipedLeft));
             }
