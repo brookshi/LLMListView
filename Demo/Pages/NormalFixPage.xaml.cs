@@ -95,5 +95,15 @@ namespace Demo.Pages
             dlg.Commands.Add(new UICommand("Cancel"));
             await dlg.ShowAsync();
         }
+
+        private async void Add_Click(object sender, RoutedEventArgs e)
+        {
+            var item = Utils.FindVisualParent<LLMListViewItem>(sender as AppBarButton);
+            var itemData = (Contact)item.Content;
+            var dlg = new MessageDialog("you click Add button");
+            dlg.Commands.Add(new UICommand("OK", command => { itemData.IsSwipedRight = false; }));
+            dlg.Commands.Add(new UICommand("Cancel"));
+            await dlg.ShowAsync();
+        }
     }
 }

@@ -72,7 +72,7 @@ namespace ListViewSample.Model
         public string PhoneNumber { get; set; }
         public string Biography { get; set; }
 
-        private bool _enableSwipeRight;
+        private bool _enableSwipeRight = true;
         public bool EnableSwipeRight
         {
             get { return _enableSwipeRight; }
@@ -88,7 +88,7 @@ namespace ListViewSample.Model
             }
         }
 
-        private bool _enableSwipeLeft;
+        private bool _enableSwipeLeft = true;
         public bool EnableSwipeLeft
         {
             get { return _enableSwipeLeft; }

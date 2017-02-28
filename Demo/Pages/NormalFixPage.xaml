@@ -43,7 +43,7 @@
                           ItemLeftSwipeMaxLength="135"
                           ItemLeftSwipeMode="Fix"
                           ItemRightActionRateForSwipeLength="0.5"
-                          ItemRightSwipeMaxLength="135"
+                          ItemRightSwipeMaxLength="200"
                           ItemRightSwipeMode="Fix"
                           ItemTemplate="{StaticResource ContactListViewTemplate}"
                           ItemsSource="{x:Bind Contacts, Mode=OneWay}"
@@ -55,6 +55,11 @@
                         <StackPanel x:Name="RightPanel"
                                     HorizontalAlignment="Right"
                                     Orientation="Horizontal">
+                            <AppBarButton x:Name="Add"
+                                          Background="Blue"
+                                          Click="Add_Click"
+                                          Icon="Add"
+                                          Label="Add" />
                             <AppBarButton x:Name="Edit"
                                           Background="Green"
                                           Click="Edit_Click"
