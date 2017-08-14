@@ -12,7 +12,7 @@ Feature
 
 Display
 --------
-![](https://raw.githubusercontent.com/brookshi/LLMListView/master/list view.gif)
+![](https://raw.githubusercontent.com/brookshi/LLMListView/master/list%20view.gif)
 
 
 Nuget
